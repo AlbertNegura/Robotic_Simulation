@@ -27,7 +27,7 @@ def rotate(origin, point_of_rotation, angle_of_rotation):
     dy = point_of_rotation[1]
 
     rx = x + np.cos(angle_of_rotation) * (dx-x) - np.sin(angle_of_rotation) * (dy - y)
-    ry = x + np.sin(angle_of_rotation) * (dx-x) - np.cos(angle_of_rotation) * (dy - y)
+    ry = x + np.sin(angle_of_rotation) * (dx-x) + np.cos(angle_of_rotation) * (dy - y)
 
     return np.array([rx, ry])
 
