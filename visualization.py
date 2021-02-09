@@ -1,0 +1,24 @@
+import numpy as np
+
+
+def draw_robot(pygame, screen, robot):
+    """
+
+    :param pygame:
+    :param screen:
+    :param robot:
+    :return:
+    """
+    pygame.draw.circle(screen, robot.colour, robot.position, robot.radius)
+    pygame.draw.circle(screen, robot.colour2, robot.position, robot.radius+0.5, 1)
+
+def draw_sensors(pygame, screen, robot):
+    """
+
+    :param pygame:
+    :param screen:
+    :param robot:
+    :return:
+    """
+    for sensor in robot.sensors:
+        pygame.draw.line(screen, sensor.colour, sensor.line.start, sensor.line.end, 5)
