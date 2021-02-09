@@ -39,3 +39,33 @@ def distance_between(a,b):
     :return: the absolute distance between the two points
     """
     return np.linalg.norm(a-b)
+
+def intersection(line1, line2):
+    """
+
+    :param line1: A 2d numpy array representing a line with a start point and an end point.
+    :param line2: A 2d numpy array representing a line with a start point and an end point.
+    :return: The point where the two lines intersect, if they intersect
+    """
+
+    [[x1,y1],[x2,y2]] = line1
+    [[x3,y3],[x4,y4]] = line2
+
+    v1 = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)
+    v2 = (x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)
+    u = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+    if u == 0:
+        u = 1e-7
+
+    m = v1/u
+    n = -v2/u
+
+    if (0.0<=m<=1.0):
+        return None
+    if (0.0<=n<=1.0):
+        return None
+
+    x = x1 + m * (x2-x1)
+    y = y1 + m * (y2-y1)
+
+    return [x,y]
