@@ -1,5 +1,4 @@
 import numpy as np
-import utils
 
 def Step(Vr,Vl,l,x0,y0,theta):
     # [theta] = radians
@@ -18,7 +17,7 @@ def ICC(x0,y0,theta,R):
     return x,y 
 
 def rotation(Vr,Vl,l):
-    R = (l/2)*((Vr+Vl)/(Vr-Vl))
-    w = 2*np.pi*(Vr-Vl)/l
+    R = l*((Vr+Vl)/(Vr-Vl))
+    w = np.pi*(Vr-Vl)/l
     return R,w
 

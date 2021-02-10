@@ -26,7 +26,7 @@ class Robot:
 
 
     def move(self):
-        if self.velocity_right != self.velocity_left:
+        if self.velocity_right != self.velocity_left and (self.velocity_right != 0.0 or self.velocity_left != 0.0):
             new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius, self.position[0], self.position[1], np.radians(self.orientation))
             self.position = [new_x, new_y]
             self.orientation = np.degrees(theta)
@@ -44,7 +44,7 @@ class Robot:
 def create_robot(init_pos=(100,200),radius = 50):
     robot = Robot()
     #robot.position = [int(np.random.uniform(radius+1,init_pos[0]-radius-1)),int(np.random.uniform(radius+1,init_pos[1]-radius-1))]
-    robot.position = [500, -150]
+    robot.position = [500, 300]
     print(robot.position)
     robot.radius = radius
     robot.colour = (200,200,200) #light grey
