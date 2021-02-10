@@ -24,8 +24,12 @@ class Robot:
         self.velocity_history.append(new_velocity)
 
 
-def create_robot():
+def create_robot(init_pos=(1600,900),radius = 50):
     robot = Robot()
+    robot.position = [np.random.uniform(0+radius,init_pos[0]-radius),np.random.uniform(0+radius,init_pos[1]-radius)]
+    robot.radius = radius
+    robot.colour = (200,200,200) #light grey
+    robot.colour2 = (0,0,0) #black
     return robot
 
 def reset_robot(robot):
