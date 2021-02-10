@@ -1,4 +1,5 @@
 import numpy as np
+import utils
 
 
 def draw_robot(pygame, screen, robot):
@@ -11,6 +12,7 @@ def draw_robot(pygame, screen, robot):
     """
     pygame.draw.circle(screen, robot.colour, robot.position, robot.radius)
     pygame.draw.circle(screen, robot.colour2, robot.position, robot.radius+0.5, 1)
+    pygame.draw.line(screen, robot.colour2, robot.position, robot.facing_position, 2)
 
 def draw_sensors(pygame, screen, robot):
     """

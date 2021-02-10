@@ -4,6 +4,7 @@ class Robot:
     colour = None
     colour2 = None
     orientation = 0
+    facing_position = [] # must remember to set equal to radius - 1
     radius = 0
     position = []
     velocity = []
@@ -30,6 +31,8 @@ def create_robot(init_pos=(1600,900),radius = 50):
     robot.radius = radius
     robot.colour = (200,200,200) #light grey
     robot.colour2 = (0,0,0) #black
+    robot.orientation = 0
+    robot.facing_position = [robot.position[0]+robot.radius-1, robot.position[1]]
     return robot
 
 def reset_robot(robot):

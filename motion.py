@@ -1,4 +1,5 @@
 import numpy as np
+import utils
 
 def Step(Vr,Vl,l,x0,y0,theta):
     # we asume delta*t = 1 ?
@@ -23,5 +24,8 @@ def R(Vr,Vl,l):
 def omega(Vr,Vl,l):
     # s^-1
     return (Vr-Vl)/l
+
+def rotate_robot(robot):
+    robot.facing_position = utils.rotate_line(robot.position, robot.radius, robot.orientation)
 
 print(Step(30,3,0.2,1,2,90))
