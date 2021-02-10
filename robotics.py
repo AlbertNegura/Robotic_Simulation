@@ -37,7 +37,6 @@ class Robot:
         self.save_orientation(self.orientation)
 
     def rotate(self):
-        print(self.facing_position)
         self.facing_position = utils.rotate_line(self.position, self.radius, np.radians(self.orientation))
 
 
