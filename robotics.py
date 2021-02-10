@@ -9,7 +9,7 @@ class Robot:
     facing_position = [] # must remember to set equal to radius - 1
     radius = 0
     position = []
-    acceleration = 0.00005
+    acceleration = 0.0005
     sensors = []
     velocity_right = 0
     velocity_left = 0
