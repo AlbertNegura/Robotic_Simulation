@@ -31,8 +31,10 @@ def rotate(origin, point_of_rotation, angle_of_rotation):
 
     return np.array([rx, ry])
 
-def rotate_line(origin, angle_of_rotation):
-    return rotate(origin, origin, angle_of_rotation)
+def rotate_line(origin, radius, angle_of_rotation):
+    [x,y] = origin
+    new_x = x+radius
+    return rotate([new_x, y], origin, angle_of_rotation)
 
 
 def distance_between(a,b):

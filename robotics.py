@@ -26,7 +26,7 @@ class Robot:
 
 
     def move(self):
-        if self.velocity_right != self.velocity_left and (self.velocity_right != 0.0 or self.velocity_left != 0.0):
+        if self.velocity_right != self.velocity_left:
             new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius, self.position[0], self.position[1], np.radians(self.orientation))
             self.position = [new_x, new_y]
             self.orientation = np.degrees(theta)
@@ -37,7 +37,8 @@ class Robot:
         self.save_orientation(self.orientation)
 
     def rotate(self):
-        self.facing_position = utils.rotate_line(self.position, np.radians(self.orientation))
+        print(self.facing_position)
+        self.facing_position = utils.rotate_line(self.position, self.radius, np.radians(self.orientation))
 
 
 
