@@ -1,6 +1,7 @@
 import pygame
 import visualization
 import robotics
+import utils
 
 WIDTH = 1600
 HEIGHT = 900
@@ -100,6 +101,8 @@ if __name__ == "__main__":
         robot.move()
         for wall in WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1])
+        utils.clip(robot.position, [robot.radius + 1, robot.radius + 1],
+                   [WIDTH - int(HEIGHT / 2) - robot.radius - 1, HEIGHT - int(HEIGHT / 2) - robot.radius - 1], robot)
         visualization.draw_robot(pygame, screen, robot)
         pygame.display.update()
         current_frame += 1

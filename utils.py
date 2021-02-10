@@ -3,6 +3,7 @@ Various mathematical helper functions.
 """
 import numpy as np
 
+
 def angle(v1,v2):
     """
     Returns the angle between two vectors.
@@ -76,3 +77,27 @@ def intersection(line1, line2):
     y = y1 + m * (y2-y1)
 
     return [x,y]
+
+def clip(a, a_min, a_max, robot):
+    """
+    Perfect inelastic collision (sets corresponding velocity component to 0). Meant only for boundary box collisions, not walls.
+    :param a:
+    :param a_min:
+    :param a_max:
+    :param robot:
+    :return:
+    """
+    x = a[0]
+    y = a[1]
+    if x<a_min[0]:
+        robot.position[0]=a_min[0]
+        robot.velocity[0]=0
+    if y<a_min[1]:
+        robot.position[1]=a_min[1]
+        robot.velocity[1]=0
+    if x>a_max[0]:
+        robot.position[0]=a_max[0]
+        robot.velocity[0]=0
+    if y>a_max[1]:
+        robot.position[1]=a_max[1]
+        robot.velocity[1]=0

@@ -13,6 +13,7 @@ class Robot:
     sensors = []
     velocity_right = 0
     velocity_left = 0
+    velocity = [0,0]
 
     position_history = []
     orientation_history = []
@@ -28,10 +29,11 @@ class Robot:
     def move(self):
         if self.velocity_right != self.velocity_left:
             new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius, self.position[0], self.position[1], np.radians(self.orientation))
-            self.position = [new_x, new_y]
+            self.velocity = np.subtract([new_x, new_y], self.position)
+            self.position = np.add(self.position, self.velocity)
             self.orientation = np.degrees(theta)
         else:
-            self.position = self.position#utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
+            self.position = np.add(self.position, self.velocity)#utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
         self.rotate()
         self.save_position(self.position)
         self.save_orientation(self.orientation)
