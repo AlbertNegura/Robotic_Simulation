@@ -9,7 +9,7 @@ class Robot:
     facing_position = [] # must remember to set equal to radius - 1
     radius = 0
     position = []
-    acceleration = 0.0005
+    acceleration = 0.005
     sensors = []
     velocity_right = 0
     velocity_left = 0
@@ -43,13 +43,14 @@ class Robot:
 
 
 
-def create_robot(init_pos=(100,200),radius = 50):
+def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005):
     robot = Robot()
     robot.position = [int(np.random.uniform(radius+1,init_pos[0]-radius-1)),int(np.random.uniform(radius+1,init_pos[1]-radius-1))]
     robot.radius = radius
     robot.colour = (200,200,200) #light grey
     robot.colour2 = (0,0,0) #black
     robot.orientation = 0
+    robot.acceleration = acceleration
     robot.facing_position = [robot.position[0]+robot.radius-1, robot.position[1]]
     return robot
 
