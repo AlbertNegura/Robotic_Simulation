@@ -137,6 +137,13 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.V, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.V, unused_key_info)
+    if pgkey[pygame.K_e]:
+        EDIT_MODE = not EDIT_MODE
+        # print("Edit mode ", EDIT_MODE)
+        keyboard.update_key(keyboard_layout, kl.Key.E, used_key_info)
+    else:
+        if not EDIT_MODE:
+            keyboard.update_key(keyboard_layout, kl.Key.E, unused_key_info)
 
 
 
@@ -155,10 +162,6 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 terminate = True
 
-            if pygame.key.get_pressed()[pygame.K_e]:
-                EDIT_MODE = not EDIT_MODE
-                #print("Edit mode ", EDIT_MODE)
-                keyboard.update_key(keyboard_layout, kl.Key.E, used_key_info)
 
             if EDIT_MODE:
                 if event.type == pygame.MOUSEBUTTONDOWN:
