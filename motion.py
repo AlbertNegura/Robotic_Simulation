@@ -18,6 +18,6 @@ def ICC(x0,y0,theta,R):
 
 def rotation(Vr,Vl,l):
     R = l*((Vr+Vl)/(Vr-Vl))
-    w = np.pi*(Vr-Vl)/l
+    w = 2*np.pi*(Vr-Vl)/l
     return R,w
 
