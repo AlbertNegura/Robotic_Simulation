@@ -29,9 +29,10 @@ def load_config(config):
     STOP = int(robot_settings['STOP'])
     ACCELERATION = float(robot_settings['ACCELERATION'])
 
-    global KEY_SIZE, TICK_RATE
+    global KEY_SIZE, TICK_RATE, WALL_WIDTH
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])
     TICK_RATE = int(visualization_settings['TICK_RATE'])
+    WALL_WIDTH = int(visualization_settings['WALL_WIDTH'])
 
     global SHOW_VELOCITY_PER_WHEEL
     SHOW_VELOCITY_PER_WHEEL = bool(debug_settings['SHOW_VELOCITY_PER_WHEEL'])
@@ -220,14 +221,14 @@ if __name__ == "__main__":
 
         robot.move()
         for wall in WALLS:
-            visualization.draw_wall(pygame, screen, wall[0], wall[1])
+            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
         utils.clip(robot.position, [robot.radius + 1, robot.radius + 1],
                    [WIDTH - int(HEIGHT / 3) - robot.radius - 1, HEIGHT - int(HEIGHT / 3) - robot.radius - 1], robot)
 
-        visualization.draw_wall(pygame, screen, [0, 0], [0, HEIGHT - int(HEIGHT / 3)])
-        visualization.draw_wall(pygame, screen, [0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)])
-        visualization.draw_wall(pygame, screen, [0, 0], [WIDTH, 0])
-        visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)])
+        visualization.draw_wall(pygame, screen, [0, 0], [0, HEIGHT - int(HEIGHT / 3)],WALL_WIDTH)
+        visualization.draw_wall(pygame, screen, [0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)],WALL_WIDTH)
+        visualization.draw_wall(pygame, screen, [0, 0], [WIDTH, 0],WALL_WIDTH)
+        visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)],WALL_WIDTH)
 
         visualization.draw_robot(pygame, screen, robot)
         if SHOW_VELOCITY_PER_WHEEL:
