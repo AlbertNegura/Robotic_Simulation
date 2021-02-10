@@ -32,7 +32,7 @@ class Robot:
             self.orientation = np.degrees(theta)
             self.rotate()
         else:
-            self.position = utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
+            self.position = self.position#utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
         self.save_position(self.position)
         self.save_orientation(self.orientation)
 
@@ -43,9 +43,7 @@ class Robot:
 
 def create_robot(init_pos=(100,200),radius = 50):
     robot = Robot()
-    #robot.position = [int(np.random.uniform(radius+1,init_pos[0]-radius-1)),int(np.random.uniform(radius+1,init_pos[1]-radius-1))]
-    robot.position = [500, 300]
-    print(robot.position)
+    robot.position = [int(np.random.uniform(radius+1,init_pos[0]-radius-1)),int(np.random.uniform(radius+1,init_pos[1]-radius-1))]
     robot.radius = radius
     robot.colour = (200,200,200) #light grey
     robot.colour2 = (0,0,0) #black
