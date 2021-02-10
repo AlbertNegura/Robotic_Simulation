@@ -35,7 +35,7 @@ def rotate_line(origin, radius, angle_of_rotation):
     x = origin[0]
     y = origin[1]
     new_x = x+radius
-    return rotate([new_x, y], [new_x, y], angle_of_rotation)
+    return rotate(origin, [new_x, y], angle_of_rotation)
 
 
 def distance_between(a,b):
