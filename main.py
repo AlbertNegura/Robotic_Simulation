@@ -51,7 +51,7 @@ def accelerate(wheel, direction):
 
 
 def user_input(pgkey):
-    global EDIT_MODE
+    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL
     if pgkey[pygame.K_w]:
         accelerate(LEFT,FORWARD)
         keyboard.update_key(keyboard_layout, kl.Key.W, used_key_info)
@@ -104,6 +104,11 @@ def user_input(pgkey):
     else:
         if not EDIT_MODE:
             keyboard.update_key(keyboard_layout, kl.Key.E, unused_key_info)
+    if pgkey[pygame.K_1]:
+        SHOW_VELOCITY_PER_WHEEL = not SHOW_VELOCITY_PER_WHEEL
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_1, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_1, unused_key_info)
 
 
 if __name__ == "__main__":
@@ -135,7 +140,7 @@ if __name__ == "__main__":
     keyboard = klp.KeyboardLayout
     key_size = KEY_SIZE
     # set the keyboard position and color info
-    valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X]
+    valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.DIGIT_1]
 
     keyboard_info = kl.KeyboardInfo(
         position=(0, HEIGHT - int(HEIGHT / 3)),
