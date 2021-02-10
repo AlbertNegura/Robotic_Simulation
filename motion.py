@@ -1,31 +1,23 @@
 import numpy as np
-import utils
 
-def step(Vr,Vl,l,x0,y0,theta):
-    # we asume delta*t = 1 ?
-    w = 2*np.pi*omega(Vr,Vl,l)
-    Icc_x,Icc_y = ICC(x0,y0,theta,Vl,Vr,l)
+def Step(Vr,Vl,l,x0,y0,theta):
+    # [theta] = radians
+    R,w = rotation(Vr,Vl,l)
+    Icc_x,Icc_y = ICC(x0,y0,theta,R)
 
-    x = np.cos(w)*(x0 - Icc_x) - np.sin(w)*(y0-Icc_y) + Icc_x
-    y = np.sin(w)*(x0 - Icc_x) + np.cos(w)*(y0-Icc_y) + Icc_y
-    Theta = theta + omega(Vr,Vl,l)
+    x = np.cos(w)*(x0-Icc_x) - np.sin(w)*(y0-Icc_y) + Icc_x
+    y = np.sin(w)*(x0-Icc_x) + np.cos(w)*(y0-Icc_y) + Icc_y
+    Theta = theta + w
 
     return x,y,Theta
 
-def ICC(x0,y0,theta,Vl,Vr,l):
-    #theta in degrees
-    x = x0 - R(Vl,Vr,l)*np.sin(np.deg2rad(theta))
-    y = y0 + R(Vl,Vr,l)*np.cos(np.deg2rad(theta))
+def ICC(x0,y0,theta,R):
+    x = x0 - R*np.sin(theta)
+    y = y0 + R*np.cos(theta)
     return x,y 
 
-def R(Vr,Vl,l):
-    return (l/2)*((Vr+Vl)/(Vr-Vl))
+def rotation(Vr,Vl,l):
+    R = l/2*((Vr+Vl)/(Vr-Vl))
+    w = 2*np.pi*(Vr-Vl)/l
+    return R,w
 
-def omega(Vr,Vl,l):
-    # s^-1
-    return (Vr-Vl)/l
-
-def rotate_robot(robot):
-    robot.facing_position = utils.rotate_line(robot.position, robot.radius, robot.orientation)
-
-print(step(30,3,0.2,1,2,90))
