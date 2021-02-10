@@ -59,9 +59,7 @@ if __name__ == "__main__":
     pygame.display.set_caption("Robot Visualization")
 
     # create grid for collision detection
-    # create walls
-
-    robot = robotics.create_robot(init_pos=(WIDTH,HEIGHT),radius = 50)
+    robot = robotics.create_robot(init_pos=(WIDTH,HEIGHT),radius = 20)
     # create robot
 
     terminate = False
@@ -103,6 +101,12 @@ if __name__ == "__main__":
             visualization.draw_wall(pygame, screen, wall[0], wall[1])
         utils.clip(robot.position, [robot.radius + 1, robot.radius + 1],
                    [WIDTH - int(HEIGHT / 2) - robot.radius - 1, HEIGHT - int(HEIGHT / 2) - robot.radius - 1], robot)
+
+        visualization.draw_wall(pygame, screen, [0, 0], [0, HEIGHT - int(HEIGHT / 2)])
+        visualization.draw_wall(pygame, screen, [0, HEIGHT - int(HEIGHT / 2)], [WIDTH - int(HEIGHT / 2), HEIGHT - int(HEIGHT / 2)])
+        visualization.draw_wall(pygame, screen, [0, 0], [WIDTH - int(HEIGHT / 2), 0])
+        visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 2), 0], [WIDTH - int(HEIGHT / 2), HEIGHT - int(HEIGHT / 2)])
+
         visualization.draw_robot(pygame, screen, robot)
         pygame.display.update()
         current_frame += 1
