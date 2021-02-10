@@ -6,6 +6,13 @@ WIDTH = 1600
 HEIGHT = 900
 RADIUS = 50
 
+WALLS = []
+EDIT_MODE = False
+DRAWING = False
+
+origin = None
+end = None
+
 def accelerate(wheel, direction):
     if wheel == 0:
         robot.velocity_left += robot.acceleration*direction
@@ -64,9 +71,35 @@ if __name__ == "__main__":
         for event in events:
             if event.type == pygame.QUIT:
                 terminate = True
+            # press "e" to enter / leave edit mode
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_e:
+                    EDIT_MODE = not EDIT_MODE
+                    print("Edit mode ", EDIT_MODE)
+
+            if EDIT_MODE:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if not DRAWING:
+                        origin = pygame.mouse.get_pos()
+                        DRAWING = True
+                        print('origin', origin)
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if DRAWING:
+                        end = pygame.mouse.get_pos()
+                        print(origin, end)
+                        if origin != None and end != None:
+                            WALLS.append((origin, end))
+                            print('Drawn')
+                    origin = None
+                    end = None
+                    DRAWING = False
+
+
 
         user_input(pygame.key.get_pressed())
         robot.move()
+        for wall in WALLS:
+            visualization.draw_wall(pygame, screen, wall[0], wall[1])
         visualization.draw_robot(pygame, screen, robot)
         pygame.display.update()
         current_frame += 1
