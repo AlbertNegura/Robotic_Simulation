@@ -18,7 +18,7 @@ def load_config(config):
     WIDTH = int(default_settings['WIDTH'])
     HEIGHT = int(default_settings['HEIGHT'])
 
-    global RADIUS, LEFT, RIGHT, BOTH, FORWARD, BACKWARD, STOP
+    global RADIUS, LEFT, RIGHT, BOTH, FORWARD, BACKWARD, STOP, ACCELERATION
 
     RADIUS = int(robot_settings['RADIUS'])
     LEFT = int(robot_settings['LEFT'])
@@ -27,10 +27,14 @@ def load_config(config):
     FORWARD = int(robot_settings['FORWARD'])
     BACKWARD = int(robot_settings['BACKWARD'])
     STOP = int(robot_settings['STOP'])
+    ACCELERATION = float(robot_settings['ACCELERATION'])
 
     global KEY_SIZE, TICK_RATE
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])
     TICK_RATE = int(visualization_settings['TICK_RATE'])
+
+    global SHOW_VELOCITY_PER_WHEEL
+    SHOW_VELOCITY_PER_WHEEL = bool(debug_settings['SHOW_VELOCITY_PER_WHEEL'])
 
 
 def accelerate(wheel, direction):
@@ -118,6 +122,7 @@ if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
+    info_font = pygame.font.SysFont("Arial",11)
     pygame.font.init()
     pygame.display.set_caption("Robot Visualization")
 
@@ -173,7 +178,7 @@ if __name__ == "__main__":
     for key in valid_keys_kl:
         keyboard.update_key(keyboard_layout, key, unused_key_info)
     # create grid for collision detection
-    robot = robotics.create_robot(init_pos=(WIDTH,HEIGHT),radius = RADIUS)
+    robot = robotics.create_robot(init_pos=(WIDTH,HEIGHT),radius = RADIUS, acceleration=ACCELERATION)
     # create robot
 
     terminate = False
@@ -220,6 +225,11 @@ if __name__ == "__main__":
         visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)])
 
         visualization.draw_robot(pygame, screen, robot)
+        if SHOW_VELOCITY_PER_WHEEL:
+            left_vel = info_font.render(str(int(robot.velocity_left/ACCELERATION)), True, (0, 0, 0))
+            screen.blit(left_vel, (robot.position[0]-10, robot.position[1]-5))
+            right_vel = info_font.render(str(int(robot.velocity_right/ACCELERATION)), True, (0, 0, 0))
+            screen.blit(right_vel, (robot.position[0]+10, robot.position[1]-5))
         pygame.display.update()
         current_frame += 1
 
