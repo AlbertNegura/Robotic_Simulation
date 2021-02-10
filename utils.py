@@ -31,6 +31,12 @@ def rotate(origin, point_of_rotation, angle_of_rotation):
 
     return np.array([rx, ry])
 
+def rotate_line(origin, magnitude, angle_of_rotation):
+    [x,y] = origin
+    x = x+magnitude
+    return rotate(origin, [x,y], angle_of_rotation)
+
+
 def distance_between(a,b):
     """
     Returns the absolute distance between two points.

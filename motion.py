@@ -1,4 +1,5 @@
 import numpy as np
+import utils
 
 def Step(Vr,Vl,l,x0,y0,theta):
     # [theta] = radians
@@ -21,5 +22,5 @@ def rotation(Vr,Vl,l):
     w = 2*np.pi*(Vr-Vl)/l
     return R,w
 
-theta = 30
-print(Step(20,15,0.1,1,2,np.pi))
+def rotate_robot(robot):
+    robot.facing_position = utils.rotate_line(robot.position, robot.radius, robot.orientation)
