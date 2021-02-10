@@ -188,12 +188,12 @@ if __name__ == "__main__":
         for wall in WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1])
         utils.clip(robot.position, [robot.radius + 1, robot.radius + 1],
-                   [WIDTH - int(HEIGHT / 2) - robot.radius - 1, HEIGHT - int(HEIGHT / 2) - robot.radius - 1], robot)
+                   [WIDTH - int(HEIGHT / 3) - robot.radius - 1, HEIGHT - int(HEIGHT / 3) - robot.radius - 1], robot)
 
-        visualization.draw_wall(pygame, screen, [0, 0], [0, HEIGHT - int(HEIGHT / 2)])
-        visualization.draw_wall(pygame, screen, [0, HEIGHT - int(HEIGHT / 2)], [WIDTH - int(HEIGHT / 2), HEIGHT - int(HEIGHT / 2)])
-        visualization.draw_wall(pygame, screen, [0, 0], [WIDTH - int(HEIGHT / 2), 0])
-        visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 2), 0], [WIDTH - int(HEIGHT / 2), HEIGHT - int(HEIGHT / 2)])
+        visualization.draw_wall(pygame, screen, [0, 0], [0, HEIGHT - int(HEIGHT / 3)])
+        visualization.draw_wall(pygame, screen, [0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)])
+        visualization.draw_wall(pygame, screen, [0, 0], [WIDTH, 0])
+        visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)])
 
         visualization.draw_robot(pygame, screen, robot)
         pygame.display.update()
