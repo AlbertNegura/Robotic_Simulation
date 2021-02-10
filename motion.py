@@ -1,7 +1,7 @@
 import numpy as np
 import utils
 
-def Step(Vr,Vl,l,x0,y0,theta):
+def step(Vr,Vl,l,x0,y0,theta):
     # we asume delta*t = 1 ?
     w = 2*np.pi*omega(Vr,Vl,l)
     Icc_x,Icc_y = ICC(x0,y0,theta,Vl,Vr,l)
@@ -28,4 +28,4 @@ def omega(Vr,Vl,l):
 def rotate_robot(robot):
     robot.facing_position = utils.rotate_line(robot.position, robot.radius, robot.orientation)
 
-print(Step(30,3,0.2,1,2,90))
+print(step(30,3,0.2,1,2,90))
