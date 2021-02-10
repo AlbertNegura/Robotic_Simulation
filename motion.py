@@ -22,5 +22,3 @@ def rotation(Vr,Vl,l):
     w = 2*np.pi*(Vr-Vl)/l
     return R,w
 
-def rotate_robot(robot):
-    robot.facing_position = utils.rotate_line(robot.position, robot.radius, robot.orientation)
