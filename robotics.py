@@ -30,9 +30,9 @@ class Robot:
             new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius, self.position[0], self.position[1], np.radians(self.orientation))
             self.position = [new_x, new_y]
             self.orientation = np.degrees(theta)
-            self.rotate()
         else:
             self.position = self.position#utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
+        self.rotate()
         self.save_position(self.position)
         self.save_orientation(self.orientation)
 
