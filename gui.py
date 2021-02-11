@@ -186,6 +186,8 @@ def execute():
         visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)],WALL_WIDTH)
 
         visualization.draw_robot(pygame, screen, robot)
+        visualization.draw_sensors(pygame, screen, robot)
+
         if SHOW_VELOCITY_PER_WHEEL:
             left_vel = info_font.render(str(int(robot.velocity_left/ACCELERATION)), True, (0, 0, 0))
             screen.blit(left_vel, (robot.position[0]-10, robot.position[1]-5))
