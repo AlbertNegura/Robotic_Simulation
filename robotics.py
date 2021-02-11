@@ -32,11 +32,15 @@ class Robot:
             self.velocity = np.subtract([new_x, new_y], self.position)
             self.position = np.add(self.position, self.velocity)
             self.orientation = np.degrees(theta)
+            print(self.orientation)
+            for sensor in self.sensors:
+                sensor.update_sensor(self.position, np.radians(self.orientation - self.orientation_history[-1]))
         else:
             self.position = np.add(self.position, self.velocity)#utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
+            for sensor in self.sensors:
+                sensor.update_sensor(self.position, 0)
         self.rotate()
-        for sensor in self.sensors:
-            sensor.update_sensor(self.position, np.radians(self.orientation))
+
         self.save_position(self.position)
         self.save_orientation(self.orientation)
 
