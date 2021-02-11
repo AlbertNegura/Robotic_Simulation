@@ -47,8 +47,9 @@ def load_config(config):
     TICK_RATE = int(visualization_settings['TICK_RATE'])
     WALL_WIDTH = int(visualization_settings['WALL_WIDTH'])
 
-    global SHOW_VELOCITY_PER_WHEEL
+    global SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS
     SHOW_VELOCITY_PER_WHEEL = bool(debug_settings['SHOW_VELOCITY_PER_WHEEL'])
+    SHOW_SENSORS = bool(debug_settings['SHOW_SENSORS'])
 
 
 config = configparser.ConfigParser()
@@ -65,4 +66,4 @@ keyboard = klp.KeyboardLayout
 key_size = KEY_SIZE
 # set the keyboard position and color info
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X,
-                 kl.Key.DIGIT_1]
+                 kl.Key.DIGIT_1, kl.Key.DIGIT_2]

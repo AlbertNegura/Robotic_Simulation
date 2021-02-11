@@ -97,6 +97,6 @@ class Sensor():
 
     def update_sensor(self, new_position, angle):
         self.line_start = new_position
-        self.radians = self.radians + angle
+        self.radians = angle + self.radians
         self.line_end = utils.rotate_line(new_position, self.max_radius, self.radians)
 

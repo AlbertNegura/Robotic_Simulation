@@ -64,7 +64,7 @@ def accelerate(wheel, direction):
 
 
 def user_input(pgkey):
-    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL
+    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS
     if pgkey[pygame.K_w]:
         accelerate(LEFT,FORWARD)
         keyboard.update_key(keyboard_layout, kl.Key.W, used_key_info)
@@ -122,6 +122,11 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_1, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_1, unused_key_info)
+    if pgkey[pygame.K_2]:
+        SHOW_SENSORS = not SHOW_SENSORS
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_2, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_2, unused_key_info)
 
 
 def execute():
@@ -186,7 +191,8 @@ def execute():
         visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)],WALL_WIDTH)
 
         visualization.draw_robot(pygame, screen, robot)
-        visualization.draw_sensors(pygame, screen, robot)
+        if SHOW_SENSORS:
+            visualization.draw_sensors(pygame, screen, robot)
 
         if SHOW_VELOCITY_PER_WHEEL:
             left_vel = info_font.render(str(int(robot.velocity_left/ACCELERATION)), True, (0, 0, 0))
