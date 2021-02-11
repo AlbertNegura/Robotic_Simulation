@@ -25,7 +25,9 @@ def draw_sensors(pygame, screen, robot, font):
     for sensor in robot.sensors:
         pygame.draw.line(screen, sensor.colour, sensor.get_start(), sensor.get_end(), 5)
         sensor_info = font.render(str(int(sensor.radius)), True, (0, 0, 0))
-        screen.blit(sensor_info, sensor.line_start-7)
+        sensor_info_position = sensor.line_start-(sensor.line_start-sensor.line_end)*0.25
+        sensor_info_position[0] -= 5
+        screen.blit(sensor_info, sensor_info_position)
 
 
 def draw_wall(pygame, screen, origin, end, width=10, color=(0,0,0)):

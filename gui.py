@@ -136,6 +136,7 @@ def execute():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
     info_font = pygame.font.SysFont("Arial",11)
+    mini_info_font = pygame.font.SysFont("Arial",8)
     pygame.display.set_caption("Robot Visualization")
 
 
@@ -188,7 +189,7 @@ def execute():
 
         visualization.draw_robot(pygame, screen, robot)
         if SHOW_SENSORS:
-            visualization.draw_sensors(pygame, screen, robot, info_font)
+            visualization.draw_sensors(pygame, screen, robot, mini_info_font)
 
         if SHOW_VELOCITY_PER_WHEEL:
             left_vel = info_font.render(str(int(robot.velocity_left/ACCELERATION)), True, (0, 0, 0))
