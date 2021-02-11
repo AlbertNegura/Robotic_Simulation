@@ -19,6 +19,8 @@ TICK_RATE = None
 WALL_WIDTH = None
 SHOW_VELOCITY_PER_WHEEL = None
 EDIT_MODE = None
+SHOW_SENSORS = None
+SHOW_SENSOR_INFO = None
 
 def load_config(config):
     default_settings = config['DEFAULT']
@@ -50,6 +52,7 @@ def load_config(config):
     global SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS
     SHOW_VELOCITY_PER_WHEEL = bool(debug_settings['SHOW_VELOCITY_PER_WHEEL'])
     SHOW_SENSORS = bool(debug_settings['SHOW_SENSORS'])
+    SHOW_SENSOR_INFO = bool(debug_settings['SHOW_SENSOR_INFO'])
 
 
 config = configparser.ConfigParser()
@@ -66,4 +69,4 @@ keyboard = klp.KeyboardLayout
 key_size = KEY_SIZE
 # set the keyboard position and color info
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X,
-                 kl.Key.DIGIT_1, kl.Key.DIGIT_2]
+                 kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3]
