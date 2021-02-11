@@ -67,10 +67,9 @@ def intersection(line1, line2):
 
     m = v1/u
     n = -v2/u
-
-    if (0.0<=m<=1.0):
+    if not (0.0<=m<=1.0):
         return None
-    if (0.0<=n<=1.0):
+    if not (0.0<=n<=1.0):
         return None
 
     x = x1 + m * (x2-x1)

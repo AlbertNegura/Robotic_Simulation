@@ -180,6 +180,7 @@ def execute():
                 user_input(pygame.key.get_pressed())
 
         robot.move()
+        robot.adjust_sensors(WALLS)
         for wall in WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
         utils.clip(robot.position, [robot.radius + 1, robot.radius + 1],

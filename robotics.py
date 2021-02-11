@@ -33,15 +33,27 @@ class Robot:
             self.position = np.add(self.position, self.velocity)
             self.orientation = np.degrees(theta)
             for sensor in self.sensors:
-                sensor.update_sensor(self.position, np.radians(self.orientation - self.orientation_history[-1]))
+                sensor.update_sensor(self.position, np.radians(self.orientation - self.orientation_history[-1]), None)
         else:
             self.position = np.add(self.position, self.velocity)#utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
             for sensor in self.sensors:
-                sensor.update_sensor(self.position, 0)
+                sensor.update_sensor(self.position, 0, None)
         self.rotate()
 
         self.save_position(self.position)
         self.save_orientation(self.orientation)
+
+    def adjust_sensors(self, Walls):
+        for sensor in self.sensors:
+            for wall in Walls:
+                sensor_line = np.array([sensor.get_start(),sensor.get_end()])
+                wall_line = np.array([wall[0],wall[1]])
+                # print("lines", sensor_line, wall_line)
+                intersec_point = utils.intersection(sensor_line,wall_line)
+                if (intersec_point):
+                    sensor.update_sensor(self.position, 0, intersec_point)
+
+
 
 
     def rotate(self):
@@ -79,6 +91,8 @@ class Sensor():
     radians = 0
     colour = None
     max_radius = 100
+    radius = 100
+    intersection = []
 
     def __init__(self, position, prev_degree, num_of_sensors):
         self.num_of_sensors = num_of_sensors
@@ -95,8 +109,16 @@ class Sensor():
     def get_prev_degree(self):
         return np.degrees(self.radians)
 
-    def update_sensor(self, new_position, angle):
+    def get_max_radius(self):
+        return self.max_radius
+
+    def update_sensor(self, new_position, angle, intersection):
         self.line_start = new_position
         self.radians = angle + self.radians
-        self.line_end = utils.rotate_line(new_position, self.max_radius, self.radians)
+        self.instersection = intersection
+        if (intersection == None):
+            self.radius = self.max_radius
+        else:
+            self.radius = utils.distance_between(new_position, intersection)
+        self.line_end = utils.rotate_line(new_position, self.radius, self.radians)
 
