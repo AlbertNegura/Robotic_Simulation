@@ -1,10 +1,5 @@
-import pygame
 import visualization
-import robotics
 import utils
-import keyboardlayout as kl
-import keyboardlayout.pygame as klp
-import pygame
 from config import *
 
 
