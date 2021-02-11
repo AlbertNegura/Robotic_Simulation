@@ -220,6 +220,7 @@ if __name__ == "__main__":
         visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)])
 
         visualization.draw_robot(pygame, screen, robot)
+        visualization.draw_sensors(pygame, screen, robot)
         pygame.display.update()
         current_frame += 1
 

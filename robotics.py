@@ -35,11 +35,15 @@ class Robot:
         else:
             self.position = np.add(self.position, self.velocity)#utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
         self.rotate()
+        for sensor in self.sensors:
+            sensor.update_sensor(self.position, np.radians(self.orientation))
         self.save_position(self.position)
         self.save_orientation(self.orientation)
 
+
     def rotate(self):
         self.facing_position = utils.rotate_line(self.position, self.radius, np.radians(self.orientation))
+
 
 
 
@@ -52,7 +56,44 @@ def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005):
     robot.orientation = 0
     robot.acceleration = acceleration
     robot.facing_position = [robot.position[0]+robot.radius-1, robot.position[1]]
+    num_sensors = 12
+    prev_degree = robot.orientation #starting angle
+    for s in range(num_sensors):
+        sensor = Sensor(robot.position, prev_degree, num_sensors)
+        sensor.colour = (255, 211, 0) #Cyber Yellow
+        prev_degree = sensor.get_prev_degree()
+        robot.sensors.append(sensor)
     return robot
+
 
 def reset_robot(robot):
     return robot
+
+
+class Sensor():
+    line_start = []
+    line_end = []
+    radians = 0
+    colour = None
+    max_radius = 100
+
+    def __init__(self, position, prev_degree, num_of_sensors):
+        self.num_of_sensors = num_of_sensors
+        self.line_start = position
+        self.radians = np.radians(prev_degree+(360/num_of_sensors))
+        self.line_end = utils.rotate_line(position, self.max_radius, self.radians)
+
+    def get_start(self):
+        return self.line_start
+
+    def get_end(self):
+        return self.line_end
+
+    def get_prev_degree(self):
+        return np.degrees(self.radians)
+
+    def update_sensor(self, new_position, angle):
+        self.line_start = new_position
+        self.radians = self.radians + angle
+        self.line_end = utils.rotate_line(new_position, self.max_radius, self.radians)
+

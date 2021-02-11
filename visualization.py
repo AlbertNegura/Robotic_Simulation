@@ -14,6 +14,7 @@ def draw_robot(pygame, screen, robot):
     pygame.draw.circle(screen, robot.colour2, robot.position, robot.radius+0.5, 1)
     pygame.draw.line(screen, robot.colour2, robot.position, robot.facing_position, 2)
 
+
 def draw_sensors(pygame, screen, robot):
     """
 
@@ -23,7 +24,7 @@ def draw_sensors(pygame, screen, robot):
     :return:
     """
     for sensor in robot.sensors:
-        pygame.draw.line(screen, sensor.colour, sensor.line.start, sensor.line.end, 5)
+        pygame.draw.line(screen, sensor.colour, sensor.get_start(), sensor.get_end(), 5)
 
 
 def draw_wall(pygame, screen, origin, end, color=(0,0,0)):
