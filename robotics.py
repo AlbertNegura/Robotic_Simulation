@@ -74,7 +74,7 @@ def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005):
     num_sensors = 12
     prev_degree = robot.orientation #starting angle
     for s in range(num_sensors):
-        sensor = Sensor(robot.position, prev_degree, num_sensors)
+        sensor = Sensor(robot.position, prev_degree, num_sensors, robot)
         sensor.colour = (255, 211, 0) #Cyber Yellow
         prev_degree = sensor.get_prev_degree()
         robot.sensors.append(sensor)
@@ -94,13 +94,15 @@ class Sensor():
     radius = 100
     intersection = []
 
-    def __init__(self, position, prev_degree, num_of_sensors):
+    def __init__(self, position, prev_degree, num_of_sensors, robot):
+        self.robot = robot
         self.num_of_sensors = num_of_sensors
         self.line_start = position
         self.radians = np.radians(prev_degree+(360/num_of_sensors))
         self.line_end = utils.rotate_line(position, self.max_radius, self.radians)
 
     def get_start(self):
+        #temp = [self.line_start[0]+np.sin(self.radians)*self.robot.radius,self.line_start[1]+np.cos(self.radians)*self.robot.radius]
         return self.line_start
 
     def get_end(self):
@@ -121,4 +123,5 @@ class Sensor():
         else:
             self.radius = utils.distance_between(new_position, intersection)
         self.line_end = utils.rotate_line(new_position, self.radius, self.radians)
+        self.line_start = utils.rotate_line(new_position, self.robot.radius, self.radians)
 
