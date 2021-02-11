@@ -27,5 +27,5 @@ def draw_sensors(pygame, screen, robot):
         pygame.draw.line(screen, sensor.colour, sensor.get_start(), sensor.get_end(), 5)
 
 
-def draw_wall(pygame, screen, origin, end, color=(0,0,0)):
-    pygame.draw.line(screen, color, origin, end, 10)
+def draw_wall(pygame, screen, origin, end, width=10, color=(0,0,0)):
+    pygame.draw.line(screen, color, origin, end, width)

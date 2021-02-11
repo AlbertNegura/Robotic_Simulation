@@ -1,121 +1,8 @@
-import pygame
-import visualization
-import robotics
-import utils
-import keyboardlayout as kl
-import keyboardlayout.pygame as klp
-import configparser
-
-
-def load_config(config):
-    default_settings = config['DEFAULT']
-    robot_settings = config['ROBOT']
-    visualization_settings = config['VISUALIZATION']
-    debug_settings = config['DEBUG']
-
-    global WIDTH, HEIGHT
-
-    WIDTH = int(default_settings['WIDTH'])
-    HEIGHT = int(default_settings['HEIGHT'])
-
-    global RADIUS, LEFT, RIGHT, BOTH, FORWARD, BACKWARD, STOP
-
-    RADIUS = int(robot_settings['RADIUS'])
-    LEFT = int(robot_settings['LEFT'])
-    RIGHT = int(robot_settings['RIGHT'])
-    BOTH = int(robot_settings['BOTH'])
-    FORWARD = int(robot_settings['FORWARD'])
-    BACKWARD = int(robot_settings['BACKWARD'])
-    STOP = int(robot_settings['STOP'])
-
-    global KEY_SIZE, TICK_RATE
-    KEY_SIZE = int(visualization_settings['KEY_SIZE'])
-    TICK_RATE = int(visualization_settings['TICK_RATE'])
-
-
-def accelerate(wheel, direction):
-    if wheel == LEFT:
-        robot.velocity_left += robot.acceleration*direction
-    if wheel == RIGHT:
-        robot.velocity_right += robot.acceleration*direction
-    if wheel == BOTH and direction != STOP:
-        robot.velocity_left += robot.acceleration*direction
-        robot.velocity_right += robot.acceleration*direction
-    elif wheel == BOTH:
-        robot.velocity_left = STOP
-        robot.velocity_right = STOP
-
-
-def user_input(pgkey):
-    global EDIT_MODE
-    if pgkey[pygame.K_w]:
-        accelerate(LEFT,FORWARD)
-        keyboard.update_key(keyboard_layout, kl.Key.W, used_key_info)
-    else:
-        keyboard.update_key(keyboard_layout, kl.Key.W, unused_key_info)
-    if pgkey[pygame.K_s]:
-        accelerate(LEFT,BACKWARD)
-        keyboard.update_key(keyboard_layout, kl.Key.S, used_key_info)
-    else:
-        keyboard.update_key(keyboard_layout, kl.Key.S, unused_key_info)
-    if pgkey[pygame.K_o]:
-        accelerate(RIGHT,FORWARD)
-        keyboard.update_key(keyboard_layout, kl.Key.O, used_key_info)
-    else:
-        keyboard.update_key(keyboard_layout, kl.Key.O, unused_key_info)
-    if pgkey[pygame.K_l]:
-        accelerate(RIGHT,BACKWARD)
-        keyboard.update_key(keyboard_layout, kl.Key.L, used_key_info)
-    else:
-        keyboard.update_key(keyboard_layout, kl.Key.L, unused_key_info)
-    if pgkey[pygame.K_t]:
-        accelerate(BOTH,FORWARD)
-        keyboard.update_key(keyboard_layout, kl.Key.T, used_key_info)
-    else:
-        keyboard.update_key(keyboard_layout, kl.Key.T, unused_key_info)
-    if pgkey[pygame.K_g]:
-        accelerate(BOTH,BACKWARD)
-        keyboard.update_key(keyboard_layout, kl.Key.G, used_key_info)
-    else:
-        keyboard.update_key(keyboard_layout, kl.Key.G, unused_key_info)
-    if pgkey[pygame.K_x]:
-        accelerate(BOTH,STOP)
-        keyboard.update_key(keyboard_layout, kl.Key.X, used_key_info)
-    else:
-        keyboard.update_key(keyboard_layout, kl.Key.X, unused_key_info)
-    if pgkey[pygame.K_v]:
-        global current_tick
-        current_tick = STOP
-        accelerate(BOTH,STOP)
-        robot.velocity_left=STOP
-        robot.velocity_right=STOP
-        #reset
-        keyboard.update_key(keyboard_layout, kl.Key.V, used_key_info)
-    else:
-        keyboard.update_key(keyboard_layout, kl.Key.V, unused_key_info)
-    if pgkey[pygame.K_e]:
-        EDIT_MODE = not EDIT_MODE
-        # print("Edit mode ", EDIT_MODE)
-        keyboard.update_key(keyboard_layout, kl.Key.E, used_key_info)
-    else:
-        if not EDIT_MODE:
-            keyboard.update_key(keyboard_layout, kl.Key.E, unused_key_info)
-
+from gui import *
 
 if __name__ == "__main__":
-
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    load_config(config)
-
-    WALLS = []
-    EDIT_MODE = False
-    DRAWING = False
-
-    origin = None
-    end = None
-
     pygame.init()
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
     pygame.font.init()
@@ -225,3 +112,6 @@ if __name__ == "__main__":
         current_frame += 1
 
     pygame.quit()
+
+    execute()
+
