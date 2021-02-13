@@ -59,7 +59,7 @@ def accelerate(wheel, direction):
 
 
 def user_input(pgkey):
-    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO
+    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID
     if pgkey[pygame.K_w]:
         accelerate(LEFT,FORWARD)
         keyboard.update_key(keyboard_layout, kl.Key.W, used_key_info)
@@ -127,6 +127,11 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_3, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_3, unused_key_info)
+    if pgkey[pygame.K_4]:
+        DRAW_GRID = not DRAW_GRID
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_4, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_4, unused_key_info)
 
 
 def execute():
@@ -150,6 +155,9 @@ def execute():
 
     terminate = False
     current_frame = 0
+
+    grid = visualization.create_grid(10,WIDTH - int(HEIGHT / 3),HEIGHT - int(HEIGHT / 3))
+    visualization.draw_grid(pygame, screen, grid)
     while not terminate:
         screen.fill((255,255,255))
         keyboard_layout.draw(screen)
@@ -203,6 +211,10 @@ def execute():
             screen.blit(left_vel, (robot.position[0]-10, robot.position[1]-5))
             right_vel = info_font.render(str(int(robot.velocity_right/ACCELERATION)), True, (0, 0, 0))
             screen.blit(right_vel, (robot.position[0]+10, robot.position[1]-5))
+
+        if DRAW_GRID:
+            visualization.draw_grid(pygame, screen, grid)
+
         pygame.display.update()
         current_frame += 1
 
