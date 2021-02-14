@@ -1,5 +1,6 @@
 import visualization
 import utils
+import physics
 from config import *
 
 
@@ -190,13 +191,23 @@ def execute():
                 user_input(pygame.key.get_pressed())
 
         robot.move()
-        robot.adjust_sensors(WALLS)
+        #robot.adjust_sensors(WALLS)
 
         for wall in WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
 
-        utils.clip(robot.position, [robot.radius + 1, robot.radius + 1],
-                   [WIDTH - int(HEIGHT / 3) - robot.radius - 1, HEIGHT - int(HEIGHT / 3) - robot.radius - 1], robot)
+            intersec, new_position = physics.resolve_wall_collision(wall[0], wall[1], robot.position, robot.orientation, robot.velocity, robot.radius)
+            if(intersec):
+                robot.position = new_position
+
+            t_coords = utils.circle_line_tangent_point(wall[0], wall[1], robot.position)
+            tangent = pygame.Surface((5, 5))
+            tangent.fill((200, 0, 0))
+            screen.blit(tangent, (t_coords[0], t_coords[1]))
+
+        # Subtitute by collision resolution algorithm
+        """utils.clip(robot.position, [robot.radius + 1, robot.radius + 1],
+                   [WIDTH - int(HEIGHT / 3) - robot.radius - 1, HEIGHT - int(HEIGHT / 3) - robot.radius - 1], robot)"""
 
         """
         visualization.draw_wall(pygame, screen, [0, 0], [0, HEIGHT - int(HEIGHT / 3)],WALL_WIDTH)

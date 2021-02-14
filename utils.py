@@ -2,6 +2,8 @@
 Various mathematical helper functions.
 """
 import numpy as np
+import sympy
+import sympy.geometry as geom
 
 
 def angle(v1,v2):
@@ -102,5 +104,18 @@ def clip(a, a_min, a_max, robot):
         robot.position[1]=a_max[1]
         robot.velocity[1]=0
 
-def wall_collision(wall_init=(2,0), wall_end=(2,3), robot_position = [1,2], robot_orientation = 0, robot_velocity = 12, robot_radius=20):
-    return None
+def circle_line_tangent_point(wall_init, wall_end, P):
+    """
+    :param wall_init: starting point of the wall (x,y)
+    :param wall_end: end point of the wall (x,y)
+    :param P: origin of the circle (x,y)
+    :return: returns the intersection point between the wall and the perpendicular line to the wall that passes through P
+    """
+
+    wall = geom.Line(geom.Point(wall_init[0], wall_init[1]), geom.Point(wall_end[0], wall_end[1]))
+    robot_origin = geom.Point(P[0], P[1])
+
+    perpendicular_L = wall.perpendicular_line(robot_origin)  # line perpendicular to wall that passes through robot's origin
+    tangent_P = geom.intersection(perpendicular_L, wall)[0].coordinates
+
+    return [tangent_P[0], tangent_P[1]]
