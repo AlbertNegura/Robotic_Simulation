@@ -5,15 +5,15 @@ import utils
 class Robot:
     colour = None
     colour2 = None
-    orientation = 0
-    facing_position = [] # must remember to set equal to radius - 1
+    orientation = 0  # degrees
+    facing_position = []  # must remember to set equal to radius - 1
     radius = 0
     position = []
     acceleration = 0.005
     sensors = []
     velocity_right = 0
     velocity_left = 0
-    velocity = [0,0]
+    velocity = [0, 0]
 
     position_history = []
     orientation_history = []
@@ -28,14 +28,16 @@ class Robot:
 
     def move(self):
         if self.velocity_right != self.velocity_left:
-            new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius, self.position[0], self.position[1], np.radians(self.orientation))
+            new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius*2, self.position[0], self.position[1], np.radians(self.orientation))
             self.velocity = np.subtract([new_x, new_y], self.position)
             self.position = np.add(self.position, self.velocity)
             self.orientation = np.degrees(theta)
+
             for sensor in self.sensors:
                 sensor.update_sensor(self.position, np.radians(self.orientation - self.orientation_history[-1]), None)
         else:
-            self.position = np.add(self.position, self.velocity)#utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
+            self.position = np.add(self.position, self.velocity)  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
+
             for sensor in self.sensors:
                 sensor.update_sensor(self.position, 0, None)
         self.rotate()
@@ -53,13 +55,8 @@ class Robot:
                 if (intersec_point):
                     sensor.update_sensor(self.position, 0, intersec_point)
 
-
-
-
     def rotate(self):
         self.facing_position = utils.rotate_line(self.position, self.radius, np.radians(self.orientation))
-
-
 
 
 def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005):
@@ -85,7 +82,7 @@ def reset_robot(robot):
     return robot
 
 
-class Sensor():
+class Sensor:
     line_start = []
     line_end = []
     radians = 0

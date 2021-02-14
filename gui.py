@@ -142,6 +142,10 @@ def execute():
     origin = None
     end = None
 
+    WALLS.append([[0, 0], [0, HEIGHT - int(HEIGHT / 3)]])
+    WALLS.append([[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]])
+    WALLS.append([[0, 0], [WIDTH, 0]])
+    WALLS.append([[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]])
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -149,15 +153,12 @@ def execute():
     mini_info_font = pygame.font.SysFont("Arial",8)
     pygame.display.set_caption("Robot Visualization")
 
-
-    # create grid for collision detection
-    # create robot
-
     terminate = False
     current_frame = 0
 
-    grid = visualization.create_grid(10,WIDTH - int(HEIGHT / 3),HEIGHT - int(HEIGHT / 3))
+    grid = visualization.create_grid(10, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
     visualization.draw_grid(pygame, screen, grid)
+
     while not terminate:
         screen.fill((255,255,255))
         keyboard_layout.draw(screen)
@@ -190,15 +191,19 @@ def execute():
 
         robot.move()
         robot.adjust_sensors(WALLS)
+
         for wall in WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
+
         utils.clip(robot.position, [robot.radius + 1, robot.radius + 1],
                    [WIDTH - int(HEIGHT / 3) - robot.radius - 1, HEIGHT - int(HEIGHT / 3) - robot.radius - 1], robot)
 
+        """
         visualization.draw_wall(pygame, screen, [0, 0], [0, HEIGHT - int(HEIGHT / 3)],WALL_WIDTH)
         visualization.draw_wall(pygame, screen, [0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)],WALL_WIDTH)
         visualization.draw_wall(pygame, screen, [0, 0], [WIDTH, 0],WALL_WIDTH)
         visualization.draw_wall(pygame, screen, [WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)],WALL_WIDTH)
+        """
 
         visualization.draw_robot(pygame, screen, robot)
         if SHOW_SENSORS:

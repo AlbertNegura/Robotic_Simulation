@@ -101,3 +101,6 @@ def clip(a, a_min, a_max, robot):
     if y>a_max[1]:
         robot.position[1]=a_max[1]
         robot.velocity[1]=0
+
+def wall_collision(wall_init=(2,0), wall_end=(2,3), robot_position = [1,2], robot_orientation = 0, robot_velocity = 12, robot_radius=20):
+    return None
