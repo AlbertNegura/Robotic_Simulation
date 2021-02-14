@@ -22,6 +22,7 @@ EDIT_MODE = None
 SHOW_SENSORS = None
 SHOW_SENSOR_INFO = None
 DRAW_GRID = None
+GRID_SIZE = None
 
 def load_config(config):
     default_settings = config['DEFAULT']
@@ -34,7 +35,7 @@ def load_config(config):
     WIDTH = int(default_settings['WIDTH'])
     HEIGHT = int(default_settings['HEIGHT'])
 
-    global RADIUS, LEFT, RIGHT, BOTH, FORWARD, BACKWARD, STOP, ACCELERATION
+    global RADIUS, LEFT, RIGHT, BOTH, FORWARD, BACKWARD, STOP, ACCELERATION, GRID_SIZE
 
     RADIUS = int(robot_settings['RADIUS'])
     LEFT = int(robot_settings['LEFT'])
@@ -44,6 +45,7 @@ def load_config(config):
     BACKWARD = int(robot_settings['BACKWARD'])
     STOP = int(robot_settings['STOP'])
     ACCELERATION = float(robot_settings['ACCELERATION'])
+    GRID_SIZE = float(robot_settings['GRID_SIZE'])
 
     global KEY_SIZE, TICK_RATE, WALL_WIDTH
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])

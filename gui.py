@@ -156,7 +156,7 @@ def execute():
     terminate = False
     current_frame = 0
 
-    grid = visualization.create_grid(10,WIDTH - int(HEIGHT / 3),HEIGHT - int(HEIGHT / 3))
+    grid = visualization.create_grid(GRID_SIZE,WIDTH - int(HEIGHT / 3),HEIGHT - int(HEIGHT / 3))
     visualization.draw_grid(pygame, screen, grid)
     while not terminate:
         screen.fill((255,255,255))
