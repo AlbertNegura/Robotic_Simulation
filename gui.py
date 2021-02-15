@@ -200,10 +200,12 @@ def execute():
             if(intersec):
                 robot.position = new_position
 
-            t_coords = utils.circle_line_tangent_point(wall[0], wall[1], robot.position)
+            tangent_coords = utils.circle_line_tangent_point(wall[0], wall[1], robot.position, robot.radius)
             tangent = pygame.Surface((5, 5))
             tangent.fill((200, 0, 0))
-            screen.blit(tangent, (t_coords[0], t_coords[1]))
+            if tangent_coords is not None:
+                for t_coords in tangent_coords:
+                    screen.blit(tangent, (t_coords[0], t_coords[1]))
 
         # Subtitute by collision resolution algorithm
         """utils.clip(robot.position, [robot.radius + 1, robot.radius + 1],
