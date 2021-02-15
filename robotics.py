@@ -36,6 +36,7 @@ class Robot:
             for sensor in self.sensors:
                 sensor.update_sensor(self.position, np.radians(self.orientation - self.orientation_history[-1]), None)
         else:
+            self.velocity = [2 * (self.velocity_left+self.velocity_right) * np.cos(np.radians(self.orientation)),2 * (self.velocity_left+self.velocity_right) * np.sin(np.radians(self.orientation))]
             self.position = np.add(self.position, self.velocity)  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
 
             for sensor in self.sensors:
@@ -59,7 +60,7 @@ class Robot:
         self.facing_position = utils.rotate_line(self.position, self.radius, np.radians(self.orientation))
 
 
-def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005):
+def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005, num_sensors=12):
     robot = Robot()
     robot.position = [int(np.random.randint(radius+1,init_pos[0]-radius-1)),int(np.random.randint(radius+1,init_pos[1]-radius-1))]
     robot.radius = radius
@@ -68,7 +69,6 @@ def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005):
     robot.orientation = 0
     robot.acceleration = acceleration
     robot.facing_position = [robot.position[0]+robot.radius-1, robot.position[1]]
-    num_sensors = 12
     prev_degree = robot.orientation #starting angle
     for s in range(num_sensors):
         sensor = Sensor(robot.position, prev_degree, num_sensors, robot)

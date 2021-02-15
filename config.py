@@ -35,7 +35,7 @@ def load_config(config):
     WIDTH = int(default_settings['WIDTH'])
     HEIGHT = int(default_settings['HEIGHT'])
 
-    global RADIUS, LEFT, RIGHT, BOTH, FORWARD, BACKWARD, STOP, ACCELERATION, GRID_SIZE
+    global RADIUS, LEFT, RIGHT, BOTH, FORWARD, BACKWARD, STOP, ACCELERATION, SENSORS, GRID_SIZE
 
     RADIUS = int(robot_settings['RADIUS'])
     LEFT = int(robot_settings['LEFT'])
@@ -45,6 +45,7 @@ def load_config(config):
     BACKWARD = int(robot_settings['BACKWARD'])
     STOP = int(robot_settings['STOP'])
     ACCELERATION = float(robot_settings['ACCELERATION'])
+    SENSORS = int(robot_settings['SENSORS'])
     GRID_SIZE = float(robot_settings['GRID_SIZE'])
 
     global KEY_SIZE, TICK_RATE, WALL_WIDTH
@@ -62,7 +63,7 @@ def load_config(config):
 config = configparser.ConfigParser()
 config.read('config.ini')
 load_config(config)
-robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION)
+robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS)
 
 grey = pygame.Color('grey')
 black = pygame.Color('black')
