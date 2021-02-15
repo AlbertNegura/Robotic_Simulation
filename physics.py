@@ -1,8 +1,6 @@
 """
 Physics script with Physics-based interactions (i.e. collisions).
 """
-from sympy import *
-from sympy.geometry import *
 import numpy as np
 import utils
 
@@ -44,21 +42,17 @@ def resolve_wall_collision(wall_init, wall_end, P, Theta, Velocity, R):
     :return: Given a circle (P,R) and a line (wall_init, wall_end), returns the new position of the circle tangent to the line (if there is collision) and the new velocity components (Vx, Vy) after collision
     """
 
-    robot_origin = Point(P[0], P[1])
-    robot = Circle(robot_origin, sympify(R, rational=True)) # circle
-    wall = Line(Point(wall_init[0], wall_init[1]), Point(wall_end[0], wall_end[1])) # line
-
     new_position = []
     new_position = P
-    intersection_point = intersection(robot, wall)
+    intersection_point = utils.circle_line_tangent_point(wall_init,wall_end,P,R)
     intersec = False
-    if intersection_point:
+    if intersection_point != None:
         intersec = True
-        tangent_point = utils.circle_line_tangent_point(wall_init, wall_end, P)
-        v = [P[0] - tangent_point[0],P[1] - tangent_point[1]]
-        v2 = np.sqrt(int(v[0])**2 + int(v[1])**2)
-        u = R*(v/v2)
-        new_position = tangent_point + u
+        for tangent_point in intersection_point:
+            v = [P[0] - tangent_point[0],P[1] - tangent_point[1]]
+            v2 = np.sqrt(int(v[0])**2 + int(v[1])**2)
+            u = R*(v/v2)
+            new_position = tangent_point + u
 
     """# new velocity
     V_x = Velocity * np.cos(-np.deg2rad(Theta))

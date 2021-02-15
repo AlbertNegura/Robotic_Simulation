@@ -2,8 +2,6 @@
 Various mathematical helper functions.
 """
 import numpy as np
-import sympy
-import sympy.geometry as geom
 
 
 def angle(v1,v2):
@@ -104,18 +102,38 @@ def clip(a, a_min, a_max, robot):
         robot.position[1]=a_max[1]
         robot.velocity[1]=0
 
-def circle_line_tangent_point(wall_init, wall_end, P):
+def circle_line_tangent_point(wall_init, wall_end, P, R, tol=1e-9):
     """
     :param wall_init: starting point of the wall (x,y)
     :param wall_end: end point of the wall (x,y)
     :param P: origin of the circle (x,y)
+    :param R: radius of the circle
     :return: returns the intersection point between the wall and the perpendicular line to the wall that passes through P
     """
 
-    wall = geom.Line(geom.Point(wall_init[0], wall_init[1]), geom.Point(wall_end[0], wall_end[1]))
-    robot_origin = geom.Point(P[0], P[1])
+    (p1x,p1y) = wall_init
+    (p2x,p2y) = wall_end
+    (cx,cy) = P
 
-    perpendicular_L = wall.perpendicular_line(robot_origin)  # line perpendicular to wall that passes through robot's origin
-    tangent_P = geom.intersection(perpendicular_L, wall)[0].coordinates
+    (x1,y1) = (p1x-cx, p1y-cy)
+    (x2,y2) = (p2x-cx, p2y-cy)
 
-    return [tangent_P[0], tangent_P[1]]
+    dx,dy = (x2-x1), (y2-y1)
+    dr = (dx**2+dy**2)**.5
+    big_d = x1*y2-x2*y1
+    disc = R**2*dr**2-big_d**2
+
+    if disc < 0:
+        return None
+
+    else:
+        intersections = [
+            (cx + (big_d * dy + sign * (-1 if dy < 0 else 1) * dx * disc**.5) / dr ** 2,
+             cy + (-big_d * dx + sign * abs(dy) * disc**.5) / dr ** 2)
+            for sign in ((1, -1) if dy < 0 else (-1, 1))]  # This makes sure the order along the segment is correct
+        fraction_along_segment = [(xi - p1x) / dx if abs(dx) > abs(dy) else (yi - p1y) / dy for xi, yi in intersections]
+        intersections = [pt for pt, frac in zip(intersections, fraction_along_segment) if 0 <= frac <= 1]
+        if len(intersections) == 2 and abs(disc) <= tol:  # If line is tangent to circle, return just one point (as both intersections have same location)
+            return [intersections[0]]
+        else:
+            return intersections
