@@ -223,6 +223,15 @@ def execute():
         if DRAW_GRID:
             visualization.draw_grid(pygame, screen, grid)
 
+        # Position text
+        visualization.write_text(pygame,screen,"- Position: ",(1320,100))
+        circle_pos = [int(robot.position[0]),int(robot.position[1])]
+        visualization.write_text(pygame,screen,str(circle_pos),(1410,100))
+        # Vr, Vl
+        visualization.write_text(pygame,screen,"- Vl, Vr: ",(1320,130))
+        visualization.write_text(pygame,screen,str(round(robot.velocity_left,3)),(1410,130))
+        visualization.write_text(pygame,screen,str(round(robot.velocity_right,3)),(1460,130))
+
         pygame.display.update()
         current_frame += 1
 
