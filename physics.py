@@ -10,7 +10,6 @@ def resolve_wall_collision(wall_init, wall_end, P, Velocity, R):
     :param wall_init: starting point of the wall (x,y)
     :param wall_end: end point of the wall (x,y)
     :param P: origin of the circle (x,y)
-    :param Theta: angle between the x-axis and the velocity vector of the circle in degrees
     :param Velocity: velocity components of the circle
     :param R: Radius of the circle
     :return: Given a circle (P,R) and a line (wall_init, wall_end), returns the new position of the circle tangent to the line (if there is collision) and the new velocity components (Vx, Vy) after collision
