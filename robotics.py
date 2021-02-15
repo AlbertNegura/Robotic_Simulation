@@ -36,8 +36,8 @@ class Robot:
             for sensor in self.sensors:
                 sensor.update_sensor(self.position, np.radians(self.orientation - self.orientation_history[-1]), None)
         else:
-            self.velocity = [2 * (self.velocity_left + self.velocity_right) * np.cos(np.radians(self.orientation)),
-                             2 * (self.velocity_left + self.velocity_right) * np.sin(np.radians(self.orientation))]
+            self.velocity = [3 * (self.velocity_left + self.velocity_right) * np.cos(np.radians(self.orientation)),
+                             3 * (self.velocity_left + self.velocity_right) * np.sin(np.radians(self.orientation))]
             self.position = np.add(self.position, self.velocity)  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
 
             for sensor in self.sensors:
