@@ -62,7 +62,7 @@ def load_config(config):
 config = configparser.ConfigParser()
 config.read('config.ini')
 load_config(config)
-robot = robotics.create_robot(init_pos=(WIDTH, HEIGHT), radius=RADIUS, acceleration=ACCELERATION)
+robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION)
 
 grey = pygame.Color('grey')
 black = pygame.Color('black')

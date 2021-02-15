@@ -61,7 +61,7 @@ class Robot:
 
 def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005):
     robot = Robot()
-    robot.position = [int(np.random.uniform(radius+1,init_pos[0]-radius-1)),int(np.random.uniform(radius+1,init_pos[1]-radius-1))]
+    robot.position = [int(np.random.randint(radius+1,init_pos[0]-radius-1)),int(np.random.randint(radius+1,init_pos[1]-radius-1))]
     robot.radius = radius
     robot.colour = (200,200,200) #light grey
     robot.colour2 = (0,0,0) #black
