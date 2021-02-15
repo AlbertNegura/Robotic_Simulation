@@ -195,18 +195,17 @@ def execute():
 
         for wall in WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
-
-            is_intersection, new_position, new_velocity = physics.resolve_wall_collision(wall[0], wall[1], robot.position, robot.velocity, robot.radius)
-            if is_intersection:
-                robot.position = new_position
-                robot.velocity = new_velocity
-
             tangent_coords = utils.circle_line_tangent_point(wall[0], wall[1], robot.position, robot.radius)
             tangent = pygame.Surface((5, 5))
             tangent.fill((200, 0, 0))
             if tangent_coords is not None:
                 for t_coords in tangent_coords:
                     screen.blit(tangent, (t_coords[0], t_coords[1]))
+
+            is_intersection, new_position, new_velocity = physics.resolve_wall_collision(wall[0], wall[1], robot.position, robot.velocity, robot.radius)
+            if is_intersection:
+                robot.position = new_position
+                robot.velocity = new_velocity
 
         visualization.draw_robot(pygame, screen, robot)
         if SHOW_SENSORS:
