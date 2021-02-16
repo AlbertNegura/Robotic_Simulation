@@ -18,8 +18,8 @@ def resolve_wall_collision(wall_init, wall_end, P, Velocity, R, tolerance = 1e-8
     new_velocity = Velocity
     new_position = P
     new_position2 = new_position+new_velocity
-    if np.linalg.norm(new_position2-new_position) > R - tolerance:
-        return resolve_future_collision(wall_init, wall_end, new_position, new_position2, new_velocity, R, tolerance)
+    #if np.linalg.norm(new_position2-new_position) > R - tolerance:
+        #return resolve_future_collision(wall_init, wall_end, new_position, new_position2, new_velocity, R, tolerance)
     intersection_point = utils.circle_line_tangent_point(wall_init,wall_end,P,R)
     if intersection_point != None:
         for tangent_point in intersection_point:
