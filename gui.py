@@ -149,6 +149,7 @@ def execute():
     WALLS.append([[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]])
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    clock = pygame.time.Clock()
 
     info_font = pygame.font.SysFont("Arial",11)
     mini_info_font = pygame.font.SysFont("Arial",8)
@@ -202,7 +203,7 @@ def execute():
                 for t_coords in tangent_coords:
                     screen.blit(tangent, (t_coords[0], t_coords[1]))
 
-            is_intersection, new_position, new_velocity = physics.resolve_wall_collision(wall[0], wall[1], robot.position, robot.velocity, robot.radius)
+            is_intersection, new_position, new_velocity = physics.resolve_wall_collision(wall[0], wall[1], robot.position, robot.velocity, robot.radius, robot.orientation)
             if is_intersection:
                 robot.position = new_position
                 robot.velocity = new_velocity
@@ -222,6 +223,9 @@ def execute():
         if DRAW_GRID:
             visualization.draw_grid(pygame, screen, grid)
 
+        # Position text
+        visualization.write_text(pygame,screen,"- Frame: ",(1320,70))
+        visualization.write_text(pygame,screen,str(current_frame),(1410,70))
         # Position text
         visualization.write_text(pygame,screen,"- Position: ",(1320,100))
         circle_pos = [int(robot.position[0]),int(robot.position[1])]
