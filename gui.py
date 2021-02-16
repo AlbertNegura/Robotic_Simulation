@@ -1,6 +1,7 @@
 import visualization
 import utils
 import physics
+import numpy as np
 from config import *
 
 
@@ -205,8 +206,8 @@ def execute():
 
             is_intersection, new_position, new_velocity = physics.resolve_wall_collision(wall[0], wall[1], robot.position, robot.velocity, robot.radius, robot.orientation)
             if is_intersection:
-                robot.position = new_position
                 robot.velocity = new_velocity
+                robot.position = new_position + robot.velocity
 
         visualization.draw_robot(pygame, screen, robot)
         if SHOW_SENSORS:
