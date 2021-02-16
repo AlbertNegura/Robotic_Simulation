@@ -224,16 +224,16 @@ def execute():
             visualization.draw_grid(pygame, screen, grid)
 
         # Position text
-        visualization.write_text(pygame,screen,"- Frame/FPS: ",(1320,70))
-        visualization.write_text(pygame,screen,"{:.0f}/{:.2f}".format(current_frame,clock.get_fps()),(1430,70))
+        visualization.write_text(pygame,screen,"- Frame/FPS: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)))
+        visualization.write_text(pygame,screen,"{:.0f}/{:.2f}".format(current_frame,clock.get_fps()),(WIDTH-int(0.10625*WIDTH),HEIGHT-int(0.9*HEIGHT)))
         # Position text
-        visualization.write_text(pygame,screen,"- Position: ",(1320,100))
+        visualization.write_text(pygame,screen,"- Position: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.85*HEIGHT)))
         circle_pos = [int(robot.position[0]),int(robot.position[1])]
-        visualization.write_text(pygame,screen,str(circle_pos),(1410,100))
+        visualization.write_text(pygame,screen,str(circle_pos),(WIDTH-int(0.11875*WIDTH),HEIGHT-int(0.85*HEIGHT)))
         # Vr, Vl
-        visualization.write_text(pygame,screen,"- Vl, Vr: ",(1320,130))
-        visualization.write_text(pygame,screen,str(round(robot.velocity_left,3)),(1410,130))
-        visualization.write_text(pygame,screen,str(round(robot.velocity_right,3)),(1460,130))
+        visualization.write_text(pygame,screen,"- Vl, Vr: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.8*HEIGHT)))
+        visualization.write_text(pygame,screen,str(round(robot.velocity_left,3)),(WIDTH-int(0.11875*WIDTH),HEIGHT-int(0.8*HEIGHT)))
+        visualization.write_text(pygame,screen,str(round(robot.velocity_right,3)),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.8*HEIGHT)))
 
         pygame.display.update()
         clock.tick(60)
