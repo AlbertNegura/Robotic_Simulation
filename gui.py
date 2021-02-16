@@ -204,7 +204,7 @@ def execute():
                 for t_coords in tangent_coords:
                     screen.blit(tangent, (t_coords[0], t_coords[1]))
 
-            is_intersection, new_position, new_velocity = physics.resolve_wall_collision(wall[0], wall[1], robot.position, robot.velocity, robot.radius, robot.orientation)
+            is_intersection, new_position, new_velocity = physics.resolve_wall_collision(wall[0], wall[1], robot.position, robot.velocity, robot.radius)
             if is_intersection:
                 robot.velocity = new_velocity
                 robot.position = new_position + robot.velocity
