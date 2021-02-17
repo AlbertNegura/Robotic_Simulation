@@ -38,6 +38,7 @@ def resolve_wall_collision(wall_init, wall_end, P, Velocity, R, angle, tolerance
 
         return True, new_position, new_velocity
 
+    new_position = P
     intersection_point = utils.circle_line_tangent_point(wall_init,wall_end,P,R)
     if intersection_point != None:
         for tangent_point in intersection_point:
