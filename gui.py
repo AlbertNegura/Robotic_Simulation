@@ -1,7 +1,4 @@
 import visualization
-import utils
-import physics
-import numpy as np
 from config import *
 
 
@@ -197,13 +194,13 @@ def execute():
 
         robot.move(WALLS)
 
-        for wall in WALLS:
-            tangent_coords = utils.circle_line_tangent_point(wall[0], wall[1], robot.position, robot.radius)
-            tangent = pygame.Surface((5, 5))
-            tangent.fill((200, 0, 0))
-            if tangent_coords is not None:
-                for t_coords in tangent_coords:
-                    screen.blit(tangent, (t_coords[0], t_coords[1]))
+        # for wall in WALLS:
+        #     tangent_coords = utils.circle_line_tangent_point(wall[0], wall[1], robot.position, robot.radius)
+        #     tangent = pygame.Surface((5, 5))
+        #     tangent.fill((200, 0, 0))
+        #     if tangent_coords is not None:
+        #         for t_coords in tangent_coords:
+        #             screen.blit(tangent, (t_coords[0], t_coords[1]))
 
         visualization.draw_robot(pygame, screen, robot)
         robot.adjust_sensors(WALLS)
