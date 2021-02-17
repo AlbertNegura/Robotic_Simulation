@@ -57,7 +57,7 @@ def intersection(line1, line2):
     """
 
     [[x1, y1], [x2, y2]] = line1
-    [[x3, y3], [x4, y4]] = line2
+    [[x3, y3], [x4, y4]] = line2[:2][:]
 
     v1 = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)
     v2 = (x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)
@@ -91,16 +91,15 @@ def clip(a, a_min, a_max, robot):
     y = a[1]
     if x<a_min[0]:
         robot.position[0]=a_min[0]
-        robot.velocity[0]=0
     if y<a_min[1]:
         robot.position[1]=a_min[1]
-        robot.velocity[1]=0
     if x>a_max[0]:
         robot.position[0]=a_max[0]
-        robot.velocity[0]=0
     if y>a_max[1]:
         robot.position[1]=a_max[1]
-        robot.velocity[1]=0
+
+
+
 
 def circle_line_tangent_point(wall_init, wall_end, P, R, tol=1e-9):
     """
