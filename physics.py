@@ -17,7 +17,7 @@ def resolve_wall_collision(wall_init, wall_end, P, Velocity, R, angle, tolerance
 
     angle = np.radians(angle)
     unit_vector_along_velocity = [Velocity[0]*np.cos(np.radians(angle)),Velocity[1]*np.sin(np.radians(angle))]
-    unit_vector_along_velocity /= np.linalg.norm(unit_vector_along_velocity)
+    unit_vector_along_velocity = unit_vector_along_velocity/np.linalg.norm(unit_vector_along_velocity) if np.linalg.norm(unit_vector_along_velocity) != 0 else unit_vector_along_velocity
     new_velocity = Velocity
     new_position = [P[0]+unit_vector_along_velocity*np.linalg.norm(Velocity),P[1]+unit_vector_along_velocity*np.linalg.norm(Velocity)]
     ccd_intersection_point = utils.intersection([wall_init,wall_end],[P, new_position])
