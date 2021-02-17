@@ -19,7 +19,7 @@ def resolve_wall_collision(wall_init, wall_end, P, Velocity, R, angle, tolerance
     unit_vector_along_velocity = [Velocity[0]*np.cos(np.radians(angle)),Velocity[1]*np.sin(np.radians(angle))]
     unit_vector_along_velocity /= np.linalg.norm(unit_vector_along_velocity)
     new_velocity = Velocity
-    new_position = [P[0]+Velocity[0],P[1]+Velocity[1]]
+    new_position = [P[0]+unit_vector_along_velocity*np.linalg.norm(Velocity),P[1]+unit_vector_along_velocity*np.linalg.norm(Velocity)]
     ccd_intersection_point = utils.intersection([wall_init,wall_end],[P, new_position])
     # currently resolving collisions based on the center of the circle colliding with a wall that is R closer to the circle in the opposite direction of movement - need to instead of the whole circle
     tolerance = np.linalg.norm(Velocity)*2 if tolerance == 0 and np.linalg.norm(Velocity) >= 1. else Velocity[0] + Velocity[1]
