@@ -51,3 +51,11 @@ def write_text(pygame, screen, text, position = (1300, 300)):
     font = pygame.font.SysFont(None, 24)
     img = font.render(text, True, (0,0,0))
     screen.blit(img, position)
+
+def create_button(pygame, screen, text, x, y, width, height):
+    smallText = pygame.font.Font("freesansbold.ttf",20)
+    txt = smallText.render(text, True, (255, 255, 255))
+    button = pygame.Rect(x, y, width, height)
+    pygame.draw.rect(screen, (0, 0, 0), button)
+    screen.blit(txt, (x + (width / 2), y + (height / 2)))
+    return button

@@ -1,8 +1,16 @@
+from typing import Any
+
 import visualization
 import utils
 import physics
 import numpy as np
+import csv
 from config import *
+import time
+import tkinter as tk
+from tkinter import filedialog
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+clock = pygame.time.Clock()
 
 
 pygame.font.init()
@@ -60,8 +68,14 @@ def accelerate(wheel, direction):
         robot.velocity_right = STOP
 
 
+def map_user_input(pgkey):
+    global MAP_MENU
+    if pgkey[pygame.K_ESCAPE]:
+        MAP_MENU = None
+
+
 def user_input(pgkey):
-    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID
+    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, MAP_MENU
     if pgkey[pygame.K_w]:
         accelerate(LEFT,FORWARD)
         keyboard.update_key(keyboard_layout, kl.Key.W, used_key_info)
@@ -134,9 +148,16 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_4, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_4, unused_key_info)
+    if pgkey[pygame.K_m]:
+        MAP_MENU = True
+        map_settings()
+        keyboard.update_key(keyboard_layout, kl.Key.M, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
 
 
 def execute():
+    global WALLS
     global EDIT_MODE
     WALLS = []
     EDIT_MODE = False
@@ -149,8 +170,8 @@ def execute():
     WALLS.append([[0, 0], [WIDTH, 0]])
     WALLS.append([[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]])
 
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    clock = pygame.time.Clock()
+    # screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    # clock = pygame.time.Clock()
 
     info_font = pygame.font.SysFont("Arial",11)
     mini_info_font = pygame.font.SysFont("Arial",8)
@@ -241,3 +262,61 @@ def execute():
         current_frame += 1
 
     pygame.quit()
+
+
+def map_settings():
+    global WALLS
+    click = False
+    t = time.localtime()
+    while MAP_MENU is not None:
+        screen.fill((255,255,255))
+
+        visualization.write_text(pygame, screen, 'MAP CONFIG', (750,100))
+        root = tk.Tk()
+        root.withdraw()
+        mx, my = pygame.mouse.get_pos()
+
+        button_1 = visualization.create_button(pygame, screen, "save map", 100, 200, 200, 50)
+        button_2 = visualization.create_button(pygame, screen, "load map", 100, 300, 200, 50)
+        if button_1.collidepoint((mx, my)):
+            if click:
+                current_time = time.strftime("%H:%M:%S", t)
+                filename = str(current_time + '.pkl')
+                filename = filename.replace(":","")
+                print("button 1 clicked", filename)
+                with open(filename, 'wb') as output:
+                    pickle.dump(WALLS, output, pickle.HIGHEST_PROTOCOL)
+
+        if button_2.collidepoint((mx, my)):
+            if click:
+                file_path = filedialog.askopenfilename()
+                print("button 2 clicked")
+                print(file_path)
+                if file_path != "":
+                    with open(file_path, 'rb') as input:
+                        temp_walls = pickle.load(input)
+                        set_walls(temp_walls)
+        click = False
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                terminate = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+            if event.type == pygame.KEYDOWN:
+                map_user_input(pygame.key.get_pressed())
+            elif event.type == pygame.KEYUP:
+                map_user_input(pygame.key.get_pressed())
+
+        pygame.display.update()
+        clock.tick(60)
+
+
+def set_walls(walls):
+    global WALLS
+    for wall in WALLS:
+        print(wall)
+    WALLS = walls
+    for wall in WALLS:
+        print(wall)
