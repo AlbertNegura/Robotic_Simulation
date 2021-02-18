@@ -10,8 +10,8 @@ def draw_robot(pygame, screen, robot):
     :param robot:
     :return:
     """
-    pygame.draw.circle(screen, robot.colour, robot.position, robot.radius)
-    pygame.draw.circle(screen, robot.colour2, robot.position, robot.radius + 0.5, 1)
+    pygame.draw.circle(screen, robot.colour, robot.position, robot.radius - 0.6)
+    pygame.draw.circle(screen, robot.colour2, robot.position, robot.radius - 0.1, 1)
     pygame.draw.line(screen, robot.colour2, robot.position, robot.facing_position, 2)
 
 
