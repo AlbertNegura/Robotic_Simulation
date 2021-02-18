@@ -46,7 +46,7 @@ def distance_between(a,b):
     :param b: the second point as a [x,y] numpy array
     :return: the absolute distance between the two points
     """
-    return np.linalg.norm(a-b)
+    return np.linalg.norm(np.subtract(a,b))
 
 def intersection(line1, line2):
     """
