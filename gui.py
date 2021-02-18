@@ -150,8 +150,8 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_4, unused_key_info)
     if pgkey[pygame.K_m]:
         MAP_MENU = True
-        map_settings()
         keyboard.update_key(keyboard_layout, kl.Key.M, used_key_info)
+        map_settings()
     else:
         keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
 
@@ -160,15 +160,17 @@ def execute():
     global WALLS
     global EDIT_MODE
     WALLS = []
+    EDGE_WALLS = []
     EDIT_MODE = False
     DRAWING = False
     origin = None
     end = None
 
-    WALLS.append([[0, 0], [0, HEIGHT - int(HEIGHT / 3)]])
-    WALLS.append([[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]])
-    WALLS.append([[0, 0], [WIDTH, 0]])
-    WALLS.append([[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]])
+    EDGE_WALLS.append([[0, 0], [0, HEIGHT - int(HEIGHT / 3)]])
+    EDGE_WALLS.append([[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]])
+    EDGE_WALLS.append([[0, 0], [WIDTH, 0]])
+    EDGE_WALLS.append([[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]])
+    WALLS.append([[0,0],[-1,-1]]) # need to add a dummy wall
 
     # screen = pygame.display.set_mode((WIDTH, HEIGHT))
     # clock = pygame.time.Clock()
@@ -215,6 +217,8 @@ def execute():
 
         for wall in WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
+        for wall in EDGE_WALLS:
+            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
 
         robot.move(WALLS)
 
@@ -235,9 +239,9 @@ def execute():
             visualization.draw_sensor_info(screen, robot, mini_info_font)
 
         if SHOW_VELOCITY_PER_WHEEL:
-            left_vel = info_font.render(str(int(robot.velocity_left/ACCELERATION)), True, (0, 0, 0))
+            left_vel = info_font.render(str(int(round(robot.velocity_left/ACCELERATION))), True, (0, 0, 0))
             screen.blit(left_vel, (robot.position[0]-10, robot.position[1]-5))
-            right_vel = info_font.render(str(int(robot.velocity_right/ACCELERATION)), True, (0, 0, 0))
+            right_vel = info_font.render(str(int(round(robot.velocity_right/ACCELERATION))), True, (0, 0, 0))
             screen.blit(right_vel, (robot.position[0]+10, robot.position[1]-5))
 
         if DRAW_GRID:
@@ -263,7 +267,7 @@ def execute():
 
 
 def map_settings():
-    global WALLS
+    global WALLS, MAP_MENU
     click = False
     t = time.localtime()
     while MAP_MENU is not None:
@@ -274,26 +278,34 @@ def map_settings():
         root.withdraw()
         mx, my = pygame.mouse.get_pos()
 
-        button_1 = visualization.create_button(pygame, screen, "save map", 100, 200, 200, 50)
-        button_2 = visualization.create_button(pygame, screen, "load map", 100, 300, 200, 50)
+        button_1 = visualization.create_button(pygame, screen, "Save Map", 100, 200, 200, 50)
+        button_2 = visualization.create_button(pygame, screen, "Load Map", 100, 300, 200, 50)
+        button_3 = visualization.create_button(pygame, screen, "Go Back", 100, 400, 200, 50)
         if button_1.collidepoint((mx, my)):
             if click:
                 current_time = time.strftime("%H:%M:%S", t)
                 filename = str(current_time + '.pkl')
                 filename = filename.replace(":","")
-                print("button 1 clicked", filename)
+                # print("button 1 clicked", filename)
                 with open(filename, 'wb') as output:
                     pickle.dump(WALLS, output, pickle.HIGHEST_PROTOCOL)
 
         if button_2.collidepoint((mx, my)):
             if click:
                 file_path = filedialog.askopenfilename()
-                print("button 2 clicked")
-                print(file_path)
+                # print("button 2 clicked")
+                # print(file_path)
                 if file_path != "":
                     with open(file_path, 'rb') as input:
                         temp_walls = pickle.load(input)
                         set_walls(temp_walls)
+
+        if button_3.collidepoint((mx,my)):
+            if click:
+                MAP_MENU = None
+                keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
+                return
+
         click = False
         events = pygame.event.get()
         for event in events:
@@ -313,8 +325,8 @@ def map_settings():
 
 def set_walls(walls):
     global WALLS
-    for wall in WALLS:
-        print(wall)
+    # for wall in WALLS:
+        # print(wall)
     WALLS = walls
-    for wall in WALLS:
-        print(wall)
+    # for wall in WALLS:
+        # print(wall)
