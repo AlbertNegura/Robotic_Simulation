@@ -17,6 +17,7 @@ class Robot:
     velocity_right = 0
     velocity_left = 0
     velocity = [0, 0]
+    force = 0
 
     position_history = []
     orientation_history = []
@@ -30,32 +31,49 @@ class Robot:
 
 
     def move(self, walls):
+        update=False
+        j = 0
         if self.velocity_right != self.velocity_left:
             new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius*2, self.position[0], self.position[1], np.radians(self.orientation))
-            self.velocity = np.subtract([new_x, new_y], self.position)
-            for wall in walls:
-                is_intersection, new_position, new_velocity = physics.resolve_wall_collision(wall[0], wall[1], self.position,
-                                                                                             self.velocity, self.radius,
+            self.force = np.linalg.norm([self.velocity_left,self.velocity_right])
+            for i in range(len(walls)):
+                if not update:
+                    j += 1
+                    if j >= len(walls):
+                        break
+                else:
+                    j = 0
+                    update = False
+                wall = walls[j]
+                is_intersection, new_position = physics.resolve_wall_collision(wall[0], wall[1], self.position,
+                                                                                             self.force, self.radius,
                                                                                              self.orientation)
                 if is_intersection:
-                    self.velocity = new_velocity
-
-            self.position = np.add(self.position, self.velocity)
+                    update = True
+                    self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
+            self.position = [self.position[0]+self.force*np.cos(np.radians(self.orientation)),self.position[1]+self.force*np.sin(np.radians(self.orientation))]
             utils.clip(self.position, [self.radius+1, self.radius+1], [config.WIDTH - int(config.HEIGHT / 3) - self.radius-1, config.HEIGHT - int(config.HEIGHT / 3) - self.radius-1], self)
             self.orientation = np.degrees(theta)
-
             for sensor in self.sensors:
                 sensor.update_sensor(self.position, np.radians(self.orientation - self.orientation_history[-1]), None)
         else:
-            self.velocity = [3 * (self.velocity_left + self.velocity_right) * np.cos(np.radians(self.orientation)),
-                             3 * (self.velocity_left + self.velocity_right) * np.sin(np.radians(self.orientation))]
-            for wall in walls:
-                is_intersection, new_position, new_velocity = physics.resolve_wall_collision(wall[0], wall[1], self.position,
-                                                                                             self.velocity, self.radius,
+            self.force = np.linalg.norm([self.velocity_left,self.velocity_right])
+            for i in range(len(walls)):
+                if not update:
+                    j += 1
+                    if j >= len(walls):
+                        break
+                else:
+                    j = 0
+                    update = False
+                wall = walls[j]
+                is_intersection, new_position = physics.resolve_wall_collision(wall[0], wall[1], self.position,
+                                                                                             self.force, self.radius,
                                                                                              self.orientation)
                 if is_intersection:
-                    self.velocity = new_velocity
-            self.position = np.add(self.position, self.velocity)  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
+                    update = True
+                    self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
+            self.position = [self.position[0]+self.force*np.cos(np.radians(self.orientation)),self.position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
 
             utils.clip(self.position, [self.radius+1, self.radius+1], [config.WIDTH - int(config.HEIGHT / 3) - self.radius-1, config.HEIGHT - int(config.HEIGHT / 3) - self.radius-1], self)
             for sensor in self.sensors:
