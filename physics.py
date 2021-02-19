@@ -17,7 +17,7 @@ def closest_point(w1,w2,px,py):
 
     d1 = np.linalg.norm(p-w1)
     d2 = np.linalg.norm(p-w2)
-    line = np.linalg.norm(np.array(w2)-np.array(w1))
+    line = np.linalg.norm(np.array(w1)-np.array(w2))
     tol = 0.
 
     return (d1+d2 >= line-tol and d1+d2 <= line+tol)
@@ -36,7 +36,6 @@ def circle_segment_collision(w1,w2,p,r):
 
     if not closest_point(w1,w2,px,py):
         return False, [0,0]
-
     dX = px - p[0]
     dY = py - p[1]
     d = np.linalg.norm([dX,dY])
@@ -72,8 +71,6 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     # DCD
     if F*np.cos(angle) < (R + tolerance)/7 and F*np.sin(angle) < (R + tolerance)/7:
         a1, a2 = circle_segment_collision(wall_init,wall_end,P,R)
-        print(a1)
-        print(a2)
         return a1, [a2[0]-R*np.cos(angle),a2[1]-R*np.sin(angle)]
 
         # coll_check = [P[0] + 1.98 * F * np.cos(angle), P[1] + 1.98 * F * np.sin(angle)]
