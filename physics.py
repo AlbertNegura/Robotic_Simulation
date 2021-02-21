@@ -29,7 +29,7 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     # if line is inside of circle, stop circle
 
     # DCD if speed under (empirically-determined) speed -> above this, tunneling is too pronounced so need to do CCD
-    if F*np.cos(angle) < (R + tolerance)/7 and F*np.sin(angle) < (R + tolerance)/7:
+    if F*np.cos(angle) < (R + tolerance)/2 and F*np.sin(angle) < (R + tolerance)/2:
         # wall vector
         wall_v = [wall_end[0] - wall_init[0],wall_end[1] - wall_init[1]]
         # wall unit vector
