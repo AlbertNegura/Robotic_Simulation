@@ -54,6 +54,7 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     """
 
     # work in radians
+    wall_angle = np.radians(angle + 90)
     angle = np.radians(angle)
     radius_along_orientation = [np.cos(angle)*R,np.sin(angle)*R]
     position = [P[0]-radius_along_orientation[0],P[1]-radius_along_orientation[1]]
@@ -70,8 +71,29 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
 
     # DCD
     if F*np.cos(angle) < (R + tolerance)/7 and F*np.sin(angle) < (R + tolerance)/7:
-        a1, a2 = circle_segment_collision(wall_init,wall_end,P,R)
-        return a1, [a2[0]-R*np.cos(angle),a2[1]-R*np.sin(angle)]
+
+        wall_v = [wall_end[0] - wall_init[0],wall_end[1] - wall_init[1]]
+        unit_v = [wall_v[0]/np.linalg.norm(wall_v),wall_v[1]/np.linalg.norm(wall_v)]
+        circle_rel = [P[0] - wall_init[0], P[1] - wall_init[1]]
+        proj_v = np.array(circle_rel) * (np.array(unit_v))
+        norm_proj_v = np.linalg.norm(proj_v)
+        if norm_proj_v < 0:
+            closest_p = wall_init
+        elif norm_proj_v > np.linalg.norm(wall_v):
+            closest_p = wall_end
+        else:
+            closest_p = wall_init + proj_v
+
+        dist_v = [P[0] - closest_p[0],P[1]-closest_p[1]]
+        norm_dist_v = np.linalg.norm(dist_v)
+        if norm_dist_v < R:
+            return True, new_position + (dist_v / norm_dist_v * (R - norm_dist_v))
+
+        else:
+            return False, new_position
+
+        # a1, a2 = circle_segment_collision(wall_init,wall_end,P,R)
+        # return a1, [a2[0]-R*np.cos(angle),a2[1]-R*np.sin(angle)]
 
         # coll_check = [P[0] + 1.98 * F * np.cos(angle), P[1] + 1.98 * F * np.sin(angle)]
         # discrete_new_position = new_position
@@ -98,7 +120,7 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     collision_point = utils.intersection([np.subtract(wall_init,radius_along_orientation), np.subtract(wall_end,radius_along_orientation)], [position,new_position])
     if collision_point is not None:
 
-        collision_point_without_orientation = [collision_point[0]-R*np.cos(angle)+F*np.cos(angle),collision_point[1]-R*np.sin(angle)+F*np.cos(angle)]
+        collision_point_without_orientation = [collision_point[0]-R*np.cos(angle)+F*np.cos(wall_angle),collision_point[1]-R*np.sin(angle)+F*np.sin(wall_angle)]
 
         # if collided with wall, resolve collision position
         # dx = collision_point_without_orientation[0] - P[0]
