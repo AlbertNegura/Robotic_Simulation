@@ -75,14 +75,14 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
         wall_v = [wall_end[0] - wall_init[0],wall_end[1] - wall_init[1]]
         unit_v = wall_v/np.linalg.norm(wall_v)
         circle_rel = [P[0] - wall_init[0], P[1] - wall_init[1]]
-        proj_v = np.array(circle_rel) * (np.array(unit_v))
-        norm_proj_v = np.linalg.norm(proj_v)
-        if norm_proj_v <= 0:
+        proj = np.array(circle_rel).dot(np.array(unit_v))
+        if proj <= 0:
             closest_p = wall_init
-        elif norm_proj_v >= np.linalg.norm(wall_v):
+        elif proj >= np.linalg.norm(wall_v):
             closest_p = wall_end
         else:
-            closest_p = wall_init + unit_v * proj_v
+            proj_v = (np.array(unit_v)) * proj
+            closest_p = wall_init + proj_v
 
         dist_v = [P[0] - closest_p[0],P[1]-closest_p[1]]
         norm_dist_v = np.linalg.norm(dist_v)
