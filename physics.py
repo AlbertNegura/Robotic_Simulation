@@ -73,7 +73,7 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     if F*np.cos(angle) < (R + tolerance)/7 and F*np.sin(angle) < (R + tolerance)/7:
 
         wall_v = [wall_end[0] - wall_init[0],wall_end[1] - wall_init[1]]
-        unit_v = [wall_v[0]/np.linalg.norm(wall_v),wall_v[1]/np.linalg.norm(wall_v)]
+        unit_v = wall_v/np.linalg.norm(wall_v)
         circle_rel = [P[0] - wall_init[0], P[1] - wall_init[1]]
         proj_v = np.array(circle_rel) * (np.array(unit_v))
         norm_proj_v = np.linalg.norm(proj_v)
