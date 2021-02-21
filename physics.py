@@ -58,13 +58,9 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     angle = np.radians(angle)
     radius_along_orientation = [np.cos(angle)*R,np.sin(angle)*R]
     position = [P[0]-radius_along_orientation[0],P[1]-radius_along_orientation[1]]
-    parallel_point_L = [P[0] - R * np.sin(angle), P[1] - R * np.cos(angle)]
-    parallel_point_R = [P[0] + R * np.sin(angle), P[1] + R * np.cos(angle)]
 
     # determine new position after current frame
     new_position = [P[0] + F * np.cos(angle), P[1] + F * np.sin(angle)]
-    new_parallel_point_L = [new_position[0] - R * np.sin(angle), new_position[1] - R * np.cos(angle)]
-    new_parallel_point_R = [new_position[0] + R * np.sin(angle), new_position[1] + R * np.cos(angle)]
 
 
     # if line is inside of circle, stop circle
@@ -132,16 +128,6 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
         # point_of_rotation = [np.cos(angle_of_rotation) * new_position[0],np.cos(angle_of_rotation) * new_position[1]]
 
         return True, collision_point_without_orientation
-    else:
-        collision_point_L = utils.intersection([wall_init, wall_end],
-                                               [parallel_point_L, new_parallel_point_L])
-        collision_point_R = utils.intersection([wall_init, wall_end],
-                                               [parallel_point_R, new_parallel_point_R])
-
-        if collision_point_L is not None:
-            pass # resolve left end collision
-        elif collision_point_R is not None:
-            pass # resolve right end collision
 
 
     return False, new_position
