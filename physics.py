@@ -98,7 +98,7 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     collision_point = utils.intersection([np.subtract(wall_init,radius_along_orientation), np.subtract(wall_end,radius_along_orientation)], [position,new_position])
     if collision_point is not None:
 
-        collision_point_without_orientation = [collision_point[0]-R*np.cos(angle),collision_point[1]-R*np.sin(angle)]
+        collision_point_without_orientation = [collision_point[0]-R*np.cos(angle)+F*np.cos(angle),collision_point[1]-R*np.sin(angle)+F*np.cos(angle)]
 
         # if collided with wall, resolve collision position
         # dx = collision_point_without_orientation[0] - P[0]
