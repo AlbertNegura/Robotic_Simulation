@@ -89,42 +89,36 @@ def user_input(pgkey):
     if pgkey[pygame.K_s]:
         wheel = LEFT
         direction = BACKWARD
-        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.S, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.S, unused_key_info)
     if pgkey[pygame.K_o]:
         wheel = RIGHT
         direction = FORWARD
-        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.O, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.O, unused_key_info)
     if pgkey[pygame.K_l]:
         wheel = RIGHT
         direction = BACKWARD
-        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.L, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.L, unused_key_info)
     if pgkey[pygame.K_t]:
         wheel = BOTH
         direction = FORWARD
-        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.T, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.T, unused_key_info)
     if pgkey[pygame.K_g]:
         wheel = BOTH
         direction = BACKWARD
-        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.G, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.G, unused_key_info)
     if pgkey[pygame.K_x]:
         wheel = BOTH
         direction = STOP
-        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.X, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.X, unused_key_info)
@@ -134,7 +128,6 @@ def user_input(pgkey):
         robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS)
         wheel = BOTH
         direction = STOP
-        accel = True
         current_tick = STOP
         robot.velocity_left=STOP
         robot.velocity_right=STOP
