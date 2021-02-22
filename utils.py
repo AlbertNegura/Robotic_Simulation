@@ -158,3 +158,22 @@ def circle_line_tangent_point(wall_init, wall_end, P, R, tol=1e-9):
             return [intersections[0]]
         else:
             return intersections
+
+
+def circle_intersect(line1, line2, radius, angle):
+    intersection_point = intersection(line1, line2)
+    if intersection_point is None:
+        # work in radians
+        angle = np.radians(angle)
+        x = line2[0][0] + np.sin(angle) * radius
+        y = line2[0][1] + np.cos(angle) * radius
+        x2 = line2[1][0] + np.sin(angle) * radius
+        y2 = line2[1][1] + np.cos(angle) * radius
+        intersection_point = intersection(line1,[[x,y],[x2,y2]])
+        if intersection_point is None:
+            x = line2[0][0] - np.sin(angle) * radius
+            y = line2[0][1] - np.cos(angle) * radius
+            x2 = line2[1][0] - np.sin(angle) * radius
+            y2 = line2[1][1] - np.cos(angle) * radius
+            intersection_point = intersection(line1,[[x,y],[x2,y2]])
+    return intersection_point
