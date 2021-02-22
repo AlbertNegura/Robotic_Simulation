@@ -15,6 +15,8 @@ FORWARD = None
 BACKWARD = None
 STOP = None
 ACCELERATION = None
+SENSORS = None
+GRID_SIZE = None
 KEY_SIZE = None
 TICK_RATE = None
 WALL_WIDTH = None
@@ -23,7 +25,6 @@ EDIT_MODE = None
 SHOW_SENSORS = None
 SHOW_SENSOR_INFO = None
 DRAW_GRID = None
-GRID_SIZE = None
 
 def load_config(config):
     default_settings = config['DEFAULT']

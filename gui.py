@@ -129,7 +129,9 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.X, unused_key_info)
     if pgkey[pygame.K_v]:
-        global current_tick
+        global current_tick, robot, current_frame#
+        current_frame = 0
+        robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS)
         wheel = BOTH
         direction = STOP
         accel = True
@@ -178,6 +180,7 @@ def execute():
     global WALLS
     global EDIT_MODE
     global accel, wheel, direction
+    global current_frame
     WALLS = []
     EDGE_WALLS = []
     EDIT_MODE = False
