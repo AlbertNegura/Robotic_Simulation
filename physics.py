@@ -28,7 +28,7 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
 
 
     # DCD if speed under (empirically-determined) speed -> above this, tunneling is too pronounced so need to do CCD
-    if F*np.cos(angle) < (R + tolerance) and F*np.sin(angle) < (R + tolerance):
+    if True:#F*np.cos(angle) < (R + tolerance) and F*np.sin(angle) < (R + tolerance):
         # wall vector
         wall_v = [wall_end[0] - wall_init[0],wall_end[1] - wall_init[1]]
         # wall unit vector

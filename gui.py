@@ -4,6 +4,7 @@ import time
 from typing import Any
 import tkinter as tk
 from tkinter import filedialog
+import utils
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
@@ -227,7 +228,14 @@ def execute():
                         end = pygame.mouse.get_pos()
                         # print(origin, end)
                         if origin != None and end != None:
-                            WALLS.append((origin, end))
+                            origin = utils.clip_value(origin, [0,0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)])
+                            end = utils.clip_value(end, [0,0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)])
+                            if origin[0] != end[0] and origin[0] != end[0]: # not a point
+                                if origin[0] != 0 or end[0] != 0: # not left wall
+                                    if origin[0] != end[0] and origin[0] != WIDTH - int(HEIGHT / 3) or end[0] != WIDTH - int(HEIGHT / 3): # not right wall
+                                        if origin[1] != end[1] and origin[1] != 0 or end[1] != 0: # not top wall
+                                            if origin[1] != HEIGHT - int(HEIGHT / 3) or end[1] != HEIGHT - int(HEIGHT / 3): # not bottom wall
+                                                WALLS.append((origin, end))
                             # print('Drawn')
                     origin = None
                     end = None

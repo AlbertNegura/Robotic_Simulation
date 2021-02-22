@@ -99,6 +99,28 @@ def clip(a, a_min, a_max, robot):
         robot.position[1]=a_max[1]
 
 
+def clip_value(a, a_min, a_max):
+    """
+    Perfect inelastic collision (sets corresponding velocity component to 0). Meant only for boundary box collisions, not walls.
+    :param a:
+    :param a_min:
+    :param a_max:
+    :param robot:
+    :return:
+    """
+    x = a[0]
+    y = a[1]
+    retx = x
+    rety = y
+    if x<a_min[0]:
+        retx=a_min[0]
+    if y<a_min[1]:
+        rety=a_min[1]
+    if x>a_max[0]:
+        retx=a_max[0]
+    if y>a_max[1]:
+        rety=a_max[1]
+    return [retx,rety]
 
 
 def circle_line_tangent_point(wall_init, wall_end, P, R, tol=1e-9):
