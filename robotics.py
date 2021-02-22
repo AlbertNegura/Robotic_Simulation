@@ -35,7 +35,7 @@ class Robot:
         new_position = self.position
         if self.velocity_right != self.velocity_left:
             new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius*2, self.position[0], self.position[1], np.radians(self.orientation))
-            self.force = np.linalg.norm([self.velocity_left,self.velocity_right])
+            self.force = np.linalg.norm([self.velocity_left,self.velocity_right]) * np.sign(self.velocity_left+self.velocity_right)
             for i in range(len(walls)):
                 if not update:
                     j += 1
@@ -75,7 +75,7 @@ class Robot:
             for sensor in self.sensors:
                 sensor.update_sensor(self.position, np.radians(self.orientation - self.orientation_history[-1]), None)
         else:
-            self.force = np.linalg.norm([self.velocity_left,self.velocity_right])
+            self.force = np.linalg.norm([self.velocity_left,self.velocity_right]) * np.sign(self.velocity_left+self.velocity_right)
             for i in range(len(walls)):
                 if not update:
                     j += 1
@@ -164,7 +164,7 @@ class Sensor:
     line_end = []
     radians = 0
     colour = None
-    max_radius = 100
+    max_radius = 120
     radius = 100
     intersection = []
 
