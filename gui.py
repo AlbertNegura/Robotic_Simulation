@@ -1,16 +1,17 @@
 from typing import Any
 
 import visualization
-import utils
-import physics
-import numpy as np
-import csv
 from config import *
 import time
 import tkinter as tk
 from tkinter import filedialog
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
+
+
+accel = False
+wheel = 0
+direction = 0
 
 
 pygame.font.init()
@@ -55,7 +56,10 @@ used_key_info = kl.KeyInfo(
 for key in valid_keys_kl:
     keyboard.update_key(keyboard_layout, key, unused_key_info)
 
-def accelerate(wheel, direction):
+def accelerate():
+    global accel, wheel, direction
+    if not accel:
+        return
     if wheel == LEFT:
         robot.velocity_left += robot.acceleration*direction
     if wheel == RIGHT:
@@ -75,46 +79,61 @@ def map_user_input(pgkey):
 
 
 def user_input(pgkey):
-    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, MAP_MENU
+    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, MAP_MENU, accel, wheel, direction
     if pgkey[pygame.K_w]:
-        accelerate(LEFT,FORWARD)
+        wheel = LEFT
+        direction = FORWARD
         keyboard.update_key(keyboard_layout, kl.Key.W, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.W, unused_key_info)
     if pgkey[pygame.K_s]:
-        accelerate(LEFT,BACKWARD)
+        wheel = LEFT
+        direction = BACKWARD
+        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.S, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.S, unused_key_info)
     if pgkey[pygame.K_o]:
-        accelerate(RIGHT,FORWARD)
+        wheel = RIGHT
+        direction = FORWARD
+        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.O, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.O, unused_key_info)
     if pgkey[pygame.K_l]:
-        accelerate(RIGHT,BACKWARD)
+        wheel = RIGHT
+        direction = BACKWARD
+        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.L, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.L, unused_key_info)
     if pgkey[pygame.K_t]:
-        accelerate(BOTH,FORWARD)
+        wheel = BOTH
+        direction = FORWARD
+        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.T, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.T, unused_key_info)
     if pgkey[pygame.K_g]:
-        accelerate(BOTH,BACKWARD)
+        wheel = BOTH
+        direction = BACKWARD
+        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.G, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.G, unused_key_info)
     if pgkey[pygame.K_x]:
-        accelerate(BOTH,STOP)
+        wheel = BOTH
+        direction = STOP
+        accel = True
         keyboard.update_key(keyboard_layout, kl.Key.X, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.X, unused_key_info)
     if pgkey[pygame.K_v]:
         global current_tick
+        wheel = BOTH
+        direction = STOP
+        accel = True
         current_tick = STOP
-        accelerate(BOTH,STOP)
         robot.velocity_left=STOP
         robot.velocity_right=STOP
         #reset
@@ -155,10 +174,10 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
 
-
 def execute():
     global WALLS
     global EDIT_MODE
+    global accel, wheel, direction
     WALLS = []
     EDGE_WALLS = []
     EDIT_MODE = False
@@ -211,15 +230,18 @@ def execute():
                     DRAWING = False
 
             if event.type == pygame.KEYDOWN:
+                accel = True
                 user_input(pygame.key.get_pressed())
             elif event.type == pygame.KEYUP:
+                accel = False
                 user_input(pygame.key.get_pressed())
 
         for wall in WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
         for wall in EDGE_WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
-
+        if accel:
+            accelerate()
         robot.move(WALLS)
 
         # for wall in WALLS:
