@@ -52,23 +52,37 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     else: # no collision
         return False, new_position
 
-def resolve_past_collision(collisions, old_position, new_position, R, F, angle, tolerance=0.):
+def resolve_past_collision(walls, collisions, old_position, new_position, R, F, angle, tolerance=0.):
     # work in radians
     angle = np.radians(angle)
     distances = []
     for collision in collisions:
-        distances.append(utils.distance_between(old_position,collision))
+        distances.append(utils.distance_between([old_position[0]+R*np.cos(angle), old_position[1]+R*np.sin(angle)],collision))
     if len(distances) == 0:
         return new_position
     indices = np.argsort(distances)
-    for i in indices:
+    if len(indices) == 1:
+        i = indices[0]
         collision_handled = collisions[i]
+        wall_collided_with = walls[i]
         distance = distances[i]
         travelled = np.linalg.norm([new_position[0]-old_position[0],new_position[1]-old_position[1]])
         percentile = distance/travelled
         percentile_barely_avoid_collision = (distance-R-1)/travelled
-        new_position = [old_position[0]+F*np.cos(angle)*percentile_barely_avoid_collision,old_position[1]+F*np.sin(angle)*percentile_barely_avoid_collision]
+
+        v1 = np.array(old_position)
+        v2 = np.array(collision_handled)
+        v3 = v2 - v1
+        nv3 = np.linalg.norm(v3)
+
+        new_position = v1+(v3/nv3 * (R - nv3))
+        print(new_position)
+
+        # new_position = [old_position[0]+F*np.cos(angle)*percentile_barely_avoid_collision + F * np.cos(angle+np.pi) * (1-percentile_barely_avoid_collision),old_position[1]+F*np.sin(angle)*percentile_barely_avoid_collision + F * np.sin(angle+np.pi) * (1-percentile_barely_avoid_collision)]
 
         return new_position
+    else:
+        for i in indices:
+            return new_position
 
     return new_position

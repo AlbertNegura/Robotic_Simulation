@@ -33,6 +33,7 @@ class Robot:
         update=False
         j = 0
         new_position = self.position
+        walls_collided_with = []
         if self.velocity_right != self.velocity_left:
             new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius*2, self.position[0], self.position[1], np.radians(self.orientation))
             self.force = np.linalg.norm([self.velocity_left,self.velocity_right]) * np.sign(self.velocity_left+self.velocity_right)
@@ -53,21 +54,14 @@ class Robot:
                     update = True
             collisions = []
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
-            for i in range(len(walls)):
-                if not update:
-                    j += 1
-                    if j >= len(walls):
-                        break
-                else:
-                    j = 0
-                    update = False
-                wall = walls[j]
+            for wall in walls:
                 # check if it has collided in the past frame
-                collision_point = utils.circle_intersect([wall[0],wall[1]],[self.position,new_position], self.radius, self.orientation)
+                collision_point = utils.circle_intersect(wall,[[self.position[0]-self.radius*np.cos(np.radians(self.orientation)), self.position[1]-self.radius*np.sin(np.radians(self.orientation))],new_position], self.radius, self.orientation)
                 if collision_point is not None:
+                    walls_collided_with.append(wall)
                     collisions.append(collision_point)
 
-            new_position = physics.resolve_past_collision(collisions,self.position, new_position, self.radius, self.force, self.orientation)
+            new_position = physics.resolve_past_collision(walls_collided_with, collisions,self.position, new_position, self.radius, self.force, self.orientation)
             self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
             utils.clip(self.position, [self.radius+1, self.radius+1], [config.WIDTH - int(config.HEIGHT / 3) - self.radius-1, config.HEIGHT - int(config.HEIGHT / 3) - self.radius-1], self)
             self.orientation = np.degrees(theta)
@@ -84,7 +78,7 @@ class Robot:
                     j = 0
                     update = False
                 wall = walls[j]
-                is_intersection, new_P = physics.resolve_wall_collision(wall[0], wall[1], new_position,
+                is_intersection, new_P = physics.resolve_wall_collision(wall, new_position,
                                                                                              self.force, self.radius,
                                                                                              self.orientation)
                 if is_intersection:
@@ -92,21 +86,14 @@ class Robot:
                     update = True
             collisions = []
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
-            for i in range(len(walls)):
-                if not update:
-                    j += 1
-                    if j >= len(walls):
-                        break
-                else:
-                    j = 0
-                    update = False
-                wall = walls[j]
+            for wall in walls:
                 # check if it has collided in the past frame
-                collision_point = utils.circle_intersect([wall[0],wall[1]],[self.position,new_position], self.radius, self.orientation)
+                collision_point = utils.circle_intersect(wall,[[self.position[0]-self.radius*np.cos(np.radians(self.orientation)), self.position[1]-self.radius*np.sin(np.radians(self.orientation))],new_position], self.radius, self.orientation)
                 if collision_point is not None:
+                    walls_collided_with.append(wall)
                     collisions.append(collision_point)
 
-            new_position = physics.resolve_past_collision(collisions,self.position, new_position, self.radius, self.force, self.orientation)
+            new_position = physics.resolve_past_collision(walls_collided_with, collisions,self.position, new_position, self.radius, self.force, self.orientation)
             self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
 
             utils.clip(self.position, [self.radius+1, self.radius+1], [config.WIDTH - int(config.HEIGHT / 3) - self.radius-1, config.HEIGHT - int(config.HEIGHT / 3) - self.radius-1], self)
