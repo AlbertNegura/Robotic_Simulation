@@ -78,7 +78,7 @@ class Robot:
                     j = 0
                     update = False
                 wall = walls[j]
-                is_intersection, new_P = physics.resolve_wall_collision(wall, new_position,
+                is_intersection, new_P = physics.resolve_wall_collision(wall[0], wall[1], new_position,
                                                                                              self.force, self.radius,
                                                                                              self.orientation)
                 if is_intersection:
