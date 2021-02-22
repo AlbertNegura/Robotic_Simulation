@@ -46,10 +46,11 @@ class Robot:
                     j = 0
                     update = False
                 wall = walls[j]
-                is_intersection, new_position = physics.resolve_wall_collision(wall[0], wall[1], new_position,
+                is_intersection, new_P = physics.resolve_wall_collision(wall[0], wall[1], new_position,
                                                                                              self.force, self.radius,
                                                                                              self.orientation)
                 if is_intersection:
+                    new_position = new_P
                     update = True
                     self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
             self.position = [self.position[0]+self.force*np.cos(np.radians(self.orientation)),self.position[1]+self.force*np.sin(np.radians(self.orientation))]
@@ -68,10 +69,11 @@ class Robot:
                     j = 0
                     update = False
                 wall = walls[j]
-                is_intersection, new_position = physics.resolve_wall_collision(wall[0], wall[1], new_position,
+                is_intersection, new_P = physics.resolve_wall_collision(wall[0], wall[1], new_position,
                                                                                              self.force, self.radius,
                                                                                              self.orientation)
                 if is_intersection:
+                    new_position = new_P
                     update = True
                     self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
             self.position = [self.position[0]+self.force*np.cos(np.radians(self.orientation)),self.position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
