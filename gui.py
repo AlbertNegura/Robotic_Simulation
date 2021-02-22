@@ -1,10 +1,10 @@
-from typing import Any
-
 import visualization
 from config import *
 import time
+from typing import Any
 import tkinter as tk
 from tkinter import filedialog
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
