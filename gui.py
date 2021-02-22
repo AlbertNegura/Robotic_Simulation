@@ -251,7 +251,7 @@ def execute():
         for wall in WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
         for wall in EDGE_WALLS:
-            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
+            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100))
         if accel:
             accelerate()
         robot.move(WALLS)
