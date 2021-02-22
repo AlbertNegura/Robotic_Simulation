@@ -54,12 +54,13 @@ class Robot:
                     update = True
             collisions = []
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
-            for wall in walls:
-                # check if it has collided in the past frame
-                collision_point = utils.circle_intersect(wall,[[self.position[0]-self.radius*np.cos(np.radians(self.orientation)), self.position[1]-self.radius*np.sin(np.radians(self.orientation))],new_position], self.radius, self.orientation)
-                if collision_point is not None:
-                    walls_collided_with.append(wall)
-                    collisions.append(collision_point)
+            if self.force > self.radius:
+                for wall in walls:
+                    # check if it has collided in the past frame
+                    collision_point = utils.circle_intersect(wall,[[self.position[0]-self.radius*np.cos(np.radians(self.orientation)), self.position[1]-self.radius*np.sin(np.radians(self.orientation))],new_position], self.radius, self.orientation)
+                    if collision_point is not None:
+                        walls_collided_with.append(wall)
+                        collisions.append(collision_point)
 
             new_position = physics.resolve_past_collision(walls_collided_with, collisions,self.position, new_position, self.radius, self.force, self.orientation)
             self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
@@ -86,12 +87,14 @@ class Robot:
                     update = True
             collisions = []
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
-            for wall in walls:
-                # check if it has collided in the past frame
-                collision_point = utils.circle_intersect(wall,[[self.position[0]-self.radius*np.cos(np.radians(self.orientation)), self.position[1]-self.radius*np.sin(np.radians(self.orientation))],new_position], self.radius, self.orientation)
-                if collision_point is not None:
-                    walls_collided_with.append(wall)
-                    collisions.append(collision_point)
+
+            if self.force > self.radius:
+                for wall in walls:
+                    # check if it has collided in the past frame
+                    collision_point = utils.circle_intersect(wall,[[self.position[0]-self.radius*np.cos(np.radians(self.orientation)), self.position[1]-self.radius*np.sin(np.radians(self.orientation))],new_position], self.radius, self.orientation)
+                    if collision_point is not None:
+                        walls_collided_with.append(wall)
+                        collisions.append(collision_point)
 
             new_position = physics.resolve_past_collision(walls_collided_with, collisions,self.position, new_position, self.radius, self.force, self.orientation)
             self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))

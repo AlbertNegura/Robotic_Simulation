@@ -178,7 +178,7 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
     if pgkey[pygame.K_n]:
-        WALLS = []
+        WALLS = [[0,0],[-1,-1]]
         keyboard.update_key(keyboard_layout, kl.Key.N, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.N, unused_key_info)
