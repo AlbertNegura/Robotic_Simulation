@@ -80,7 +80,7 @@ def map_user_input(pgkey):
 
 
 def user_input(pgkey):
-    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, accel, wheel, direction
+    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, WALLS, accel, wheel, direction
     if pgkey[pygame.K_w]:
         wheel = LEFT
         direction = FORWARD
@@ -177,6 +177,11 @@ def user_input(pgkey):
         map_settings()
     else:
         keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
+    if pgkey[pygame.K_n]:
+        WALLS = []
+        keyboard.update_key(keyboard_layout, kl.Key.N, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.N, unused_key_info)
 
 def execute():
     global WALLS
