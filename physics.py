@@ -76,7 +76,7 @@ def resolve_past_collision(walls, collisions, old_position, new_position, R, F, 
         nv3 = np.linalg.norm(v3)
 
         new_position = v1+(v3/nv3 * (R - nv3))
-        new_position += np.array([np.sin(angle),np.cos(angle)])*F*(1-percentile_barely_avoid_collision)
+        new_position += np.array([np.sin(angle),np.cos(angle)])*F*(1-percentile)
 
         # new_position = [old_position[0]+F*np.cos(angle)*percentile_barely_avoid_collision + F * np.cos(angle+np.pi) * (1-percentile_barely_avoid_collision),old_position[1]+F*np.sin(angle)*percentile_barely_avoid_collision + F * np.sin(angle+np.pi) * (1-percentile_barely_avoid_collision)]
 
