@@ -61,7 +61,7 @@ def resolve_past_collision(walls, collisions, old_position, new_position, R, F, 
     if len(distances) == 0:
         return new_position
     indices = np.argsort(distances)
-    if len(indices) == 1:
+    if len(indices) > 0:
         i = indices[0]
         collision_handled = collisions[i]
         wall_collided_with = walls[i]
