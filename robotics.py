@@ -52,7 +52,7 @@ class Robot:
                 if is_intersection:
                     new_position = new_P
                     update = True
-                    self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
+            self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
             self.position = [self.position[0]+self.force*np.cos(np.radians(self.orientation)),self.position[1]+self.force*np.sin(np.radians(self.orientation))]
             utils.clip(self.position, [self.radius+1, self.radius+1], [config.WIDTH - int(config.HEIGHT / 3) - self.radius-1, config.HEIGHT - int(config.HEIGHT / 3) - self.radius-1], self)
             self.orientation = np.degrees(theta)
@@ -75,7 +75,7 @@ class Robot:
                 if is_intersection:
                     new_position = new_P
                     update = True
-                    self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
+            self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
             self.position = [self.position[0]+self.force*np.cos(np.radians(self.orientation)),self.position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
 
             utils.clip(self.position, [self.radius+1, self.radius+1], [config.WIDTH - int(config.HEIGHT / 3) - self.radius-1, config.HEIGHT - int(config.HEIGHT / 3) - self.radius-1], self)

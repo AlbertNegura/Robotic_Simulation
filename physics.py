@@ -26,7 +26,6 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     new_position = [P[0] + F * np.cos(angle), P[1] + F * np.sin(angle)]
 
 
-    # if line is inside of circle, stop circle
 
     # DCD if speed under (empirically-determined) speed -> above this, tunneling is too pronounced so need to do CCD
     if F*np.cos(angle) < (R + tolerance) and F*np.sin(angle) < (R + tolerance):
@@ -59,13 +58,11 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     # check and resolve frontal collision
     collision_point = utils.intersection([np.subtract(wall_init,radius_along_orientation), np.subtract(wall_end,radius_along_orientation)], [position,new_position])
     if collision_point is not None:
-        print("here")
         movement_before_collision = [collision_point[0] - P[0] + R*np.cos(angle),collision_point[1] - P[1] + R*np.sin(angle)]
         norm_movement_before_collision = np.linalg.norm(movement_before_collision)
         norm_movement = np.linalg.norm([new_position[0]-P[0],new_position[1]-P[1]])
         percentile_movement = norm_movement_before_collision / norm_movement
-        new_P = [P[0] + F*np.cos(angle)*percentile_movement + 0.1*np.cos(angle),P[1] + F*np.sin(angle)*percentile_movement + 0.1*np.sin(angle)]
-
+        new_P = [new_position[0] - F*np.cos(angle)*percentile_movement + 0.1*np.cos(angle),new_position[1] - F*np.sin(angle)*percentile_movement + 0.1*np.sin(angle)]
 
         # wall vector
         wall_v = [wall_end[0] - wall_init[0],wall_end[1] - wall_init[1]]
