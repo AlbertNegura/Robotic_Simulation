@@ -55,7 +55,10 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
 def resolve_past_collision(collisions, old_position, new_position, R, F, angle, tolerance=0.):
     # work in radians
     angle = np.radians(angle)
+    distances = []
+    for collision in collisions:
+        distances.append(utils.distance_between(old_position,collision))
 
-    print(collisions)
+
 
     return new_position
