@@ -268,6 +268,7 @@ def execute():
         if current_frame > 2 and (DRAW_TRAIL or DISAPPEARING_TRAIL):
             visualization.draw_trail(pygame, screen, robot, DISAPPEARING_TRAIL)
         robot.adjust_sensors(WALLS)
+        robot.adjust_sensors(EDGE_WALLS)
 
         if SHOW_SENSORS:
             visualization.draw_sensors(pygame, screen, robot)
