@@ -58,8 +58,17 @@ def resolve_past_collision(collisions, old_position, new_position, R, F, angle, 
     distances = []
     for collision in collisions:
         distances.append(utils.distance_between(old_position,collision))
-    print(distances)
+    if len(distances) == 0:
+        return new_position
+    indices = np.argsort(distances)
+    for i in indices:
+        collision_handled = collisions[i]
+        distance = distances[i]
+        travelled = np.linalg.norm([new_position[0]-old_position[0],new_position[1]-old_position[1]])
+        percentile = distance/travelled
+        percentile_barely_avoid_collision = (distance-R-1)/travelled
+        new_position = [old_position[0]+F*np.cos(angle)*percentile_barely_avoid_collision,old_position[1]+F*np.sin(angle)*percentile_barely_avoid_collision]
 
-    if len(collisions) > 0:
-        return [old_position[0]-F*np.cos(angle),old_position[1]-F*np.sin(angle)]
+        return new_position
+
     return new_position
