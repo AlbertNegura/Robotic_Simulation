@@ -121,7 +121,9 @@ class Robot:
     def adjust_sensors(self, Walls):
         for sensor in self.sensors:
             for wall in Walls:
-                sensor_line = np.array([sensor.get_start(),sensor.get_end()])
+                sensor_start = sensor.get_start()
+                sensor_start = [sensor_start[0]-2,sensor_start[1]-2]
+                sensor_line = np.array([sensor_start,sensor.get_end()])
                 wall_line = np.array([wall[0],wall[1]])
                 # print("lines", sensor_line, wall_line)
                 intersec_point = utils.intersection(sensor_line,wall_line)

@@ -57,7 +57,7 @@ def draw_sensors(pygame, screen, robot):
 
 def draw_sensor_info(screen, robot, font):
     for sensor in robot.sensors:
-        sensor_info = font.render(str(int(sensor.radius)), True, (255, 0, 0))
+        sensor_info = font.render(str(int(sensor.radius  - robot.radius)), True, (255, 0, 0))
         sensor_info_position = sensor.line_start - (sensor.line_start - sensor.line_end) * 0.10
         sensor_info_position[0] -= 5
         sensor_info_position[1] -= 5

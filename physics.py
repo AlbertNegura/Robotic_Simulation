@@ -58,7 +58,8 @@ def resolve_past_collision(collisions, old_position, new_position, R, F, angle, 
     distances = []
     for collision in collisions:
         distances.append(utils.distance_between(old_position,collision))
+    print(distances)
 
-
-
+    if len(collisions) > 0:
+        return [old_position[0]-F*np.cos(angle),old_position[1]-F*np.sin(angle)]
     return new_position
