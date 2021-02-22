@@ -21,7 +21,6 @@ class Robot:
 
     position_history = []
     orientation_history = []
-    velocity_history = []
 
     def save_position(self, new_position):
         self.position_history.append(new_position)
@@ -109,6 +108,9 @@ def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005,num_sensor
     robot.orientation = 0
     robot.acceleration = acceleration
     robot.facing_position = [robot.position[0]+robot.radius-1, robot.position[1]]
+    robot.sensors = []
+    robot.position_history = [robot.position]
+    robot.orientation_history = [robot.orientation]
     prev_degree = robot.orientation #starting angle
     for s in range(num_sensors):
         sensor = Sensor(robot.position, prev_degree, num_sensors, robot)

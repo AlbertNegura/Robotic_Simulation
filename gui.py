@@ -131,13 +131,11 @@ def user_input(pgkey):
         current_tick = STOP
         robot.velocity_left=STOP
         robot.velocity_right=STOP
-        #reset
         keyboard.update_key(keyboard_layout, kl.Key.V, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.V, unused_key_info)
     if pgkey[pygame.K_e]:
         EDIT_MODE = not EDIT_MODE
-        # print("Edit mode ", EDIT_MODE)
         keyboard.update_key(keyboard_layout, kl.Key.E, used_key_info)
     else:
         if not EDIT_MODE:
