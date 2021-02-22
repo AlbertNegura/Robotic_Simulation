@@ -33,6 +33,7 @@ class Robot:
     def move(self, walls):
         update=False
         j = 0
+        new_position = self.position
         if self.velocity_right != self.velocity_left:
             new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius*2, self.position[0], self.position[1], np.radians(self.orientation))
             self.force = np.linalg.norm([self.velocity_left,self.velocity_right])
@@ -45,7 +46,7 @@ class Robot:
                     j = 0
                     update = False
                 wall = walls[j]
-                is_intersection, new_position = physics.resolve_wall_collision(wall[0], wall[1], self.position,
+                is_intersection, new_position = physics.resolve_wall_collision(wall[0], wall[1], new_position,
                                                                                              self.force, self.radius,
                                                                                              self.orientation)
                 if is_intersection:
@@ -67,7 +68,7 @@ class Robot:
                     j = 0
                     update = False
                 wall = walls[j]
-                is_intersection, new_position = physics.resolve_wall_collision(wall[0], wall[1], self.position,
+                is_intersection, new_position = physics.resolve_wall_collision(wall[0], wall[1], new_position,
                                                                                              self.force, self.radius,
                                                                                              self.orientation)
                 if is_intersection:
