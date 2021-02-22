@@ -79,7 +79,7 @@ def map_user_input(pgkey):
 
 
 def user_input(pgkey):
-    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, MAP_MENU, accel, wheel, direction
+    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, accel, wheel, direction
     if pgkey[pygame.K_w]:
         wheel = LEFT
         direction = FORWARD
@@ -162,6 +162,16 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_4, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_4, unused_key_info)
+    if pgkey[pygame.K_5]:
+        DRAW_TRAIL = not DRAW_TRAIL
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_5, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_5, unused_key_info)
+    if pgkey[pygame.K_6]:
+        DISAPPEARING_TRAIL = not DISAPPEARING_TRAIL
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_6, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_6, unused_key_info)
     if pgkey[pygame.K_m]:
         MAP_MENU = True
         keyboard.update_key(keyboard_layout, kl.Key.M, used_key_info)
@@ -249,6 +259,8 @@ def execute():
         #             screen.blit(tangent, (t_coords[0], t_coords[1]))
 
         visualization.draw_robot(pygame, screen, robot)
+        if current_frame > 2 and (DRAW_TRAIL or DISAPPEARING_TRAIL):
+            visualization.draw_trail(pygame, screen, robot, DISAPPEARING_TRAIL)
         robot.adjust_sensors(WALLS)
 
         if SHOW_SENSORS:

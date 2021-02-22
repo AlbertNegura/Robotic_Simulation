@@ -24,7 +24,7 @@ class Robot:
     velocity_history = []
 
     def save_position(self, new_position):
-        self.position_history.append([new_position])
+        self.position_history.append(new_position)
 
     def save_orientation(self, new_orientation):
         self.orientation_history.append(new_orientation)
