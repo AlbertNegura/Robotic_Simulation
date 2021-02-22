@@ -69,7 +69,6 @@ class Robot:
 
             new_position = physics.resolve_past_collision(collisions,self.position, new_position, self.radius, self.force, self.orientation)
             self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
-            self.position = [self.position[0]+self.force*np.cos(np.radians(self.orientation)),self.position[1]+self.force*np.sin(np.radians(self.orientation))]
             utils.clip(self.position, [self.radius+1, self.radius+1], [config.WIDTH - int(config.HEIGHT / 3) - self.radius-1, config.HEIGHT - int(config.HEIGHT / 3) - self.radius-1], self)
             self.orientation = np.degrees(theta)
             for sensor in self.sensors:
