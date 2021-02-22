@@ -276,9 +276,9 @@ def execute():
             visualization.draw_sensor_info(screen, robot, mini_info_font)
 
         if SHOW_VELOCITY_PER_WHEEL:
-            left_vel = info_font.render(str(int(round(robot.velocity_left/ACCELERATION))), True, (0, 0, 0))
+            left_vel = info_font.render(str(int(round(robot.velocity_left/0.1))), True, (0, 0, 0))
             screen.blit(left_vel, (robot.position[0]-10, robot.position[1]-5))
-            right_vel = info_font.render(str(int(round(robot.velocity_right/ACCELERATION))), True, (0, 0, 0))
+            right_vel = info_font.render(str(int(round(robot.velocity_right/0.1))), True, (0, 0, 0))
             screen.blit(right_vel, (robot.position[0]+10, robot.position[1]-5))
 
         if DRAW_GRID:
