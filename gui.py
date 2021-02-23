@@ -1,3 +1,10 @@
+"""Robotic Simulation Software GUI and Main Loop
+Authors:
+Julien Havel
+Kamil Inglot
+Albert Negura
+Sergi Nogues Farres
+"""
 import visualization
 from config import *
 import time
@@ -6,10 +13,11 @@ import tkinter as tk
 from tkinter import filedialog
 import utils
 
+# set up the pygame environment and keyboard
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-
+# global values for acceleration, wheel controlled and direction
 accel = False
 wheel = 0
 direction = 0
@@ -40,6 +48,7 @@ keyboard_layout = klp.KeyboardLayout(
 
 )
 
+# if key is unused, make it black
 unused_key_info = kl.KeyInfo(
     margin=14,
     color=grey,
@@ -47,6 +56,7 @@ unused_key_info = kl.KeyInfo(
     txt_font=pygame.font.SysFont('Arial', key_size // 4),
     txt_padding=(key_size // 6, key_size // 10)
 )
+# otherwise, make it white if unpressed/inactive and green if pressed/active
 used_key_info = kl.KeyInfo(
     margin=14,
     color=pygame.Color('green'),
@@ -54,13 +64,19 @@ used_key_info = kl.KeyInfo(
     txt_font=pygame.font.SysFont('Arial', key_size // 4),
     txt_padding=(key_size // 6, key_size // 10)
 )
+# set all keys to the specified keyboard layout
 for key in valid_keys_kl:
     keyboard.update_key(keyboard_layout, key, unused_key_info)
 
 def accelerate():
+    """
+    Add the corresponding acceleration to the corresponding robot wheels.
+    :return:
+    """
     global accel, wheel, direction
     if not accel:
         return
+    # increase velocity of the corresponding wheel in the corresponding direction by the acceleration value set in the config.ini file
     if wheel == LEFT:
         robot.velocity_left += robot.acceleration*direction
     if wheel == RIGHT:
@@ -74,12 +90,22 @@ def accelerate():
 
 
 def map_user_input(pgkey):
+    """
+    Exit the map menu by pressing escape.
+    :param pgkey: Pygame Key event triggered.
+    :return:
+    """
     global MAP_MENU
     if pgkey[pygame.K_ESCAPE]:
         MAP_MENU = None
 
 
 def user_input(pgkey):
+    """
+    Handle user input.
+    :param pgkey: Pygame Key event triggered.
+    :return:
+    """
     global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, WALLS, accel, wheel, direction
     if pgkey[pygame.K_w]:
         wheel = LEFT
@@ -124,9 +150,10 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.X, unused_key_info)
     if pgkey[pygame.K_v]:
-        global current_tick, robot, current_frame#
+        global current_tick, robot, current_frame
+        # reset the robot and simulation
         current_frame = 0
-        robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS)
+        robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH)
         wheel = BOTH
         direction = STOP
         current_tick = STOP
@@ -178,12 +205,17 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
     if pgkey[pygame.K_n]:
+        # remove all walls
         WALLS = [[0,0],[-1,-1]]
         keyboard.update_key(keyboard_layout, kl.Key.N, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.N, unused_key_info)
 
 def execute():
+    """
+    Execute the main loop of the game - add walls, robot, sensors and simulate motion, collisions and user input.
+    :return:
+    """
     global WALLS
     global EDIT_MODE
     global accel, wheel, direction
@@ -195,6 +227,7 @@ def execute():
     origin = None
     end = None
 
+    # keep track of borders separately to apply different rules to them
     EDGE_WALLS.append([[0, 0], [0, HEIGHT - int(HEIGHT / 3)]])
     EDGE_WALLS.append([[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]])
     EDGE_WALLS.append([[0, 0], [WIDTH, 0]])
@@ -309,6 +342,10 @@ def execute():
 
 
 def map_settings():
+    """
+    Map loader pygame screen.
+    :return:
+    """
     global WALLS, MAP_MENU
     click = False
     t = time.localtime()
@@ -366,6 +403,11 @@ def map_settings():
 
 
 def set_walls(walls):
+    """
+    Sets the WALLS global to the specified walls array. Mainly used for debugging.
+    :param walls:
+    :return:
+    """
     global WALLS
     # for wall in WALLS:
         # print(wall)

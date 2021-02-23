@@ -1,5 +1,10 @@
 """
-Various mathematical helper functions.
+Robotic Simulation Software Various mathematical helper functions.
+Authors:
+Julien Havel
+Kamil Inglot
+Albert Negura
+Sergi Nogues Farres
 """
 import numpy as np
 

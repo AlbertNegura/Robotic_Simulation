@@ -1,3 +1,11 @@
+"""
+Robotic Simulation Software Varioud drawing and visualization functions. In-depth comments not included as they are simply generic pygame drawing functions that are very self-explanatory in this context.
+Authors:
+Julien Havel
+Kamil Inglot
+Albert Negura
+Sergi Nogues Farres
+"""
 from grid import *
 from pygame import gfxdraw
 
@@ -52,10 +60,17 @@ def draw_sensors(pygame, screen, robot):
     :return:
     """
     for sensor in robot.sensors:
-        pygame.draw.line(screen, sensor.colour, sensor.get_start(), sensor.get_end(), 5)
+        pygame.draw.line(screen, sensor.colour, sensor.line_start, sensor.line_end, 5)
 
 
 def draw_sensor_info(screen, robot, font):
+    """
+
+    :param screen:
+    :param robot:
+    :param font:
+    :return:
+    """
     for sensor in robot.sensors:
         sensor_value = max(0,sensor.radius  - robot.radius)
         sensor_info = font.render(str(int(sensor_value)), True, (255, 0, 0))
@@ -66,10 +81,27 @@ def draw_sensor_info(screen, robot, font):
 
 
 def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0)):
+    """
+
+    :param pygame:
+    :param screen:
+    :param origin:
+    :param end:
+    :param width:
+    :param color:
+    :return:
+    """
     pygame.draw.line(screen, color, origin, end, width)
 
 
 def draw_grid(pygame, screen, grid):
+    """
+
+    :param pygame:
+    :param screen:
+    :param grid:
+    :return:
+    """
     for squares in grid:
         for square in squares:
             pygame.gfxdraw.rectangle(screen,
@@ -77,11 +109,30 @@ def draw_grid(pygame, screen, grid):
                                      (0, 200, 200, 50))
 
 def write_text(pygame, screen, text, position = (1300, 300)):
+    """
+
+    :param pygame:
+    :param screen:
+    :param text:
+    :param position:
+    :return:
+    """
     font = pygame.font.SysFont(None, 24)
     img = font.render(text, True, (0,0,0))
     screen.blit(img, position)
 
 def create_button(pygame, screen, text, x, y, width, height):
+    """
+
+    :param pygame:
+    :param screen:
+    :param text:
+    :param x:
+    :param y:
+    :param width:
+    :param height:
+    :return:
+    """
     smallText = pygame.font.Font("freesansbold.ttf",20)
     txt = smallText.render(text, True, (255, 255, 255))
     button = pygame.Rect(x, y, width, height)

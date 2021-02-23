@@ -1,3 +1,8 @@
+"""Robotic Simulation Software Config Reader
+Authors:
+Kamil Inglot
+Albert Negura
+"""
 import configparser
 import robotics
 import pygame
@@ -5,6 +10,7 @@ import keyboardlayout as kl
 import keyboardlayout.pygame as klp
 import pickle
 
+# Constants loaded via configs.
 WIDTH = None
 HEIGHT = None
 RADIUS = None
@@ -16,6 +22,7 @@ BACKWARD = None
 STOP = None
 ACCELERATION = None
 SENSORS = None
+SENSOR_LENGTH = None
 GRID_SIZE = None
 KEY_SIZE = None
 TICK_RATE = None
@@ -29,6 +36,11 @@ DRAW_TRAIL = None
 DISAPPEARING_TRAIL = None
 
 def load_config(config):
+    """
+    Loads the parameters for this simulation from the specified config file loaded with configparser.
+    :param config: configparser.ConfigParser object with the loaded config file
+    :return:
+    """
     default_settings = config['DEFAULT']
     robot_settings = config['ROBOT']
     visualization_settings = config['VISUALIZATION']
@@ -39,7 +51,7 @@ def load_config(config):
     WIDTH = int(default_settings['WIDTH'])
     HEIGHT = int(default_settings['HEIGHT'])
 
-    global RADIUS, LEFT, RIGHT, BOTH, FORWARD, BACKWARD, STOP, ACCELERATION, SENSORS, GRID_SIZE
+    global RADIUS, LEFT, RIGHT, BOTH, FORWARD, BACKWARD, STOP, ACCELERATION, SENSORS, SENSOR_LENGTH, GRID_SIZE
 
     RADIUS = int(robot_settings['RADIUS'])
     LEFT = int(robot_settings['LEFT'])
@@ -50,6 +62,7 @@ def load_config(config):
     STOP = int(robot_settings['STOP'])
     ACCELERATION = float(robot_settings['ACCELERATION'])
     SENSORS = int(robot_settings['SENSORS'])
+    SENSOR_LENGTH = int(robot_settings['SENSOR_LENGTH'])
     GRID_SIZE = float(robot_settings['GRID_SIZE'])
 
     global KEY_SIZE, TICK_RATE, WALL_WIDTH
@@ -66,18 +79,20 @@ def load_config(config):
     DISAPPEARING_TRAIL = bool(debug_settings['DISAPPEARING_TRAIL'])
 
 
+# Load the configuration and set up some globals
 config = configparser.ConfigParser()
 config.read('config.ini')
 load_config(config)
-robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS)
+robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH)
 
 grey = pygame.Color('grey')
 black = pygame.Color('black')
 dark_grey = ~pygame.Color('grey')
 
+# On screen keyboard display
 layout_name = kl.LayoutName.QWERTY
 keyboard = klp.KeyboardLayout
 key_size = KEY_SIZE
-# set the keyboard position and color info
+# Keys currently being used, needs to be updated with new keys according to keyboardlayour key key values
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
                  kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6]

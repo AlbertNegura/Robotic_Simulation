@@ -1,6 +1,10 @@
 """
-Physics script with Physics-based interactions (i.e. collisions).
+Robotic Simulation Software Physics script with Physics-based interactions (i.e. collisions).
+Authors:
+Albert Negura
+Sergi Nogues Farres
 """
+
 import numpy as np
 import utils
 
@@ -53,36 +57,53 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
         return False, new_position
 
 def resolve_past_collision(walls, collisions, old_position, new_position, R, F, angle, tolerance=0.):
+    """
+    Resolve all collisions in a continuous collision detection manner in a narrow phase way. This assumes all broad phase continuous collisions were already calculated and passed as a variable of this function.
+    :param walls: All walls that were collided with
+    :param collisions: All points at which collisions were registered
+    :param old_position: The old position of the robot
+    :param new_position: The new position of the robot before the collision response kicks in
+    :param R: The radius of the robot
+    :param F: The force / speed of the robot
+    :param angle: The angle at which the robot travels
+    :param tolerance: (optional) tolerance parameter
+    :return: new position after collisions are resolved
+    """
+    if len(collisions) == 0: # if no collisions, skip this expensive function
+        return new_position
     # work in radians
     angle = np.radians(angle)
     distances = []
+    # calculate the distance of the robot's edge in its direction of travel to the collision
     for collision in collisions:
         distances.append(utils.distance_between([old_position[0]+R*np.cos(angle), old_position[1]+R*np.sin(angle)],collision))
-    if len(distances) == 0:
-        return new_position
-    indices = np.argsort(distances)
+    indices = np.argsort(distances) # sort by distance to each of the collisions
     if len(indices) > 0:
-        i = indices[0]
+        i = indices[0] # handle closest collision first; TODO: handle all collisions
         collision_handled = collisions[i]
+        # the wall which was collided with - currently unused, but potentially useful (?)
         wall_collided_with = walls[i]
         distance = distances[i]
         travelled = np.linalg.norm([new_position[0]-old_position[0],new_position[1]-old_position[1]])
-        percentile = distance/travelled
-        percentile_barely_avoid_collision = (distance-R-1)/travelled
+        percentile = distance/travelled # the distance to the collision relative to the total distance between the old position and new position with no collisions being handled
 
+        # use the collision point as the closest point and handle it as a regular discrete collision is handled
         v1 = np.array(old_position)
         v2 = np.array(collision_handled)
         v3 = v2 - v1
         nv3 = np.linalg.norm(v3)
 
+        # determine new position after collision
         new_position = v1+(v3/nv3 * (R - nv3))
+        # claculate movement trying to add the paralel component to the velocity
         new_position += np.array([np.sin(angle),np.cos(angle)])*F*(1-percentile)
 
         # new_position = [old_position[0]+F*np.cos(angle)*percentile_barely_avoid_collision + F * np.cos(angle+np.pi) * (1-percentile_barely_avoid_collision),old_position[1]+F*np.sin(angle)*percentile_barely_avoid_collision + F * np.sin(angle+np.pi) * (1-percentile_barely_avoid_collision)]
 
         return new_position
     else:
+        # basically skipped for now
         for i in indices:
             return new_position
-
+    # basically will not happen if it reaches this point
     return new_position
