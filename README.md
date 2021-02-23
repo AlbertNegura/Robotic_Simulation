@@ -6,7 +6,7 @@
 
 #### Documentation: Albert Negura, Kamil Inglot, Sergi Nogues Farres
 
-#### Instructions
+### Instructions
 
 To install dependencies, run: 
 
