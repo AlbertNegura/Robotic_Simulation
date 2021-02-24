@@ -94,13 +94,13 @@ def load_config(config):
     WALL_WIDTH = int(visualization_settings['WALL_WIDTH'])
 
     global SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, CLEANING_MODE
-    SHOW_VELOCITY_PER_WHEEL = bool(debug_settings['SHOW_VELOCITY_PER_WHEEL'])
-    SHOW_SENSORS = bool(debug_settings['SHOW_SENSORS'])
-    SHOW_SENSOR_INFO = bool(debug_settings['SHOW_SENSOR_INFO'])
-    DRAW_GRID = bool(debug_settings['DRAW_GRID'])
-    DRAW_TRAIL = bool(debug_settings['DRAW_TRAIL'])
-    DISAPPEARING_TRAIL = bool(debug_settings['DISAPPEARING_TRAIL'])
-    CLEANING_MODE = bool(debug_settings['CLEANING_MODE'])
+    SHOW_VELOCITY_PER_WHEEL = True if str(debug_settings['SHOW_VELOCITY_PER_WHEEL']) == "True" else False
+    SHOW_SENSORS = True if str(debug_settings['SHOW_SENSORS']) == "True" else False
+    SHOW_SENSOR_INFO = True if str(debug_settings['SHOW_SENSOR_INFO']) == "True" else False
+    DRAW_GRID = True if str(debug_settings['DRAW_GRID']) == "True" else False
+    DRAW_TRAIL = True if str(debug_settings['DRAW_TRAIL']) == "True" else False
+    DISAPPEARING_TRAIL = True if str(debug_settings['DISAPPEARING_TRAIL']) == "True" else False
+    CLEANING_MODE = True if str(debug_settings['CLEANING_MODE']) == "True" else False
 
 
 # Load the configuration and set up some globals
