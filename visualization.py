@@ -107,6 +107,9 @@ def draw_grid(pygame, screen, grid):
             pygame.gfxdraw.rectangle(screen,
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
+            pygame.gfxdraw.box(screen,
+                                     pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                     (155, 118, 53, 50))
 
 def write_text(pygame, screen, text, position = (1300, 300)):
     """
