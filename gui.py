@@ -22,7 +22,7 @@ clock = pygame.time.Clock()
 accel = False
 wheel = 0
 direction = 0
-visited_cells = []
+clean_cells = 0
 
 
 pygame.font.init()
@@ -108,7 +108,7 @@ def user_input(pgkey):
     :param pgkey: Pygame Key event triggered.
     :return:
     """
-    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, accel, wheel, direction
+    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, accel, wheel, direction, clean_cells, grid_1
     if pgkey[pygame.K_w]:
         accel = True
         wheel = LEFT
@@ -168,7 +168,10 @@ def user_input(pgkey):
         current_tick = STOP
         robot.velocity_left=STOP
         robot.velocity_right=STOP
-        visited_cells = []
+        clean_cells = 0
+        for cells in grid_1:
+            for cell in cells:
+                cell.visited = False
         keyboard.update_key(keyboard_layout, kl.Key.V, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.V, unused_key_info)
@@ -236,6 +239,8 @@ def execute():
     global EDIT_MODE
     global accel, wheel, direction
     global current_frame
+    global clean_cells
+    global grid_1
     WALLS = []
     EDGE_WALLS = []
     EDIT_MODE = False
@@ -259,6 +264,7 @@ def execute():
 
     terminate = False
     current_frame = 0
+    clean_cells = 0
 
     grid_1 = visualization.create_grid(10, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
     visualization.draw_grid(pygame, screen, grid_1)
@@ -338,7 +344,7 @@ def execute():
             visualization.draw_grid(pygame, screen, grid_1)
 
         if CLEANING_MODE:
-            grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE)
+            clean_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
             visualization.draw_dirt(pygame, screen, grid_1)
 
         # Position text
@@ -352,6 +358,9 @@ def execute():
         visualization.write_text(pygame,screen,"- Vl, Vr: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.8*HEIGHT)))
         visualization.write_text(pygame,screen,str(round(robot.velocity_left,3)),(WIDTH-int(0.11875*WIDTH),HEIGHT-int(0.8*HEIGHT)))
         visualization.write_text(pygame,screen,str(round(robot.velocity_right,3)),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.8*HEIGHT)))
+        # Cells cleaned
+        visualization.write_text(pygame,screen,"- Cells Cleaned ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.75*HEIGHT)))
+        visualization.write_text(pygame,screen,str(clean_cells),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.75*HEIGHT)))
 
         pygame.display.update()
         clock.tick(60)

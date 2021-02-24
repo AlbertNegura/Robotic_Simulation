@@ -88,18 +88,15 @@ def create_grid(square_size, width, height):
             complete = True
     return grid
 
-clean_cells = 0
 
-def get_cells_at_position_in_radius(grid, position, size, cleaning_range):
+def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_cells):
     center_x = int(position[0]/size)
     center_y = int(position[1]/size)
-    for i in range(0, cleaning_range):
-        grid[center_y][center_x].visited = True
-        grid[center_y][center_x-i].visited = True
-        grid[center_y][center_x+i].visited = True
-        grid[center_y-i][center_x].visited = True
-        grid[center_y-i][center_x-i].visited = True
-        grid[center_y-i][center_x+i].visited = True
-        grid[center_y+i][center_x].visited = True
-        grid[center_y+i][center_x-i].visited = True
-        grid[center_y+i][center_x+i].visited = True
+    xs = [center_x+i for i in range(-cleaning_range,cleaning_range+1)]
+    ys = [center_y+i for i in range(-cleaning_range,cleaning_range+1)]
+    for x in xs:
+        for y in ys:
+            if not grid[y][x].visited:
+                clean_cells += 1
+                grid[y][x].visited = True
+    return clean_cells
