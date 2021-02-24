@@ -111,7 +111,7 @@ def draw_grid(pygame, screen, grid_1):
 def draw_dirt(pygame, screen, grid):
     for squares in grid:
         for square in squares:
-            if square is not square.visited:
+            if not square.visited:
                 pygame.gfxdraw.box(screen,
                                    pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                    (155, 118, 53, 50))

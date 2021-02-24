@@ -3,6 +3,8 @@ Robotic Simulation Software grid display.
 Authors:
 Albert Negura
 """
+import numpy as np
+
 class Square:
     lines = None
     left_line = None
@@ -86,8 +88,14 @@ def create_grid(square_size, width, height):
             complete = True
     return grid
 
-def set_visited(cell, grid):
-    grid[cell[0]][cell[1]].visited = True
-
 def get_cells_at_position_in_radius(grid, position, radius):
-    return []
+    position = np.array(position)
+    i = 0
+    j = 0
+    for cells in grid:
+        for cell in cells:
+            if not cell.visited:
+                if np.linalg.norm(np.array(cell.position) - position ) < radius:
+                    cell.visited = True
+            j+=1
+        i += 1
