@@ -9,6 +9,7 @@ import visualization
 from config import *
 import time
 from typing import Any
+import grid
 import tkinter as tk
 from tkinter import filedialog
 import utils
@@ -252,8 +253,8 @@ def execute():
     terminate = False
     current_frame = 0
 
-    grid = visualization.create_grid(10, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
-    visualization.draw_grid(pygame, screen, grid)
+    grid_1 = visualization.create_grid(10, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
+    visualization.draw_grid(pygame, screen, grid_1)
 
     while not terminate:
         screen.fill((255,255,255))
@@ -328,16 +329,16 @@ def execute():
             screen.blit(right_vel, (robot.position[0]+10, robot.position[1]-5))
 
         if DRAW_GRID:
-            visualization.draw_grid(pygame, screen, grid)
+            visualization.draw_grid(pygame, screen, grid_1)
 
         if CLEANING_MODE:
-            grid_covered = grid.get_cells_at_position_in_radius(grid, robot.position, robot.radius)
+            grid_covered = grid.get_cells_at_position_in_radius(grid_1, robot.position, robot.radius)
             for cell in grid_covered:
                 if cell not in robot.grid_covered:
                     robot.grid_covered.append(cell)
-                    grid.set_visited(grid, cell)
+                    grid.set_visited(grid_1, cell)
 
-            visualization.draw_dirt(pygame, screen, grid)
+            visualization.draw_dirt(pygame, screen, grid_1)
 
         # Position text
         visualization.write_text(pygame,screen,"- Frame/FPS: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)))

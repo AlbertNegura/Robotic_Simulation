@@ -94,7 +94,7 @@ def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0)):
     pygame.draw.line(screen, color, origin, end, width)
 
 
-def draw_grid(pygame, screen, grid):
+def draw_grid(pygame, screen, grid_1):
     """
 
     :param pygame:
@@ -102,7 +102,7 @@ def draw_grid(pygame, screen, grid):
     :param grid:
     :return:
     """
-    for squares in grid:
+    for squares in grid_1:
         for square in squares:
             pygame.gfxdraw.rectangle(screen,
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
