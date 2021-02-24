@@ -266,7 +266,7 @@ def execute():
     current_frame = 0
     clean_cells = 0
 
-    grid_1 = visualization.create_grid(10, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
+    grid_1 = visualization.create_grid(GRID_SIZE, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
     visualization.draw_grid(pygame, screen, grid_1)
 
     while not terminate:
