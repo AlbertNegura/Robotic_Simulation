@@ -57,6 +57,15 @@ class Robot:
         new_position = self.position
         walls_collided_with = []
 
+        if self.velocity_right > self.radius/2:
+            self.velocity_right = self.radius
+        if self.velocity_right < -self.radius/2:
+            self.velocity_right = -self.radius
+        if self.velocity_left > self.radius/2:
+            self.velocity_left = self.radius
+        if self.velocity_left < -self.radius/2:
+            self.velocity_left = -self.radius
+
         # calculate force
         self.force = np.linalg.norm([self.velocity_left, self.velocity_right]) * np.sign(
             self.velocity_left + self.velocity_right)
