@@ -24,6 +24,12 @@ ACCELERATION = None
 SENSORS = None
 SENSOR_LENGTH = None
 GRID_SIZE = None
+HIDDEN_NODES = None
+DIRT = None
+DIRT_SIZE = None
+DIRT_VALUE = None
+COLLISION_VALUE = None
+SENSOR_VALUE = None
 KEY_SIZE = None
 TICK_RATE = None
 WALL_WIDTH = None
@@ -43,6 +49,8 @@ def load_config(config):
     """
     default_settings = config['DEFAULT']
     robot_settings = config['ROBOT']
+    model_settings = config['MODEL']
+    terrain_settings = config['TERRAIN']
     visualization_settings = config['VISUALIZATION']
     debug_settings = config['DEBUG']
 
@@ -64,6 +72,16 @@ def load_config(config):
     SENSORS = int(robot_settings['SENSORS'])
     SENSOR_LENGTH = int(robot_settings['SENSOR_LENGTH'])
     GRID_SIZE = float(robot_settings['GRID_SIZE'])
+
+    global HIDDEN_NODES
+    HIDDEN_NODES = int(model_settings['HIDDEN_NODES'])
+
+    global DIRT, DIRT_SIZE, DIRT_VALUE, COLLISION_VALUE, SENSOR_VALUE
+    DIRT = int(terrain_settings['DIRT'])
+    DIRT_SIZE = int(terrain_settings['DIRT_SIZE'])
+    DIRT_VALUE = int(terrain_settings['DIRT_VALUE'])
+    COLLISION_VALUE = int(terrain_settings['COLLISION_VALUE'])
+    SENSOR_VALUE = int(terrain_settings['SENSOR_VALUE'])
 
     global KEY_SIZE, TICK_RATE, WALL_WIDTH
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])
