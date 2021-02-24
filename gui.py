@@ -183,6 +183,10 @@ def user_input(pgkey):
             keyboard.update_key(keyboard_layout, kl.Key.E, unused_key_info)
     if pgkey[pygame.K_c]:
         CLEANING_MODE = not CLEANING_MODE
+        clean_cells = 0
+        for cells in grid_1:
+            for cell in cells:
+                cell.visited = False
         keyboard.update_key(keyboard_layout, kl.Key.C, used_key_info)
     else:
         if not CLEANING_MODE:
