@@ -268,7 +268,7 @@ def execute():
 
     grid_1 = visualization.create_grid(GRID_SIZE, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
     visualization.draw_grid(pygame, screen, grid_1)
-
+    size_of_grid = len(grid_1)*len(grid_1[0])
     while not terminate:
         screen.fill((255,255,255))
         keyboard_layout.draw(screen)
@@ -360,7 +360,7 @@ def execute():
         visualization.write_text(pygame,screen,str(round(robot.velocity_right,3)),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.8*HEIGHT)))
         # Cells cleaned
         visualization.write_text(pygame,screen,"- Cells Cleaned ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.75*HEIGHT)))
-        visualization.write_text(pygame,screen,str(clean_cells),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.75*HEIGHT)))
+        visualization.write_text(pygame,screen,str(clean_cells)+" / "+str(round(clean_cells/size_of_grid*100,3))+"%",(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.75*HEIGHT)))
 
         pygame.display.update()
         clock.tick(60)
