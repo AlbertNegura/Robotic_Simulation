@@ -3,8 +3,6 @@ Robotic Simulation Software grid display.
 Authors:
 Albert Negura
 """
-import numpy as np
-
 class Square:
     lines = None
     left_line = None
