@@ -83,7 +83,7 @@ def load_config(config):
 
     global DIRT, DIRT_VALUE, COLLISION_VALUE, SENSOR_VALUE, CLEANING_RANGE
     DIRT = int(terrain_settings['DIRT'])
-    CLEANING_RANGE = int(terrain_settings['CLEANING_RANGE'])
+    CLEANING_RANGE = int(RADIUS/GRID_SIZE)
     DIRT_VALUE = int(terrain_settings['DIRT_VALUE'])
     COLLISION_VALUE = int(terrain_settings['COLLISION_VALUE'])
     SENSOR_VALUE = int(terrain_settings['SENSOR_VALUE'])
