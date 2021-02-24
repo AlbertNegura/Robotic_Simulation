@@ -88,9 +88,9 @@ def create_grid(square_size, width, height):
             complete = True
     return grid
 
+clean_cells = 0
 
-def get_cells_at_position_in_radius(grid, position, radius, size):
-    cleaning_range = int(radius / size)
+def get_cells_at_position_in_radius(grid, position, size, cleaning_range):
     center_x = int(position[0]/size)
     center_y = int(position[1]/size)
     for i in range(0, cleaning_range):
