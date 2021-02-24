@@ -338,7 +338,7 @@ def execute():
             visualization.draw_grid(pygame, screen, grid_1)
 
         if CLEANING_MODE:
-            grid.get_cells_at_position_in_radius(grid_1, robot.position, robot.radius, GRID_SIZE)
+            grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE)
             visualization.draw_dirt(pygame, screen, grid_1)
 
         # Position text

@@ -29,6 +29,7 @@ POPULATION = None
 MUTATION = None
 DIRT = None
 DIRT_SIZE = None
+CLEANING_RANGE = None
 DIRT_VALUE = None
 COLLISION_VALUE = None
 SENSOR_VALUE = None
@@ -81,9 +82,10 @@ def load_config(config):
     POPULATION = float(model_settings['POPULATION'])
     MUTATION = float(model_settings['MUTATION'])
 
-    global DIRT, DIRT_SIZE, DIRT_VALUE, COLLISION_VALUE, SENSOR_VALUE
+    global DIRT, DIRT_SIZE, DIRT_VALUE, COLLISION_VALUE, SENSOR_VALUE, CLEANING_RANGE
     DIRT = int(terrain_settings['DIRT'])
     DIRT_SIZE = int(terrain_settings['DIRT_SIZE'])
+    CLEANING_RANGE = int(terrain_settings['CLEANING_RANGE'])
     DIRT_VALUE = int(terrain_settings['DIRT_VALUE'])
     COLLISION_VALUE = int(terrain_settings['COLLISION_VALUE'])
     SENSOR_VALUE = int(terrain_settings['SENSOR_VALUE'])
