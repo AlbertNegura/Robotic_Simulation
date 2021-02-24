@@ -183,5 +183,6 @@ def circle_intersect(line1, line2, radius, angle):
             intersection_point = intersection(line1,[[x,y],[x2,y2]])
     return intersection_point
 
+
 def sigmoid(z):
     return 1/(1 + np.exp(-z))

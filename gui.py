@@ -21,6 +21,7 @@ clock = pygame.time.Clock()
 accel = False
 wheel = 0
 direction = 0
+visited_cells = []
 
 
 pygame.font.init()
@@ -159,6 +160,7 @@ def user_input(pgkey):
         current_tick = STOP
         robot.velocity_left=STOP
         robot.velocity_right=STOP
+        visited_cells = []
         keyboard.update_key(keyboard_layout, kl.Key.V, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.V, unused_key_info)
@@ -329,6 +331,12 @@ def execute():
             visualization.draw_grid(pygame, screen, grid)
 
         if CLEANING_MODE:
+            grid_covered = grid.get_cells_at_position_in_radius(robot.position, robot.radius)
+            for cell in grid_covered:
+                if cell not in robot.grid_covered:
+                    robot.grid_covered.append(cell)
+                    grid.set_visited(cell)
+
             visualization.draw_dirt(pygame, screen, grid)
 
         # Position text
