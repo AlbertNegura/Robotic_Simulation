@@ -110,42 +110,49 @@ def user_input(pgkey):
     """
     global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, accel, wheel, direction
     if pgkey[pygame.K_w]:
+        accel = True
         wheel = LEFT
         direction = FORWARD
         keyboard.update_key(keyboard_layout, kl.Key.W, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.W, unused_key_info)
     if pgkey[pygame.K_s]:
+        accel = True
         wheel = LEFT
         direction = BACKWARD
         keyboard.update_key(keyboard_layout, kl.Key.S, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.S, unused_key_info)
     if pgkey[pygame.K_o]:
+        accel = True
         wheel = RIGHT
         direction = FORWARD
         keyboard.update_key(keyboard_layout, kl.Key.O, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.O, unused_key_info)
     if pgkey[pygame.K_l]:
+        accel = True
         wheel = RIGHT
         direction = BACKWARD
         keyboard.update_key(keyboard_layout, kl.Key.L, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.L, unused_key_info)
     if pgkey[pygame.K_t]:
+        accel = True
         wheel = BOTH
         direction = FORWARD
         keyboard.update_key(keyboard_layout, kl.Key.T, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.T, unused_key_info)
     if pgkey[pygame.K_g]:
+        accel = True
         wheel = BOTH
         direction = BACKWARD
         keyboard.update_key(keyboard_layout, kl.Key.G, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.G, unused_key_info)
     if pgkey[pygame.K_x]:
+        accel = True
         wheel = BOTH
         direction = STOP
         keyboard.update_key(keyboard_layout, kl.Key.X, used_key_info)
@@ -289,7 +296,6 @@ def execute():
                     DRAWING = False
 
             if event.type == pygame.KEYDOWN:
-                accel = True
                 user_input(pygame.key.get_pressed())
             elif event.type == pygame.KEYUP:
                 accel = False
