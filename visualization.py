@@ -108,6 +108,14 @@ def draw_grid(pygame, screen, grid):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
+def draw_dirt(pygame, screen, grid):
+    for squares in grid:
+        for square in squares:
+            if square is not square.visited:
+                pygame.gfxdraw.box(screen,
+                                   pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                   (155, 118, 53, 50))
+
 def write_text(pygame, screen, text, position = (1300, 300)):
     """
 

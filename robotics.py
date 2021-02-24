@@ -25,6 +25,7 @@ class Robot:
     velocity_left = 0
     velocity = [0, 0]
     force = 0
+    grid_covered = []
 
     position_history = []
     orientation_history = []
