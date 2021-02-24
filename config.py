@@ -27,6 +27,8 @@ GRID_SIZE = None
 HIDDEN_NODES = None
 POPULATION = None
 MUTATION = None
+LIFESPAN = None
+SHOW_EVERY_X_GENERATIONS = None
 DIRT = None
 CLEANING_RANGE = None
 DIRT_VALUE = None
@@ -76,10 +78,12 @@ def load_config(config):
     SENSOR_LENGTH = int(robot_settings['SENSOR_LENGTH'])
     GRID_SIZE = float(robot_settings['GRID_SIZE'])
 
-    global HIDDEN_NODES, POPULATION, MUTATION
+    global HIDDEN_NODES, POPULATION, MUTATION, LIFESPAN, SHOW_EVERY_X_GENERATIONS
     HIDDEN_NODES = int(model_settings['HIDDEN_NODES'])
     POPULATION = float(model_settings['POPULATION'])
     MUTATION = float(model_settings['MUTATION'])
+    LIFESPAN = int(model_settings['LIFESPAN']) # in seconds? frames * tickrate?
+    SHOW_EVERY_X_GENERATIONS = int(model_settings['SHOW_EVERY_X_GENERATIONS'])
 
     global DIRT, DIRT_VALUE, COLLISION_VALUE, SENSOR_VALUE, CLEANING_RANGE
     DIRT = int(terrain_settings['DIRT'])
