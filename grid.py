@@ -85,3 +85,9 @@ def create_grid(square_size, width, height):
         if y >= height:
             complete = True
     return grid
+
+def set_visited(cell, grid):
+    grid[cell[0]][cell[1]].visited = True
+
+def get_cells_at_position_in_radius(grid, position, radius):
+    return []
