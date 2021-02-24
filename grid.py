@@ -88,3 +88,6 @@ def create_grid(square_size, width, height):
 
 def set_visited(cell, grid):
     grid[cell[0]][cell[1]].visited = True
+
+def get_cells_at_position_in_radius(grid, position, radius):
+    return []
