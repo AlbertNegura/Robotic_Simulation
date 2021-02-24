@@ -3,6 +3,8 @@ Robotic Simulation Software grid display.
 Authors:
 Albert Negura
 """
+
+
 class Square:
     lines = None
     left_line = None
@@ -19,11 +21,12 @@ class Square:
         Define a square as its 4 lines.
         :return:
         """
-        self.position = [self.left_line[0][0],self.left_line[0][1]]
+        self.position = [self.left_line[0][0], self.left_line[0][1]]
         self.lines.append(self.left_line)
         self.lines.append(self.top_line)
         self.lines.append(self.right_line)
         self.lines.append(self.bottom_line)
+
 
 def create_square(position, side):
     """
@@ -41,10 +44,10 @@ def create_square(position, side):
     left_bottom = [left_top[0], left_top[1] + side]
     right_bottom = [left_top[0] + side, left_top[1] + side]
 
-    square.left_line = [left_top,left_bottom]
-    square.top_line = [left_top,right_top]
-    square.right_line = [right_top,right_bottom]
-    square.bottom_line = [right_bottom,left_bottom]
+    square.left_line = [left_top, left_bottom]
+    square.top_line = [left_top, right_top]
+    square.right_line = [right_top, right_bottom]
+    square.bottom_line = [right_bottom, left_bottom]
 
     square.add_lines()
 
@@ -88,10 +91,10 @@ def create_grid(square_size, width, height):
 
 
 def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_cells):
-    center_x = int(position[0]/size)
-    center_y = int(position[1]/size)
-    xs = [center_x+i for i in range(-cleaning_range,cleaning_range+1)]
-    ys = [center_y+i for i in range(-cleaning_range,cleaning_range+1)]
+    center_x = int(position[0] / size)
+    center_y = int(position[1] / size)
+    xs = [center_x + i for i in range(-cleaning_range, cleaning_range + 1)]
+    ys = [center_y + i for i in range(-cleaning_range, cleaning_range + 1)]
     for x in xs:
         for y in ys:
             if not grid[y][x].visited:
