@@ -88,14 +88,14 @@ def create_grid(square_size, width, height):
             complete = True
     return grid
 
+def search_position(grid, position, size):
+    x_pos_multiple = int(position[0]/size)
+    y_pos_multiple = int(position[1]/size)
+    return grid[y_pos_multiple][x_pos_multiple]
+
 def get_cells_at_position_in_radius(grid, position, radius):
     position = np.array(position)
     i = 0
     j = 0
-    for cells in grid:
-        for cell in cells:
-            if not cell.visited:
-                if np.linalg.norm(np.array(cell.position) - position ) < radius:
-                    cell.visited = True
-            j+=1
-        i += 1
+    cell_at_position = search_position(grid, position, grid[0][0].size)
+    cell_at_position.visited = True
