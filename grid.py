@@ -10,6 +10,7 @@ class Square:
     top_line = None
     bottom_line = None
     position = None
+    visited = False
     row = -1
     column = -1
 

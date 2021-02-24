@@ -106,7 +106,7 @@ def user_input(pgkey):
     :param pgkey: Pygame Key event triggered.
     :return:
     """
-    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, WALLS, accel, wheel, direction
+    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, accel, wheel, direction
     if pgkey[pygame.K_w]:
         wheel = LEFT
         direction = FORWARD
@@ -168,6 +168,12 @@ def user_input(pgkey):
     else:
         if not EDIT_MODE:
             keyboard.update_key(keyboard_layout, kl.Key.E, unused_key_info)
+    if pgkey[pygame.K_c]:
+        CLEANING_MODE = not CLEANING_MODE
+        keyboard.update_key(keyboard_layout, kl.Key.C, used_key_info)
+    else:
+        if not CLEANING_MODE:
+            keyboard.update_key(keyboard_layout, kl.Key.C, unused_key_info)
     if pgkey[pygame.K_1]:
         SHOW_VELOCITY_PER_WHEEL = not SHOW_VELOCITY_PER_WHEEL
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_1, used_key_info)
@@ -321,6 +327,9 @@ def execute():
 
         if DRAW_GRID:
             visualization.draw_grid(pygame, screen, grid)
+
+        if CLEANING_MODE:
+            visualization.draw_dirt(pygame, screen, grid)
 
         # Position text
         visualization.write_text(pygame,screen,"- Frame/FPS: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)))
