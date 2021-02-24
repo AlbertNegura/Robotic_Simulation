@@ -331,11 +331,11 @@ def execute():
             visualization.draw_grid(pygame, screen, grid)
 
         if CLEANING_MODE:
-            grid_covered = grid.get_cells_at_position_in_radius(robot.position, robot.radius)
+            grid_covered = grid.get_cells_at_position_in_radius(grid, robot.position, robot.radius)
             for cell in grid_covered:
                 if cell not in robot.grid_covered:
                     robot.grid_covered.append(cell)
-                    grid.set_visited(cell)
+                    grid.set_visited(grid, cell)
 
             visualization.draw_dirt(pygame, screen, grid)
 
