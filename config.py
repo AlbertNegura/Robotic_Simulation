@@ -8,6 +8,8 @@ import robotics
 import pygame
 import keyboardlayout as kl
 import keyboardlayout.pygame as klp
+import  neuralnetwork
+import math
 import pickle
 
 # Constants loaded via configs.
@@ -112,6 +114,10 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 load_config(config)
 robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH)
+
+individuals_list = []
+for i in range(math.floor(POPULATION)):
+    individuals_list.append(neuralnetwork.RNN(robot.sensor_values(), robot.vr_vl()))
 
 grey = pygame.Color('grey')
 black = pygame.Color('black')

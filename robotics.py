@@ -170,6 +170,23 @@ class Robot:
         """
         self.facing_position = utils.rotate_line(self.position, self.radius, np.radians(self.orientation))
 
+    def sensor_values(self):
+        """
+        :return: numpy array of shape (1,num_sensors) with current sensor values
+        Used for RNN purposes
+        """
+        values = []
+        for s in self.sensors:
+            values.append(s.radius)
+        return np.array([values])
+
+    def vr_vl(self):
+        """
+        :return: numpy array of shape (1,2) with current Vl and Vr
+        Used for RNN purposes
+        """
+        return np.array([[self.velocity_left, self.velocity_right]])
+
 
 def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005,num_sensors = 12, max_radius = 50):
     """

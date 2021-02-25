@@ -43,9 +43,9 @@ class RNN:
         self.synapse_1 = None
         self.synapse_h = None
 
-input = []
+"""input = []
 for i in range(12):
     input.append(100)
 x = np.array([input])
 nn = RNN(x, np.array([[0,0]]))
-nn.feedforward()
+nn.feedforward()"""
