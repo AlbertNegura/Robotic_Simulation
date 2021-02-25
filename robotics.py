@@ -56,7 +56,6 @@ class Robot:
         update=False
         j = 0
         new_position = self.position
-        walls_collided_with = []
 
         if self.velocity_right > self.radius/1.5:
             self.velocity_right = round(self.radius/1.5,1)
@@ -94,19 +93,11 @@ class Robot:
                 if is_intersection:
                     new_position = new_P
                     update = True
-            collisions = []
             # determine new position after accounting for parallel velocity component
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
             # if it moves too quickly, try to resolve continuous collisions
-            if self.force >= self.radius:
-                for wall in walls:
-                    # check if it has collided in the past frame
-                    collision_point = utils.circle_intersect(wall,[[self.position[0]-self.radius*np.cos(np.radians(self.orientation)), self.position[1]-self.radius*np.sin(np.radians(self.orientation))],new_position], self.radius, self.orientation)
-                    if collision_point is not None:
-                        walls_collided_with.append(wall)
-                        collisions.append(collision_point)
             # resolve collisions using continuous collision detection - if no collisions, just returns the new_position itself
-            new_position = physics.resolve_past_collision(walls_collided_with, collisions,self.position, new_position, self.radius, self.force, self.orientation)
+            new_position = physics.resolve_past_collision(walls, [],self.position, new_position, self.radius, self.force, self.orientation)
             # set the robot position to the new position
             self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
             # clip the robot's position to within the boundaries - can do it earlier
@@ -140,16 +131,9 @@ class Robot:
             # determine new position after accounting for parallel velocity component
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
             # if it moves too quickly, try to resolve continuous collisions
-            if self.force >= self.radius:
-                for wall in walls:
-                    # check if it has collided in the past frame
-                    collision_point = utils.circle_intersect(wall,[[self.position[0]-self.radius*np.cos(np.radians(self.orientation)), self.position[1]-self.radius*np.sin(np.radians(self.orientation))],new_position], self.radius, self.orientation)
-                    if collision_point is not None:
-                        walls_collided_with.append(wall)
-                        collisions.append(collision_point)
 
             # resolve collisions using continuous collision detection - if no collisions, just returns the new_position itself
-            new_position = physics.resolve_past_collision(walls_collided_with, collisions,self.position, new_position, self.radius, self.force, self.orientation)
+            new_position = physics.resolve_past_collision(walls, [],self.position, new_position, self.radius, self.force, self.orientation)
             # set the robot position to the new position
             self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
             # clip the robot's position to within the boundaries - can do it earlier

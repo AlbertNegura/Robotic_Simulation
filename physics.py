@@ -56,7 +56,7 @@ def resolve_wall_collision(wall_init, wall_end, P, F, R, angle, tolerance=0.):
     else: # no collision
         return False, new_position
 
-def resolve_past_collision(walls, collisions, old_position, new_position, R, F, angle, tolerance=0.):
+def resolve_past_collision(ws, collisions, old_position, new_position, R, F, angle, tolerance=0.):
     """
     Resolve all collisions in a continuous collision detection manner in a narrow phase way. This assumes all broad phase continuous collisions were already calculated and passed as a variable of this function.
     :param walls: All walls that were collided with
@@ -69,10 +69,25 @@ def resolve_past_collision(walls, collisions, old_position, new_position, R, F, 
     :param tolerance: (optional) tolerance parameter
     :return: new position after collisions are resolved
     """
+    # work in radians
+    temp_ang = angle
+    angle = np.radians(angle)
+    walls = []
+    if F >= R:
+        for wall in ws:
+            # check if it has collided in the past frame
+            collision_point = utils.circle_intersect(wall, [
+                [old_position[0] - R * np.cos(angle),
+                 old_position[1] - R * np.sin(angle)], new_position], R,
+                                                     temp_ang)
+            if collision_point is not None:
+                walls.append(wall)
+                collisions.append(collision_point)
+    else:
+        return new_position
+
     if len(collisions) == 0: # if no collisions, skip this expensive function
         return new_position
-    # work in radians
-    angle = np.radians(angle)
     distances = []
     # calculate the distance of the robot's edge in its direction of travel to the collision
     for collision in collisions:
