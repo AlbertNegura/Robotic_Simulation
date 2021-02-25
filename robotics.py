@@ -92,7 +92,7 @@ class Robot:
                                                                                              self.orientation)
                 if is_intersection:
                     new_position = new_P
-                    update = True
+                    #update = True
             # determine new position after accounting for parallel velocity component
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
             # if it moves too quickly, try to resolve continuous collisions
@@ -126,7 +126,7 @@ class Robot:
                                                                                              self.orientation)
                 if is_intersection:
                     new_position = new_P
-                    update = True
+                    #update = True
             collisions = []
             # determine new position after accounting for parallel velocity component
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
