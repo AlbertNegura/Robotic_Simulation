@@ -245,19 +245,10 @@ def execute():
     global current_frame
     global clean_cells
     global grid_1
-    WALLS = []
-    EDGE_WALLS = []
     EDIT_MODE = False
     DRAWING = False
     origin = None
     end = None
-
-    # keep track of borders separately to apply different rules to them
-    EDGE_WALLS.append([[0, 0], [0, HEIGHT - int(HEIGHT / 3)]])
-    EDGE_WALLS.append([[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]])
-    EDGE_WALLS.append([[0, 0], [WIDTH, 0]])
-    EDGE_WALLS.append([[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]])
-    WALLS.append([[0,0],[-1,-1]]) # need to add a dummy wall
 
     # screen = pygame.display.set_mode((WIDTH, HEIGHT))
     # clock = pygame.time.Clock()
