@@ -13,6 +13,7 @@ import grid
 import tkinter as tk
 from tkinter import filedialog
 import utils
+import numpy as np
 
 # set up the pygame environment and keyboard
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -108,7 +109,7 @@ def user_input(pgkey):
     :param pgkey: Pygame Key event triggered.
     :return:
     """
-    global EDIT_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, accel, wheel, direction, clean_cells, grid_1
+    global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, accel, wheel, direction, clean_cells, grid_1
     if pgkey[pygame.K_w]:
         accel = True
         wheel = LEFT
@@ -245,7 +246,10 @@ def execute():
     global current_frame
     global clean_cells
     global grid_1
-    EDIT_MODE = False
+    global REPLAY_MODE
+    global POSITION_HISTORY
+    global ORIENTATION_HISTORY
+
     DRAWING = False
     origin = None
     end = None
@@ -271,7 +275,6 @@ def execute():
         for event in events:
             if event.type == pygame.QUIT:
                 terminate = True
-
             if EDIT_MODE:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if not DRAWING:
@@ -317,6 +320,12 @@ def execute():
         #     if tangent_coords is not None:
         #         for t_coords in tangent_coords:
         #             screen.blit(tangent, (t_coords[0], t_coords[1]))
+        if REPLAY_MODE:
+            if len(ORIENTATION_HISTORY) > 0 and len(POSITION_HISTORY) > 0:
+                robot.position = POSITION_HISTORY[0]
+                POSITION_HISTORY = np.delete(POSITION_HISTORY, (0), axis = 0)
+                robot.orientation = ORIENTATION_HISTORY[0]
+                ORIENTATION_HISTORY = np.delete(ORIENTATION_HISTORY, (0), axis=0)
 
         visualization.draw_robot(pygame, screen, robot)
         if current_frame > 2 and (DRAW_TRAIL or DISAPPEARING_TRAIL):
@@ -369,7 +378,7 @@ def map_settings():
     Map loader pygame screen.
     :return:
     """
-    global WALLS, MAP_MENU
+    global WALLS, MAP_MENU, REPLAY_MODE, POSITION_HISTORY, ORIENTATION_HISTORY, current_frame, grid_1
     click = False
     t = time.localtime()
     while MAP_MENU is not None:
@@ -383,16 +392,18 @@ def map_settings():
         button_1 = visualization.create_button(pygame, screen, "Save Map", 100, 200, 200, 50)
         button_2 = visualization.create_button(pygame, screen, "Load Map", 100, 300, 200, 50)
         button_3 = visualization.create_button(pygame, screen, "Go Back", 100, 400, 200, 50)
-        if button_1.collidepoint((mx, my)):
+        button_4 = visualization.create_button(pygame, screen, "Save Robot Data", 400, 200, 200, 50)
+        button_5 = visualization.create_button(pygame, screen, "Load Robot Data", 400, 300, 200, 50)
+        if button_1.collidepoint((mx, my)): #Save Map
             if click:
                 current_time = time.strftime("%H:%M:%S", t)
-                filename = str(current_time + '.pkl')
+                filename = str('MAP' + current_time + '.pkl')
                 filename = filename.replace(":","")
                 # print("button 1 clicked", filename)
                 with open(filename, 'wb') as output:
                     pickle.dump(WALLS, output, pickle.HIGHEST_PROTOCOL)
 
-        if button_2.collidepoint((mx, my)):
+        if button_2.collidepoint((mx, my)): #Load Map
             if click:
                 file_path = filedialog.askopenfilename()
                 # print("button 2 clicked")
@@ -401,12 +412,24 @@ def map_settings():
                     with open(file_path, 'rb') as input:
                         temp_walls = pickle.load(input)
                         set_walls(temp_walls)
-
-        if button_3.collidepoint((mx,my)):
+        if button_3.collidepoint((mx,my)): #Back
             if click:
                 MAP_MENU = None
                 keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
                 return
+        if button_4.collidepoint((mx,my)): #Save Robot Data
+            if click:
+                save_bot_data(robot)
+        if button_5.collidepoint((mx,my)): #Load Robot Data
+            if click:
+                file_path = filedialog.askopenfilename()
+                data = np.load(file_path)
+                POSITION_HISTORY = data['position']
+                ORIENTATION_HISTORY = data['orientation']
+                if len(file_path) > 0:
+                    REPLAY_MODE = not REPLAY_MODE
+                    current_frame = 0
+                    grid.reset_grid(grid_1)
 
         click = False
         events = pygame.event.get()
@@ -432,8 +455,12 @@ def set_walls(walls):
     :return:
     """
     global WALLS
-    # for wall in WALLS:
-        # print(wall)
     WALLS = walls
-    # for wall in WALLS:
-        # print(wall)
+
+
+def save_bot_data(robot):
+    t = time.localtime()
+    current_time = time.strftime("%H:%M:%S", t)
+    filename = str('BOT' + current_time + '.npz')
+    filename = filename.replace(":", "")
+    np.savez(filename, position = robot.position_history, orientation = robot.orientation_history)

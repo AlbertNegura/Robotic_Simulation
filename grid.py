@@ -101,3 +101,18 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
                 clean_cells += 1
                 grid[y][x].visited = True
     return clean_cells
+
+
+def reset_grid(grid):
+    """
+    resets grid visited positions creating dust everywhere
+    Authors:
+    Kamil Inglot
+    """
+    rows = len(grid)
+    columns = len(grid[0])
+    for i in range(rows):
+        for j in range(columns):
+            grid[i][j].visited = False
+    return grid
+

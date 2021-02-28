@@ -47,6 +47,7 @@ DRAW_GRID = None
 DRAW_TRAIL = None
 DISAPPEARING_TRAIL = None
 CLEANING_MODE = None
+REPLAY_MODE = None
 
 def load_config(config):
     """

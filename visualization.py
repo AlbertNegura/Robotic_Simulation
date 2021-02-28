@@ -145,5 +145,5 @@ def create_button(pygame, screen, text, x, y, width, height):
     txt = smallText.render(text, True, (255, 255, 255))
     button = pygame.Rect(x, y, width, height)
     pygame.draw.rect(screen, (0, 0, 0), button)
-    screen.blit(txt, (x + (width / 2), y + (height / 2)))
+    screen.blit(txt, (x + (width / 2) - 80, y + (height / 2) - 10))
     return button
