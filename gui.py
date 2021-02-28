@@ -423,10 +423,10 @@ def map_settings():
         if button_5.collidepoint((mx,my)): #Load Robot Data
             if click:
                 file_path = filedialog.askopenfilename()
-                data = np.load(file_path)
-                POSITION_HISTORY = data['position']
-                ORIENTATION_HISTORY = data['orientation']
-                if len(file_path) > 0:
+                if file_path != "":
+                    data = np.load(file_path)
+                    POSITION_HISTORY = data['position']
+                    ORIENTATION_HISTORY = data['orientation']
                     REPLAY_MODE = not REPLAY_MODE
                     current_frame = 0
                     grid.reset_grid(grid_1)
