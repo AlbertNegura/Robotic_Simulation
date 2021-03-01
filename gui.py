@@ -402,10 +402,12 @@ def map_settings():
                 # print("button 1 clicked", filename)
                 with open(filename, 'wb') as output:
                     pickle.dump(WALLS, output, pickle.HIGHEST_PROTOCOL)
+                root.update()
 
         if button_2.collidepoint((mx, my)): #Load Map
             if click:
                 file_path = filedialog.askopenfilename()
+                root.update()
                 # print("button 2 clicked")
                 # print(file_path)
                 if file_path != "":
@@ -416,15 +418,19 @@ def map_settings():
             if click:
                 MAP_MENU = None
                 keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
+                root.update()
                 return
         if button_4.collidepoint((mx,my)): #Save Robot Data
             if click:
                 save_bot_data(robot)
+                root.update()
         if button_5.collidepoint((mx,my)): #Load Robot Data
             if click:
                 file_path = filedialog.askopenfilename()
+                root.update()
                 if file_path != "":
                     data = np.load(file_path)
+                    root.update()
                     POSITION_HISTORY = data['position']
                     ORIENTATION_HISTORY = data['orientation']
                     REPLAY_MODE = not REPLAY_MODE
@@ -443,7 +449,6 @@ def map_settings():
                 map_user_input(pygame.key.get_pressed())
             elif event.type == pygame.KEYUP:
                 map_user_input(pygame.key.get_pressed())
-
         pygame.display.update()
         clock.tick(60)
 
