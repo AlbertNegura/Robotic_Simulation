@@ -235,6 +235,13 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.N, unused_key_info)
 
+
+    # IF EVOLUTION MODE KEY IS PRESSED
+    # pygame.quit()
+    # OPTIONAL: LOAD IN OPTIONS HERE
+    # evolution.execute(options)
+    # execute() WITH RESULTS
+
 def execute():
     """
     Execute the main loop of the game - add walls, robot, sensors and simulate motion, collisions and user input.
