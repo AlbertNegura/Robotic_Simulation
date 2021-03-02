@@ -79,11 +79,11 @@ def load_config(config):
     ACCELERATION = float(robot_settings['ACCELERATION'])
     SENSORS = int(robot_settings['SENSORS'])
     SENSOR_LENGTH = int(robot_settings['SENSOR_LENGTH'])
-    GRID_SIZE = float(robot_settings['GRID_SIZE'])
+    GRID_SIZE = int(robot_settings['GRID_SIZE'])
 
     global HIDDEN_NODES, POPULATION, MUTATION, LIFESPAN, SHOW_EVERY_X_GENERATIONS
     HIDDEN_NODES = int(model_settings['HIDDEN_NODES'])
-    POPULATION = float(model_settings['POPULATION'])
+    POPULATION = int(model_settings['POPULATION'])
     MUTATION = float(model_settings['MUTATION'])
     LIFESPAN = int(model_settings['LIFESPAN']) # in seconds? frames * tickrate?
     SHOW_EVERY_X_GENERATIONS = int(model_settings['SHOW_EVERY_X_GENERATIONS'])
