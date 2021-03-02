@@ -44,12 +44,50 @@ class Evolution:
 
     def __init__(self, this_grid):
         self.population = POPULATION
-        self.nn = neuralnetwork.RNN(np.random.uniform(0, SENSOR_LENGTH, SENSORS), np.array([0,0]), SENSORS, HIDDEN_NODES, 2)
-        self.weights = [self.nn.weight_vector() for _ in range(self.population)]
-        self.map = this_grid.copy()
+        self.iterations = ITERATIONS * TICK_RATE
+        self.generations = LIFESPAN
+        self.nn = [neuralnetwork.RNN(np.random.uniform(0, SENSOR_LENGTH, SENSORS), np.array([0,0]), SENSORS, HIDDEN_NODES, 2) for _ in range(self.population)]
+        self.weights = [nn.weight_vector() for nn in self.nn]
+        self.map = [this_grid.copy() for _ in range(self.population)]
         self.robots = [robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH) for _ in range(self.population)]
-        self.genome_list = [Genome(self.robots[i], self.map, self.weights[i]) for i in range(self.population)]
+        self.genome_list = [Genome(self.robots[i], self.map[i], self.weights[i]) for i in range(self.population)]
+        self.fitnesses = []
 
+
+    def evolve(self):
+        """
+         Note that the "robot" parameter defined in config.py is
+         the base class used to initialize the "robot_sim" and
+         therefore remains unchanged.
+        """
+        for i in range(self.generations):
+            fitness_list = []
+            for i in range(self.population):
+                total_area, collision_number, sensor_values = self.step(self.genome_list[i], self.map[i], self.nn[i])
+                fitness_list.append(fitness.fitness(total_area, collision_number, sensor_values))
+            self.fitnesses.append(fitness_list)
+
+            # TODO: Do EA with fitness_list and update individuals_list
+
+    def step(self, genome, map, nn):
+        """
+        :returns: fitness_parameters to be used in the fitness function
+        """
+        total_area = []
+        collision_number = 0
+        sensor_values = []
+        robot = genome.robot
+        # TODO: use passed map parameter
+        for cycle in range(self.iterations):
+            # move robot
+            rnn_output = nn.feedforward(robot.sensor_values())
+            decode_output(rnn_output, robot)
+            robot.move(WALLS)
+            robot.adjust_sensors(WALLS)
+            robot.adjust_sensors(EDGE_WALLS)
+            # TODO: calculate total_area, collision_number, sensor_values
+
+        return total_area, collision_number, sensor_values
 
 
 """
@@ -69,40 +107,6 @@ PIPELINE
 5) Reproduction of new individuals 
 6) Go back to step 2
 """
-
-def pipeline():
-    """
-     Note that the "robot" parameter defined in config.py is
-     the base class used to initialize the "robot_sim" and
-     therefore remains unchanged.
-    """
-    for i in range(math.floor(ITERATIONS)):
-        fitness_list = []
-        for individual in individuals_list:
-            robot_sim = robot
-            total_area, collision_number, sensor_values = simulation(robot_sim, individual)
-            fitness_list.append(fitness.fitness(total_area, collision_number, sensor_values))
-
-        # Do EA with fitness_list and update individuals_list
-
-
-def simulation(robot_sim, individual):
-    """
-    :returns: fitness_parameters to be used in the fitness function
-    """
-    total_area = []
-    collision_number = 0
-    sensor_values = []
-    for cycle in range(80):  # 80 cycles
-        # move robot
-        rnn_output = individual.feedforward(robot_sim.sensor_values())
-        decode_output(rnn_output, robot_sim)
-        robot.move(WALLS)
-        robot.adjust_sensors(WALLS)
-        robot.adjust_sensors(EDGE_WALLS)
-        # calculate total_area, collision_number, sensor_values
-
-    return total_area, collision_number, sensor_values
 
 # Substitutes gui.accelerate()
 def decode_output(rnn_output, robot_sim):
