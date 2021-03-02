@@ -7,11 +7,15 @@ import grid
 
 # sensors * hidden nodes because fully connected input + hidden layer
 # hidden nodes * 2 because each hidden node is fully connected to output
+# IF RNN, hidden -> hidden so hidden nodes * hidden nodes
 # output has exactly 2 nodes - Vl and Vr
+# if not RNN
 # total weights for 12 sensors and 4 hidden nodes = 12*4 + 4*2 = 56
+# if RNN
+# total weights for 12 sensors and 4 hidden nodes = 12*4 + 4*4 + 4*2 = 56
 
 class Genome:
-    genome_size = SENSORS*HIDDEN_NODES+HIDDEN_NODES*2 if HIDDEN_NODES > 0 else SENSORS * 2
+    genome_size =  SENSORS*HIDDEN_NODES+HIDDEN_NODES*HIDDEN_NODES + HIDDEN_NODES*2 if RNN else SENSORS*HIDDEN_NODES+HIDDEN_NODES*2 if HIDDEN_NODES > 0 else SENSORS * 2
     genome = None
     robot = None
     grid = None

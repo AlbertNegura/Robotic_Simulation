@@ -49,6 +49,11 @@ DISAPPEARING_TRAIL = None
 CLEANING_MODE = None
 REPLAY_MODE = None
 
+# not handled by config - yet
+ITERATIONS = 100
+AUTONOMOUS_MODE = False
+RNN = True
+
 def load_config(config):
     """
     Loads the parameters for this simulation from the specified config file loaded with configparser.
@@ -131,7 +136,6 @@ EDGE_WALLS.append([[0, 0], [WIDTH, 0]])
 EDGE_WALLS.append([[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]])
 WALLS.append([[0,0],[-1,-1]]) # need to add a dummy wall
 
-ITERATIONS = 100
 
 grey = pygame.Color('grey')
 black = pygame.Color('black')
@@ -143,4 +147,5 @@ keyboard = klp.KeyboardLayout
 key_size = KEY_SIZE
 # Keys currently being used, needs to be updated with new keys according to keyboardlayour key key values
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
-                 kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.C]
+                 kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.C,
+                 kl.Key.A]

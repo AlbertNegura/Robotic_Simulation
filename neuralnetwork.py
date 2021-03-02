@@ -22,9 +22,6 @@ class RNN:
         # nn weights
         self.synapse_0 = 2*np.random.random((input_dim, hidden_dim)) - 1
         self.synapse_1 = 2*np.random.random((hidden_dim, output_dim)) - 1
-
-
-        # TODO: I thought we were just going to use 1 hidden layer, this implies at least 2
         self.synapse_h = 2*np.random.random((hidden_dim, hidden_dim)) - 1
 
         # initialize previous step layer values
@@ -37,8 +34,7 @@ class RNN:
         :return: Vr,Vl
         """
         # hidden layer (input ~+ prev_hidden)
-        # self.layer_1 = utils.sigmoid(np.dot(self.input, self.synapse_0) + np.dot(self.layer_1_values[-1], self.synapse_h))
-        self.layer_1 = utils.sigmoid(np.dot(self.input, self.synapse_0))
+        self.layer_1 = utils.sigmoid(np.dot(self.input, self.synapse_0) + np.dot(self.layer_1_values[-1], self.synapse_h)) if RNN else utils.sigmoid(np.dot(self.input, self.synapse_0))
 
         # output layer
         self.output = utils.sigmoid(np.dot(self.layer_1, self.synapse_1))
@@ -65,7 +61,8 @@ class RNN:
         return round_values
 
     def weight_vector(self):
-        weights = np.concatenate((self.synapse_0, self.synapse_1.transpose()), axis=0).flatten()
+        weights = np.concatenate((self.synapse_0, self.synapse_h, self.synapse_1.transpose()), axis=0).flatten()
+        print(weights)
         return weights
 
 """input = []

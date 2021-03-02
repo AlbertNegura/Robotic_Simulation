@@ -234,6 +234,11 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.N, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.N, unused_key_info)
+    if pgkey[pygame.K_a]:
+        AUTONOMOUS_MODE = True
+        keyboard.update_key(keyboard_layout, kl.Key.A, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.A, unused_key_info)
 
 
     # IF EVOLUTION MODE KEY IS PRESSED
@@ -325,6 +330,9 @@ def execute():
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100))
         if accel:
             accelerate()
+        if AUTONOMOUS_MODE:
+            pass # TODO: AUTONOMOUS MODE
+
         robot.move(WALLS)
 
         # for wall in WALLS:
