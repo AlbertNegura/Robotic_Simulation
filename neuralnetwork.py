@@ -37,7 +37,8 @@ class RNN:
         :return: Vr,Vl
         """
         # hidden layer (input ~+ prev_hidden)
-        self.layer_1 = utils.sigmoid(np.dot(self.input, self.synapse_0) + np.dot(self.layer_1_values[-1], self.synapse_h))
+        # self.layer_1 = utils.sigmoid(np.dot(self.input, self.synapse_0) + np.dot(self.layer_1_values[-1], self.synapse_h))
+        self.layer_1 = utils.sigmoid(np.dot(self.input, self.synapse_0))
 
         # output layer
         self.output = utils.sigmoid(np.dot(self.layer_1, self.synapse_1))

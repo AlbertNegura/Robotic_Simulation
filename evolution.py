@@ -39,7 +39,7 @@ class Evolution:
 
 
     def __init__(self, this_grid):
-        self.population = int(POPULATION)
+        self.population = POPULATION
         self.nn = neuralnetwork.RNN(np.random.uniform(0, SENSOR_LENGTH, SENSORS), np.array([0,0]), SENSORS, HIDDEN_NODES, 2)
         self.weights = [self.nn.weight_vector() for _ in range(self.population)]
         self.map = this_grid.copy()
