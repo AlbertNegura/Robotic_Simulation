@@ -21,6 +21,17 @@ def draw_robot(pygame, screen, robot):
     pygame.draw.circle(screen, robot.colour2, robot.position, robot.radius - 0.1, 1)
     pygame.draw.line(screen, robot.colour2, robot.position, robot.facing_position, 2)
 
+def draw_ghost(pygame, screen, robot):
+    """
+    :param pygame:
+    :param screen:
+    :param robot:
+    :return:
+    """
+    pygame.gfxdraw.circle(screen, robot.position[0], robot.position[1], robot.radius - 0.6, (200,200,200,0.5))
+    pygame.gfxdraw.circle(screen, robot.position[0], robot.position[1], robot.radius - 0.1, (0,0,0,0.5))
+    pygame.gfxdraw.line(screen, robot.position[0], robot.position[1], robot.facing_position[0], robot.facing_position[1], (0,0,0,0.5))
+
 
 def draw_trail(pygame, screen, robot, disappearing):
     """

@@ -242,7 +242,7 @@ def user_input(pgkey):
 
 
     # IF EVOLUTION MODE KEY IS PRESSED
-    # pygame.quit()
+    # display last best generation on training map while all generations train in parallel?
     # OPTIONAL: LOAD IN OPTIONS HERE
     # NOTE: OPTIONS INCLUDE CURRENT WALL CONFIGURATION AND ROBOT
     # EACH EVOLUTION STEP LET ROBOT RUN FOR X TIME STEPS
