@@ -62,7 +62,6 @@ class RNN:
 
     def weight_vector(self):
         weights = np.concatenate((self.synapse_0, self.synapse_h, self.synapse_1.transpose()), axis=0).flatten()
-        print(weights)
         return weights
 
 """input = []
