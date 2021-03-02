@@ -22,6 +22,9 @@ class RNN:
         # nn weights
         self.synapse_0 = 2*np.random.random((input_dim, hidden_dim)) - 1
         self.synapse_1 = 2*np.random.random((hidden_dim, output_dim)) - 1
+
+
+        # TODO: I thought we were just going to use 1 hidden layer, this implies at least 2
         self.synapse_h = 2*np.random.random((hidden_dim, hidden_dim)) - 1
 
         # initialize previous step layer values
@@ -59,6 +62,10 @@ class RNN:
         for i in range(self.output_dim):
             round_values.append(min(r_list, key=lambda x:abs(x-self.output[0,i])))
         return round_values
+
+    def weight_vector(self):
+        weights = np.concatenate((self.synapse_0, self.synapse_1.transpose()), axis=0).flatten()
+        return weights
 
 """input = []
 for i in range(12):

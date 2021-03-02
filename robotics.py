@@ -30,6 +30,7 @@ class Robot:
     position_history = []
     orientation_history = []
 
+
     def save_position(self, new_position):
         """
         Save position to the position_history
