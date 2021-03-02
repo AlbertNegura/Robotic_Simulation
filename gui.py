@@ -109,7 +109,9 @@ def user_input(pgkey):
     :param pgkey: Pygame Key event triggered.
     :return:
     """
-    global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, accel, wheel, direction, clean_cells, grid_1
+    global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
+    global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE
+    global accel, wheel, direction, clean_cells, grid_1
     if pgkey[pygame.K_w]:
         accel = True
         wheel = LEFT
@@ -222,6 +224,11 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_6, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_6, unused_key_info)
+    if pgkey[pygame.K_7]:
+        DRAW_GHOSTS = not DRAW_GHOSTS
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_6, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_6, unused_key_info)
     if pgkey[pygame.K_m]:
         MAP_MENU = True
         keyboard.update_key(keyboard_layout, kl.Key.M, used_key_info)
@@ -240,7 +247,7 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.A, unused_key_info)
 
-
+    # TODO:
     # IF EVOLUTION MODE KEY IS PRESSED
     # display last best generation on training map while all generations train in parallel?
     # OPTIONAL: LOAD IN OPTIONS HERE
@@ -253,6 +260,9 @@ def user_input(pgkey):
     # BONUS: WORK WITH COPIES OF ROBOT TO ALLOW MULTIPLE INDIVIDUALS FOR EACH GENERATION AND SELECT BEST INDIVIDUAL FOR NEW WEIGHTS
     # evolution.execute(options)
     # execute() WITH RESULTS
+
+    # TODO: pickle dump nn weights of current best robot if key is pressed
+    # TODO: pickle load nn weights of robot from saved default pickle file from previous todo
 
 def execute():
     """
