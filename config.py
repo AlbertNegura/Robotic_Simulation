@@ -53,6 +53,7 @@ REPLAY_MODE = None
 ITERATIONS = 100
 AUTONOMOUS_MODE = False
 RNN = True
+DRAW_GHOSTS = False
 
 def load_config(config):
     """
