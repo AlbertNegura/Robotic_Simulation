@@ -104,6 +104,7 @@ class Evolution:
         collision_number = 0
         sensor_values = []
         robot = genome.robot
+        clean_cells = 0
         # TODO: use passed map parameter
         for cycle in range(self.iterations):
             rnn_output = nn.feedforward(robot.sensor_values())
@@ -111,8 +112,12 @@ class Evolution:
             robot.move(WALLS)
             robot.adjust_sensors(WALLS)
             robot.adjust_sensors(EDGE_WALLS)
-            # TODO: calculate total_area, collision_number, sensor_values
+            # TODO: calculate collision_number, sensor_values
 
+
+            clean_cells = grid.get_cells_at_position_in_radius(self.map, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
+
+        total_area = round(clean_cells/len(map)/len(map[0])*100,3)
         return total_area, collision_number, sensor_values
 
 
