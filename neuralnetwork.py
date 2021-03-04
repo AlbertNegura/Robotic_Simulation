@@ -1,7 +1,12 @@
+"""
+Robotic Simulation Software RNN class
+Authors:
+Albert Negura
+Sergi Nogues Farres
+"""
 import numpy as np
 import copy
 import utils
-import config
 
 class RNN:
     """
@@ -41,7 +46,7 @@ class RNN:
 
         # store hidden layer so we can use it in the next time step
         self.layer_1_values.append(copy.deepcopy(self.layer_1))
-        return self.round_output(self.output)
+        return self.round_output()
 
     def update_weights(self):
         # use fitness
@@ -57,7 +62,7 @@ class RNN:
         r_list = [0, 0.5, 1]
         round_values = []
         for i in range(self.output_dim):
-            round_values.append(min(r_list, key=lambda x:abs(x-self.output[0,i])))
+            round_values.append(min(r_list, key=lambda x:abs(x-self.output[i])))
         return round_values
 
     def weight_vector(self):

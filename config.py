@@ -29,6 +29,7 @@ GRID_SIZE = None
 HIDDEN_NODES = None
 POPULATION = None
 MUTATION = None
+SELECTION = None
 LIFESPAN = None
 SHOW_EVERY_X_GENERATIONS = None
 DIRT = None
@@ -87,10 +88,11 @@ def load_config(config):
     SENSOR_LENGTH = int(robot_settings['SENSOR_LENGTH'])
     GRID_SIZE = int(robot_settings['GRID_SIZE'])
 
-    global HIDDEN_NODES, POPULATION, MUTATION, LIFESPAN, SHOW_EVERY_X_GENERATIONS
+    global HIDDEN_NODES, POPULATION, MUTATION, LIFESPAN, SHOW_EVERY_X_GENERATIONS, SELECTION
     HIDDEN_NODES = int(model_settings['HIDDEN_NODES'])
     POPULATION = int(model_settings['POPULATION'])
     MUTATION = float(model_settings['MUTATION'])
+    SELECTION = str(model_settings['SELECTION'])
     LIFESPAN = int(model_settings['LIFESPAN']) # in seconds? frames * tickrate?
     SHOW_EVERY_X_GENERATIONS = int(model_settings['SHOW_EVERY_X_GENERATIONS'])
 

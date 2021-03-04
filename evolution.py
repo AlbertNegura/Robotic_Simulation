@@ -27,7 +27,7 @@ class Genome:
         assert size >= self.genome_size, "Expected {} weights, got {} instead".format(self.genome_size,size)
         self.robot = robot
         self.grid = grid
-        self.genome = np.random.randint(0, 1, self.genome_size)
+        self.genome = np.random.uniform(0, 1, self.genome_size)
 
         for i in range(size):
             self.genome[i] = weights[i]
@@ -40,7 +40,23 @@ class Genome:
 
 
 class Evolution:
-
+    """
+    PIPELINE
+    1) Initialization:
+        - Robot: position, sensors, wheels, ..
+        - POPULATION: 80 individuals (Individual = RNN weight configuration)
+        - Maze: Walls, grid, ..
+    2) Foreach individual do Robot simulation. 80 cycles (24s), 0.3 s/cycle
+        - ANN Cycle (control robot every 0.3s): sensor values -> RNN -> wheel velocities
+        - Simulation output:
+            - number of grid cells covered (area explored)
+            - number of collisions
+            - average sensor values?
+    3) Fitness value foreach individual
+    4) EA: Selection + Crossover & Mutation
+    5) Reproduction of new individuals
+    6) Go back to step 2
+    """
 
     def __init__(self, this_grid):
         self.population = POPULATION
@@ -56,22 +72,26 @@ class Evolution:
 
     def evolve(self):
         """
-         Note that the "robot" parameter defined in config.py is
-         the base class used to initialize the "robot_sim" and
-         therefore remains unchanged.
+        :return: the evolved population after 30 generations
         """
-        for i in range(self.generations):
-            fitness_list = []
-            for i in range(self.population):
-                total_area, collision_number, sensor_values = self.step(self.genome_list[i], self.map[i], self.nn[i])
-                fitness_list.append(fitness.fitness(total_area, collision_number, sensor_values))
-            self.fitnesses.append(fitness_list)
+        for gen in range(self.generations):
+
+            # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
+            # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
+            ind_fitness = []
+            for ind in range(self.population):
+                total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
+                ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
+                print("individual:", ind+1, "/", POPULATION, ", generation:", gen+1, "/", LIFESPAN, ", fitness:", ind_fitness[ind])
+            self.fitnesses.append(ind_fitness)
 
             # TODO: Do EA with fitness_list and update individuals_list
+            genetic_algorithm(self.fitnesses)
+
 
     def step(self, genome, map, nn):
         """
-        :returns: fitness_parameters to be used in the fitness function
+        :returns: Given one individual, simulates 6000 iterations and returns fitness_parameters to be used in the fitness function
         """
         total_area = []
         collision_number = 0
@@ -79,7 +99,6 @@ class Evolution:
         robot = genome.robot
         # TODO: use passed map parameter
         for cycle in range(self.iterations):
-            # move robot
             rnn_output = nn.feedforward(robot.sensor_values())
             decode_output(rnn_output, robot)
             robot.move(WALLS)
@@ -90,26 +109,10 @@ class Evolution:
         return total_area, collision_number, sensor_values
 
 
-"""
-PIPELINE
-1) Initialization:
-    - Robot: position, sensors, wheels, ..
-    - POPULATION: 80 individuals (Individual = RNN weight configuration)
-    - Maze: Walls, grid, ..
-2) Foreach individual do Robot simulation. 80 cycles (24s), 0.3 s/cycle
-    - ANN Cycle (control robot every 0.3s): sensor values -> RNN -> wheel velocities
-    - Simulation output:
-        - number of grid cells covered (area explored)
-        - number of collisions
-        - average sensor values?
-3) Fitness value foreach individual
-4) EA: Selection + Crossover & Mutation
-5) Reproduction of new individuals 
-6) Go back to step 2
-"""
-
-# Substitutes gui.accelerate()
 def decode_output(rnn_output, robot_sim):
+    """
+    Mapping of the RNN output to robot's wheel velocities. Same as gui.accelerate()
+    """
     # rnn_output[0] -> Vl
     if rnn_output[0] == 1:
         robot_sim.velocity_left += ACCELERATION*FORWARD
@@ -129,5 +132,38 @@ def decode_output(rnn_output, robot_sim):
 if __name__ == "__main__":
     this_grid = grid.create_grid(GRID_SIZE, WIDTH, HEIGHT)
     e = Evolution(this_grid)
-    print(e.weights)
+    e.evolve()
+
+def genetic_algorithm(fitness_list,  mutation = 0.1):
+
+    # region SELECTION
+    num_selected = int(POPULATION/5) if SELECTION == "elitism" or SELECTION == "roulette" else int(POPULATION/5*4) if SELECTION == "steady" else int(POPULATION/2)
+    selected_agents = []
+    if SELECTION == "elitism" or SELECTION == "steady":
+        selected_agents = np.argpartition(fitness_list, num_selected+1)
+    elif SELECTION == "tournament":
+        random_order = np.random.choice(range(POPULATION),POPULATION, replace=False)
+        left_bracket = random_order[:num_selected]
+        right_bracket = random_order[num_selected:]
+        for i in range(num_selected):
+            selected_agent = left_bracket[i] if fitness_list[left_bracket[i]] > fitness_list[right_bracket[i]]  else right_bracket[i] if fitness_list[left_bracket[i]] < fitness_list[right_bracket[i]] else np.random.choice([left_bracket[i],right_bracket[i]])
+            selected_agents.append(selected_agent)
+    elif SELECTION == "roulette":
+        total_fitness = np.sum(fitness_list)
+        random_order = np.random.choice(range(POPULATION), POPULATION, replace=False)
+        roulette_selection = {int(i) : fitness_list[int(i)] for i in random_order}
+        chance = np.random.uniform(0, total_fitness)
+        i = 0
+        current = 0
+        for key, value in roulette_selection.items():
+            current += value
+            if current > chance:
+                selected_agents.append(key)
+                i+=1
+                if i >= num_selected:
+                    break
+    else: # in case of error, default to elitism
+        selected_agents = np.argpartition(fitness_list, num_selected+1)
+    # endregion
+
 
