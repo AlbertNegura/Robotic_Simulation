@@ -38,6 +38,27 @@ class Genome:
         return self.fitness
 
 
+    # TODO: Crossover and mutation with genome of size 72
+    def cross_over(self, dad, mom):
+        if np.random.rand() > .5:
+            pos = 0
+            while pos < len(dad):
+                mom[pos] = dad[pos]
+                pos = pos + 2
+            return mom
+        else:
+            pos = 0
+            while pos < len(mom):
+                dad[pos] = mom[pos]
+                pos = pos + 2
+            return dad
+
+    def mutate(self, parent):
+        pos = np.random.randint(0, self.genome_size+1)
+        parent[pos] = np.random.uniform()
+        return parent
+
+
 
 class Evolution:
     """
@@ -194,39 +215,17 @@ def genetic_algorithm(fitness_list, genome_list,  mutation = 0.1):
                     parents = np.random.choice(range(POPULATION), 2, replace=False)
                     dad = parents[0]
                     mom = parents[1]
-                new_agent = cross_over(ind_list[dad],ind_list[mom])
+                new_agent = ind_list[x].cross_over(ind_list[dad],ind_list[mom])
 
                 # MUTATION
                 if np.random.rand() < mutation:
-                    new_agent = mutate(new_agent)
+                    new_agent = new_agent.mutate(new_agent)
 
             ind_list[x] = new_agent
     #endregion
 
     return ind_list
 
-
-
-# TODO: Crossover and mutation with genome of size 72
-def cross_over(dad, mom):
-    if np.random.rand() > .5:
-        pos = 0
-        while pos < len(dad):
-            mom[pos] = dad[pos]
-            pos = pos + 2
-        return mom
-    else:
-        pos = 0
-        while pos < len(mom):
-            dad[pos] = mom[pos]
-            pos = pos + 2
-        return dad
-
-def mutate(parent):
-    genome_size =  SENSORS*HIDDEN_NODES+HIDDEN_NODES*HIDDEN_NODES + HIDDEN_NODES*2 if RNN else SENSORS*HIDDEN_NODES+HIDDEN_NODES*2 if HIDDEN_NODES > 0 else SENSORS * 2
-    pos = np.random.randint(0, genome_size+1)
-    parent[pos] = np.random.uniform()
-    return parent
 
 if __name__ == "__main__":
     this_grid = grid.create_grid(GRID_SIZE, WIDTH, HEIGHT)

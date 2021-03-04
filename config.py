@@ -51,7 +51,7 @@ CLEANING_MODE = None
 REPLAY_MODE = None
 
 # not handled by config - yet
-ITERATIONS = 100
+ITERATIONS = 30
 AUTONOMOUS_MODE = False
 RNN = True
 DRAW_GHOSTS = False
