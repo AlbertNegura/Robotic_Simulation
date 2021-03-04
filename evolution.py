@@ -42,21 +42,21 @@ class Genome:
     def cross_over(self, dad, mom):
         if np.random.rand() > .5:
             pos = 0
-            while pos < len(dad):
-                mom[pos] = dad[pos]
+            while pos < self.genome_size:
+                mom.genome[pos] = dad.genome[pos]
                 pos = pos + 2
-            return mom
+            return self
         else:
             pos = 0
-            while pos < len(mom):
-                dad[pos] = mom[pos]
+            while pos < self.genome_size:
+                dad.genome[pos] = mom.genome[pos]
                 pos = pos + 2
-            return dad
+            return self
 
-    def mutate(self, parent):
+    def mutate(self):
         pos = np.random.randint(0, self.genome_size+1)
-        parent[pos] = np.random.uniform()
-        return parent
+        self.genome[pos] = np.random.uniform()
+        return self
 
 
 
@@ -197,13 +197,10 @@ def genetic_algorithm(fitness_list, genome_list,  mutation = 0.1):
         selected_agents = np.argpartition(fitness_list, num_selected+1)
     # endregion
 
-    ind_list = []
-    for ind in genome_list:
-        ind_list.append(ind.genome)
     # region REPRODUCTION
-    for x in range(len(ind_list)):
+    for x in range(len(genome_list)):
             if x in selected_agents[:num_selected]:
-                new_agent = ind_list[x]
+                new_agent = genome_list[x]
             else:
                 # CROSSOVER
                 if len(selected_agents) > 0:
@@ -215,16 +212,16 @@ def genetic_algorithm(fitness_list, genome_list,  mutation = 0.1):
                     parents = np.random.choice(range(POPULATION), 2, replace=False)
                     dad = parents[0]
                     mom = parents[1]
-                new_agent = ind_list[x].cross_over(ind_list[dad],ind_list[mom])
+                new_agent = genome_list[x].cross_over(genome_list[dad],genome_list[mom])
 
                 # MUTATION
                 if np.random.rand() < mutation:
-                    new_agent = new_agent.mutate(new_agent)
+                    new_agent = genome_list[x].mutate()
 
-            ind_list[x] = new_agent
+            genome_list[x] = new_agent
     #endregion
 
-    return ind_list
+    return genome_list
 
 
 if __name__ == "__main__":
