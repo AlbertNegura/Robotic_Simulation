@@ -43,13 +43,13 @@ class Genome:
         if np.random.rand() > .5:
             pos = 0
             while pos < self.genome_size:
-                mom.genome[pos] = dad.genome[pos]
+                self.genome[pos] = dad.genome[pos]
                 pos = pos + 2
             return self
         else:
             pos = 0
             while pos < self.genome_size:
-                dad.genome[pos] = mom.genome[pos]
+                self.genome[pos] = mom.genome[pos]
                 pos = pos + 2
             return self
 
