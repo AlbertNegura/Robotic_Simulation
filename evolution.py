@@ -85,9 +85,16 @@ class Evolution:
                 print("individual:", ind+1, "/", POPULATION, ", generation:", gen+1, "/", LIFESPAN, ", fitness:", ind_fitness[ind])
             self.fitnesses.append(ind_fitness)
 
-            # TODO: Do EA with fitness_list and update individuals_list
-            genetic_algorithm(self.fitnesses)
+            # TODO: Update individuals_list
+            self.update(genetic_algorithm(self.fitnesses[gen], self.genome_list))
 
+    def update(self, weights_list):
+        """
+
+        :param weights_list:
+        :return:
+        """
+        return None
 
     def step(self, genome, map, nn):
         """
@@ -128,17 +135,16 @@ def decode_output(rnn_output, robot_sim):
     elif rnn_output[1] == 0:
         robot_sim.velocity_right += ACCELERATION*BACKWARD
 
+def genetic_algorithm(fitness_list, genome_list,  mutation = 0.1):
+    """
+    :param fitness_list: fitness_list.size = POPULATION
+    :param genome_list: genome_list.size = POPULATION containing self.genome_list[i].genome a list of "weights" of size 12*4 + 4*4 + 4*2 = 72 (see RNN)
+    :return:
+    """
 
-if __name__ == "__main__":
-    this_grid = grid.create_grid(GRID_SIZE, WIDTH, HEIGHT)
-    e = Evolution(this_grid)
-    e.evolve()
-
-def genetic_algorithm(fitness_list,  mutation = 0.1):
-
-    # region SELECTION
     num_selected = int(POPULATION/5) if SELECTION == "elitism" or SELECTION == "roulette" else int(POPULATION/5*4) if SELECTION == "steady" else int(POPULATION/2)
     selected_agents = []
+    # region SELECTION
     if SELECTION == "elitism" or SELECTION == "steady":
         selected_agents = np.argpartition(fitness_list, num_selected+1)
     elif SELECTION == "tournament":
@@ -146,7 +152,7 @@ def genetic_algorithm(fitness_list,  mutation = 0.1):
         left_bracket = random_order[:num_selected]
         right_bracket = random_order[num_selected:]
         for i in range(num_selected):
-            selected_agent = left_bracket[i] if fitness_list[left_bracket[i]] > fitness_list[right_bracket[i]]  else right_bracket[i] if fitness_list[left_bracket[i]] < fitness_list[right_bracket[i]] else np.random.choice([left_bracket[i],right_bracket[i]])
+            selected_agent = left_bracket[i] if fitness_list[left_bracket[i]] > fitness_list[right_bracket[i]] else right_bracket[i] if fitness_list[left_bracket[i]] < fitness_list[right_bracket[i]] else np.random.choice([left_bracket[i], right_bracket[i]])
             selected_agents.append(selected_agent)
     elif SELECTION == "roulette":
         total_fitness = np.sum(fitness_list)
@@ -165,5 +171,66 @@ def genetic_algorithm(fitness_list,  mutation = 0.1):
     else: # in case of error, default to elitism
         selected_agents = np.argpartition(fitness_list, num_selected+1)
     # endregion
+
+    ind_list = []
+    for ind in genome_list:
+        ind_list.append(ind.genome)
+    # region REPRODUCTION
+    for x in range(len(ind_list)):
+            if x in selected_agents[:num_selected]:
+                new_agent = ind_list[x]
+            else:
+                # CROSSOVER
+                if len(selected_agents) > 0:
+                    dad = np.random.choice(selected_agents)
+                    mom = np.random.choice(selected_agents)
+                    while dad == mom:
+                        mom = np.random.choice(selected_agents)
+                else: # Roulette selection is special
+                    parents = np.random.choice(range(POPULATION), 2, replace=False)
+                    dad = parents[0]
+                    mom = parents[1]
+                new_agent = cross_over(ind_list[dad],ind_list[mom])
+
+                # MUTATION
+                if np.random.rand() < mutation:
+                    new_agent = mutate(new_agent)
+
+            ind_list[x] = new_agent
+    #endregion
+
+    return ind_list
+
+
+
+# TODO: Crossover and mutation with genome of size 72
+def cross_over(dad, mom):
+    if np.random.rand() > .5:
+        pos = 0
+        while pos < len(dad):
+            mom[pos] = dad[pos]
+            pos = pos + 2
+        return mom
+    else:
+        pos = 0
+        while pos < len(mom):
+            dad[pos] = mom[pos]
+            pos = pos + 2
+        return dad
+
+def mutate(parent):
+    genome_size =  SENSORS*HIDDEN_NODES+HIDDEN_NODES*HIDDEN_NODES + HIDDEN_NODES*2 if RNN else SENSORS*HIDDEN_NODES+HIDDEN_NODES*2 if HIDDEN_NODES > 0 else SENSORS * 2
+    pos = np.random.randint(0, genome_size+1)
+    parent[pos] = np.random.uniform()
+    return parent
+
+if __name__ == "__main__":
+    this_grid = grid.create_grid(GRID_SIZE, WIDTH, HEIGHT)
+    e = Evolution(this_grid)
+    e.evolve()
+
+
+
+
 
 
