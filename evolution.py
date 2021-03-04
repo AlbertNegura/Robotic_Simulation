@@ -38,20 +38,12 @@ class Genome:
         return self.fitness
 
 
-    # TODO: Crossover and mutation with genome of size 72
     def cross_over(self, dad, mom):
-        if np.random.rand() > .5:
-            pos = 0
-            while pos < self.genome_size:
-                self.genome[pos] = dad.genome[pos]
-                pos = pos + 2
-            return self
-        else:
-            pos = 0
-            while pos < self.genome_size:
-                self.genome[pos] = mom.genome[pos]
-                pos = pos + 2
-            return self
+        dad_sel = np.random.choice(range(self.genome_size),int(self.genome_size/2), replace = False)
+        mom_sel = [i for i in range(self.genome_size) if i not in dad_sel]
+        self.genome[dad_sel] = dad.genome[dad_sel]
+        self.genome[mom_sel] = mom.genome[mom_sel]
+        return self
 
     def mutate(self):
         pos = np.random.randint(0, self.genome_size+1)
