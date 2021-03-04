@@ -52,6 +52,8 @@ REPLAY_MODE = None
 
 # not handled by config - yet
 ITERATIONS = 30
+MUTATIONS = 2 # number of genes modified per mutation
+MUTATION_RATE = 0.05
 AUTONOMOUS_MODE = False
 RNN = True
 DRAW_GHOSTS = False

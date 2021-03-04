@@ -46,7 +46,7 @@ class Genome:
         return self
 
     def mutate(self):
-        pos = np.random.randint(0, self.genome_size+1)
+        pos = np.random.choice(range(self.genome_size), MUTATIONS, replace=False)
         self.genome[pos] = np.random.uniform()
         return self
 
@@ -152,7 +152,7 @@ def decode_output(rnn_output, robot_sim):
     elif rnn_output[1] == 0:
         robot_sim.velocity_right += ACCELERATION*BACKWARD
 
-def genetic_algorithm(fitness_list, genome_list,  mutation = 0.1):
+def genetic_algorithm(fitness_list, genome_list):
     """
     :param fitness_list: fitness_list.size = POPULATION
     :param genome_list: genome_list.size = POPULATION containing self.genome_list[i].genome a list of "weights" of size 12*4 + 4*4 + 4*2 = 72 (see RNN)
@@ -207,7 +207,7 @@ def genetic_algorithm(fitness_list, genome_list,  mutation = 0.1):
                 new_agent = genome_list[x].cross_over(genome_list[dad],genome_list[mom])
 
                 # MUTATION
-                if np.random.rand() < mutation:
+                if np.random.rand() < MUTATION_RATE:
                     new_agent = genome_list[x].mutate()
 
             genome_list[x] = new_agent
