@@ -9,6 +9,4 @@ def fitness(total_area, num_c, sensor_values):
     b = -5
     c = 5
 
-    # TODO:
-    #return a*total_area[0] + b*num_c + c*sensor_values[0]
-    return np.random.uniform(0, 100)
+    return a*total_area + b*num_c + c*sensor_values

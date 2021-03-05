@@ -97,28 +97,42 @@ class Evolution:
                 ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
                 print("individual:", ind+1, "/", POPULATION, ", generation:", gen+1, "/", LIFESPAN, ", fitness:", ind_fitness[ind])
             self.fitnesses.append(ind_fitness)
+            self.genome_list = genetic_algorithm(self.fitnesses[gen], self.genome_list)
+            for i in range(self.population):
+                self.update_nn(self.genome_list[i])
 
-            # TODO: Update individuals_list
-            self.update(genetic_algorithm(self.fitnesses[gen], self.genome_list))
-
-    def update(self, weights_list):
+    def update_nn(self, weights_list):
         """
-
+        synapse_0 = 12*4
+        synapse_h = 4*4
+        synapse_1 = 4*2
         :param weights_list:
         :return:
         """
-        return None
+        synapse_0 = 2*np.zeros((SENSORS, HIDDEN_NODES)) - 1
+        synapse_1 = 2*np.zeros((HIDDEN_NODES, 2)) - 1
+        synapse_h = 2*np.zeros((HIDDEN_NODES, HIDDEN_NODES)) - 1
+
+        pos = 0
+        for row in range(SENSORS):
+            for col in range(HIDDEN_NODES):
+                synapse_0[row, col] = weights_list.genome[pos]
+                pos = pos+1
+        for row in range(HIDDEN_NODES):
+            for col in range(HIDDEN_NODES):
+                synapse_h[row, col] = weights_list.genome[pos]
+                pos = pos+1
+        for col in range(2):
+            for row in range(HIDDEN_NODES):
+                synapse_1[row, col] = weights_list.genome[pos]
+                pos = pos+1
 
     def step(self, genome, map, nn):
         """
         :returns: Given one individual, simulates 6000 iterations and returns fitness_parameters to be used in the fitness function
         """
-        total_area = []
-        collision_number = 0
-        sensor_values = []
         robot = genome.robot
         clean_cells = 0
-        # TODO: use passed map parameter
         for cycle in range(self.iterations):
             rnn_output = nn.feedforward(robot.sensor_values())
             decode_output(rnn_output, robot)
