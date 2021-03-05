@@ -237,7 +237,7 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.M, unused_key_info)
     if pgkey[pygame.K_n]:
         # remove all walls
-        WALLS = [[0,0],[-1,-1]]
+        WALLS = [([0,0],[-1,-1])]
         keyboard.update_key(keyboard_layout, kl.Key.N, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.N, unused_key_info)
@@ -335,6 +335,7 @@ def execute():
                 user_input(pygame.key.get_pressed())
 
         for wall in WALLS:
+            print(WALLS)
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
         for wall in EDGE_WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100))
