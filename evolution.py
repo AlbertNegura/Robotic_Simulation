@@ -95,7 +95,7 @@ class Evolution:
             for ind in range(self.population):
                 total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
                 ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
-                print("individual:", ind+1, "/", POPULATION, ", generation:", gen+1, "/", LIFESPAN, ", fitness:", ind_fitness[ind])
+                print("individual:", ind+1, "/", POPULATION, ", generation:", gen+1, "/", LIFESPAN, ", fitness:", np.round(ind_fitness[ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
             self.fitnesses.append(ind_fitness)
             self.update(genetic_algorithm(self.fitnesses[gen], self.genome_list))
 
@@ -125,9 +125,16 @@ class Evolution:
         sensor_values = np.sum(robot.sensor_values())
         return total_area, collision_number, sensor_values
 
-
 def decode_output(rnn_output, robot_sim):
     """
+    Mapping of the RNN output to robot's wheel velocities. Same as gui.accelerate()
+    """
+    robot_sim.velocity_left += ACCELERATION*FORWARD*rnn_output[0]
+    robot_sim.velocity_right += ACCELERATION*FORWARD*rnn_output[1]
+
+def decode_output_deprecated(rnn_output, robot_sim):
+    """
+    DEPRECATED
     Mapping of the RNN output to robot's wheel velocities. Same as gui.accelerate()
     """
     # rnn_output[0] -> Vl

@@ -47,7 +47,7 @@ class RNN:
 
         # store hidden layer so we can use it in the next time step
         self.layer_1_values.append(copy.deepcopy(self.layer_1))
-        return self.round_output()
+        return self.output
 
     def update_weights(self, weights_list):
         """
@@ -85,8 +85,7 @@ class RNN:
 
     def round_output(self):
         """
-        self.output is a length 2 vector with values in a [0, 1] range.
-        We need this values to be strictly 0, 1 or 0.5.
+        return values to be strictly 0, 1 or 0.5.
         """
         r_list = [0, 0.5, 1]
         round_values = []
