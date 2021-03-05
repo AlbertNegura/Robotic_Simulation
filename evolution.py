@@ -97,35 +97,14 @@ class Evolution:
                 ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
                 print("individual:", ind+1, "/", POPULATION, ", generation:", gen+1, "/", LIFESPAN, ", fitness:", ind_fitness[ind])
             self.fitnesses.append(ind_fitness)
-            self.genome_list = genetic_algorithm(self.fitnesses[gen], self.genome_list)
-            for i in range(self.population):
-                self.update_nn(self.genome_list[i])
+            self.update(genetic_algorithm(self.fitnesses[gen], self.genome_list))
 
-    def update_nn(self, weights_list):
-        """
-        synapse_0 = 12*4
-        synapse_h = 4*4
-        synapse_1 = 4*2
-        :param weights_list:
-        :return:
-        """
-        synapse_0 = 2*np.zeros((SENSORS, HIDDEN_NODES)) - 1
-        synapse_1 = 2*np.zeros((HIDDEN_NODES, 2)) - 1
-        synapse_h = 2*np.zeros((HIDDEN_NODES, HIDDEN_NODES)) - 1
+    def update(self, new_weights):
+        for i in range(self.population):
+            self.nn[i].update_weights(new_weights[i])
+        self.weights = [nn.weight_vector() for nn in self.nn]
+        self.genome_list = [Genome(self.robots[i], self.map[i], self.weights[i]) for i in range(self.population)]
 
-        pos = 0
-        for row in range(SENSORS):
-            for col in range(HIDDEN_NODES):
-                synapse_0[row, col] = weights_list.genome[pos]
-                pos = pos+1
-        for row in range(HIDDEN_NODES):
-            for col in range(HIDDEN_NODES):
-                synapse_h[row, col] = weights_list.genome[pos]
-                pos = pos+1
-        for col in range(2):
-            for row in range(HIDDEN_NODES):
-                synapse_1[row, col] = weights_list.genome[pos]
-                pos = pos+1
 
     def step(self, genome, map, nn):
         """

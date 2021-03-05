@@ -4,6 +4,7 @@ Authors:
 Albert Negura
 Sergi Nogues Farres
 """
+from config import *
 import numpy as np
 import copy
 import utils
@@ -48,11 +49,39 @@ class RNN:
         self.layer_1_values.append(copy.deepcopy(self.layer_1))
         return self.round_output()
 
-    def update_weights(self):
-        # use fitness
-        self.synapse_0 = None
-        self.synapse_1 = None
-        self.synapse_h = None
+    def update_weights(self, weights_list):
+        """
+        synapse_0 = 12*4
+        synapse_h = 4*4
+        synapse_1 = 4*2
+        """
+        # nn weights
+        synapse_0 = 2*np.random.random((self.input_dim, self.hidden_dim)) - 1
+        synapse_1 = 2*np.random.random((self.hidden_dim, self.output_dim)) - 1
+        synapse_h = 2*np.random.random((self.hidden_dim, self.hidden_dim)) - 1
+
+        pos = 0
+        for row in range(self.input_dim):
+            for col in range(self.hidden_dim):
+                synapse_0[row, col] = weights_list.genome[pos]
+                pos = pos+1
+        for row in range(self.hidden_dim):
+            for col in range(self.hidden_dim):
+                synapse_h[row, col] = weights_list.genome[pos]
+                pos = pos+1
+        for col in range(2):
+            for row in range(self.hidden_dim):
+                synapse_1[row, col] = weights_list.genome[pos]
+                pos = pos+1
+
+        self.synapse_h = synapse_h
+        self.synapse_0 = synapse_0
+        self.synapse_1 = synapse_1
+
+        # initialize previous step layer values
+        self.layer_1_values = list()
+        self.layer_1_values.append(np.zeros(self.hidden_dim))
+
 
     def round_output(self):
         """
