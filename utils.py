@@ -95,13 +95,13 @@ def clip(a, a_min, a_max, robot):
     x = a[0]
     y = a[1]
     if x<a_min[0]:
-        robot.position[0]=a_min[0]
+        robot.position[0]=float(a_min[0])
     if y<a_min[1]:
-        robot.position[1]=a_min[1]
+        robot.position[1]=float(a_min[1])
     if x>a_max[0]:
-        robot.position[0]=a_max[0]
+        robot.position[0]=float(a_max[0])
     if y>a_max[1]:
-        robot.position[1]=a_max[1]
+        robot.position[1]=float(a_max[1])
 
 
 def clip_value(a, a_min, a_max):

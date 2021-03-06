@@ -138,7 +138,6 @@ class Robot:
             self.collisions += 1 if collision else 0
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
             # if it moves too quickly, try to resolve continuous collisions
-
             # resolve collisions using continuous collision detection - if no collisions, just returns the new_position itself
             new_position = physics.resolve_past_collision(walls, [],self.position, new_position, self.radius, self.force, self.orientation)
             # set the robot position to the new position
@@ -150,7 +149,6 @@ class Robot:
                 sensor.update_sensor(self.position, 0, None)
         # update the robot's orientation accordingly
         self.rotate()
-
         # save position and orientation to their respective history lists
         self.save_position(self.position)
         self.save_orientation(self.orientation)
