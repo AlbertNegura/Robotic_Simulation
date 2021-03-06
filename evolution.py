@@ -123,7 +123,7 @@ class Evolution:
         map = grid.reset_grid(map)
         total_area = round(clean_cells/len(map)/len(map[0])*100,3)
         collision_number = robot.collisions
-        sensor_values = np.sum(robot.sensor_values())
+        sensor_values = np.sum(robot.sensor_values()) - robot.radius * SENSORS
         return total_area, collision_number, sensor_values
 
 def decode_output(rnn_output, robot_sim):
