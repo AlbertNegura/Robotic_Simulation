@@ -72,6 +72,8 @@ class Robot:
         # calculate force
         self.force = np.linalg.norm([self.velocity_left, self.velocity_right]) * np.sign(
             self.velocity_left + self.velocity_right)
+        if self.force == np.nan:
+            self.force = 0.
 
         # if wheels are not moving the equal velocity, resolve their movement differently
         if self.velocity_right != self.velocity_left:
