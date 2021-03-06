@@ -39,6 +39,8 @@ class RNN:
         :param x: robot.sensor_values()
         :return: Vr,Vl
         """
+        self.input = x[0]
+
         # hidden layer (input ~+ prev_hidden)
         self.layer_1 = utils.tanh(np.dot(self.input, self.synapse_0) + np.dot(self.layer_1_values[-1], self.synapse_h)) if RNN else utils.sigmoid(np.dot(self.input, self.synapse_0))
 
