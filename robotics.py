@@ -11,7 +11,6 @@ import physics
 import utils
 import config
 
-
 class Robot:
     colour = None
     colour2 = None
@@ -24,6 +23,7 @@ class Robot:
     velocity_right = 0
     velocity_left = 0
     velocity = [0, 0]
+    max_vel = 0
     force = 0
     grid_covered = []
     collisions = 0
@@ -60,14 +60,14 @@ class Robot:
         j = 0
         new_position = self.position
 
-        if self.velocity_right > self.radius/1.5:
-            self.velocity_right = round(self.radius/1.5,1)
-        if self.velocity_right < -self.radius/1.5:
-            self.velocity_right = -round(self.radius/1.5,1)
-        if self.velocity_left > self.radius/1.5:
-            self.velocity_left = round(self.radius/1.5,1)
-        if self.velocity_left < -self.radius/1.5:
-            self.velocity_left = -round(self.radius/1.5,1)
+        if self.velocity_right > self.max_vel:
+            self.velocity_right = round(self.max_vel,1)
+        if self.velocity_right < -self.max_vel:
+            self.velocity_right = -round(self.max_vel,1)
+        if self.velocity_left > self.max_vel:
+            self.velocity_left = round(self.max_vel,1)
+        if self.velocity_left < -self.max_vel:
+            self.velocity_left = -round(self.max_vel,1)
 
         # calculate force
         self.force = np.linalg.norm([self.velocity_left, self.velocity_right]) * np.sign(
@@ -215,6 +215,7 @@ def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005,num_sensor
     robot.sensors = []
     robot.position_history = [robot.position]
     robot.orientation_history = [robot.orientation]
+    robot.max_vel = radius / 1.5
     prev_degree = robot.orientation #starting angle
     for s in range(num_sensors):
         sensor = Sensor(robot.position, prev_degree, num_sensors, robot, max_radius)

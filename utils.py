@@ -186,3 +186,8 @@ def circle_intersect(line1, line2, radius, angle):
 
 def sigmoid(z):
     return 1/(1 + np.exp(-z))
+
+def tanh(z):
+    ez_poz = np.exp(z)
+    ez_neg = np.exp(-z)
+    return (ez_poz - ez_neg)/(ez_poz + ez_neg)

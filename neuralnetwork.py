@@ -47,7 +47,7 @@ class RNN:
 
         # store hidden layer so we can use it in the next time step
         self.layer_1_values.append(copy.deepcopy(self.layer_1))
-        return self.output
+        return utils.tanh(self.output)
 
     def update_weights(self, weights_list):
         """
