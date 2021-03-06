@@ -129,8 +129,8 @@ def decode_output(rnn_output, robot_sim):
     """
     Mapping of the RNN output to robot's wheel velocities. Same as gui.accelerate()
     """
-    robot_sim.velocity_left += ACCELERATION*FORWARD*rnn_output[0]
-    robot_sim.velocity_right += ACCELERATION*FORWARD*rnn_output[1]
+    robot_sim.velocity_left = robot_sim.max_vel*rnn_output[0]
+    robot_sim.velocity_right = robot_sim.max_vel*rnn_output[1]
 
 def decode_output_deprecated(rnn_output, robot_sim):
     """
@@ -218,6 +218,9 @@ def genetic_algorithm(fitness_list, genome_list):
 
 if __name__ == "__main__":
     this_grid = grid.create_grid(GRID_SIZE, WIDTH, HEIGHT)
+    WALLS.append([[80,80],[1000,80]])
+    WALLS.append([[1000,80],[1000,600]])
+    WALLS.append([[1000,300],[60,300]])
     e = Evolution(this_grid)
     e.evolve()
 

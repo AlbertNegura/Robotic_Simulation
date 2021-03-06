@@ -40,14 +40,14 @@ class RNN:
         :return: Vr,Vl
         """
         # hidden layer (input ~+ prev_hidden)
-        self.layer_1 = utils.sigmoid(np.dot(self.input, self.synapse_0) + np.dot(self.layer_1_values[-1], self.synapse_h)) if RNN else utils.sigmoid(np.dot(self.input, self.synapse_0))
+        self.layer_1 = utils.tanh(np.dot(self.input, self.synapse_0) + np.dot(self.layer_1_values[-1], self.synapse_h)) if RNN else utils.sigmoid(np.dot(self.input, self.synapse_0))
 
         # output layer
-        self.output = utils.sigmoid(np.dot(self.layer_1, self.synapse_1))
+        self.output = utils.tanh(np.dot(self.layer_1, self.synapse_1))
 
         # store hidden layer so we can use it in the next time step
         self.layer_1_values.append(copy.deepcopy(self.layer_1))
-        return utils.tanh(self.output)
+        return self.output
 
     def update_weights(self, weights_list):
         """
