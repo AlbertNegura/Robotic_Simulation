@@ -111,6 +111,7 @@ class Evolution:
         :returns: Given one individual, simulates 6000 iterations and returns fitness_parameters to be used in the fitness function
         """
         robot = genome.robot
+        robot.collisions = 0
         clean_cells = 0
         for cycle in range(self.iterations):
             rnn_output = nn.feedforward(robot.sensor_values())
@@ -119,7 +120,7 @@ class Evolution:
             robot.adjust_sensors(WALLS)
             robot.adjust_sensors(EDGE_WALLS)
             clean_cells = grid.get_cells_at_position_in_radius(map, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
-
+        map = grid.reset_grid(map)
         total_area = round(clean_cells/len(map)/len(map[0])*100,3)
         collision_number = robot.collisions
         sensor_values = np.sum(robot.sensor_values())
