@@ -51,9 +51,8 @@ CLEANING_MODE = None
 REPLAY_MODE = None
 
 # not handled by config - yet
-ITERATIONS = 30
-MUTATIONS = 2 # number of genes modified per mutation
-MUTATION_RATE = 0.05
+ITERATIONS = None
+MUTATIONS = None # number of genes modified per mutation
 AUTONOMOUS_MODE = False
 RNN = True
 DRAW_GHOSTS = False
@@ -90,12 +89,15 @@ def load_config(config):
     SENSOR_LENGTH = int(robot_settings['SENSOR_LENGTH'])
     GRID_SIZE = int(robot_settings['GRID_SIZE'])
 
-    global HIDDEN_NODES, POPULATION, MUTATION, LIFESPAN, SHOW_EVERY_X_GENERATIONS, SELECTION
+    global HIDDEN_NODES, POPULATION, ITERATIONS, MUTATION, MUTATIONS, MUTATION_RATE, LIFESPAN, SHOW_EVERY_X_GENERATIONS, SELECTION
     HIDDEN_NODES = int(model_settings['HIDDEN_NODES'])
     POPULATION = int(model_settings['POPULATION'])
+    ITERATIONS = int(model_settings['ITERATIONS'])
+    LIFESPAN = int(model_settings['LIFESPAN'])
     MUTATION = float(model_settings['MUTATION'])
+    MUTATIONS = int(model_settings['MUTATIONS'])
+    MUTATION_RATE = float(model_settings['MUTATION_RATE'])
     SELECTION = str(model_settings['SELECTION'])
-    LIFESPAN = int(model_settings['LIFESPAN']) # in seconds? frames * tickrate?
     SHOW_EVERY_X_GENERATIONS = int(model_settings['SHOW_EVERY_X_GENERATIONS'])
 
     global DIRT, DIRT_VALUE, COLLISION_VALUE, SENSOR_VALUE, CLEANING_RANGE
