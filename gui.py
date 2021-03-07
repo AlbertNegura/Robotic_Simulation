@@ -427,6 +427,9 @@ def execute():
         # Current generation
         visualization.write_text(pygame,screen,"- Generation ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.65*HEIGHT)))
         visualization.write_text(pygame,screen,str(current_generation),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.65*HEIGHT)))
+        # Current generation
+        visualization.write_text(pygame,screen,"- Autonomous ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.60*HEIGHT)))
+        visualization.write_text(pygame,screen,str(AUTONOMOUS_MODE),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.60*HEIGHT)))
 
         pygame.display.update()
         clock.tick(TICK_RATE)
