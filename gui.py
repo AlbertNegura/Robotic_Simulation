@@ -342,7 +342,7 @@ def execute():
                 user_input(pygame.key.get_pressed())
 
         for wall in WALLS:
-            print(WALLS)
+            #print(WALLS)
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
         for wall in EDGE_WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100))
