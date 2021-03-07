@@ -4,6 +4,7 @@ import fitness
 import robotics
 import neuralnetwork
 import grid
+import operator
 
 # sensors * hidden nodes because fully connected input + hidden layer
 # hidden nodes * 2 because each hidden node is fully connected to output
@@ -33,8 +34,8 @@ class Genome:
             self.genome[i] = weights[i]
 
 
-    def evaluate(self, cells_covered, num_collisions):
-        self.fitness = fitness.fitness(cells_covered, num_collisions, 0)
+    def evaluate(self, cells_covered, num_collisions, sensor_values):
+        self.fitness = fitness.fitness(cells_covered, num_collisions, sensor_values)
         return self.fitness
 
 
@@ -75,6 +76,7 @@ class Evolution:
         self.population = POPULATION
         self.iterations = ITERATIONS * TICK_RATE
         self.generations = LIFESPAN
+        self.current_generation = 0
         self.nn = [neuralnetwork.RNN(np.random.uniform(0, SENSOR_LENGTH, SENSORS), np.array([0,0]), SENSORS, HIDDEN_NODES, 2) for _ in range(self.population)]
         self.weights = [nn.weight_vector() for nn in self.nn]
         self.map = [this_grid.copy() for _ in range(self.population)]
@@ -88,16 +90,21 @@ class Evolution:
         :return: the evolved population after 30 generations
         """
         for gen in range(self.generations):
-
             # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
             # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
-            ind_fitness = []
-            for ind in range(self.population):
-                total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
-                ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
-                print("individual:", ind+1, "/", POPULATION, ", generation:", gen+1, "/", LIFESPAN, ", fitness:", np.round(ind_fitness[ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
-            self.fitnesses.append(ind_fitness)
-            self.update(genetic_algorithm(self.fitnesses[gen], self.genome_list))
+            self.single_gen_step()
+            genome_best, index, value = self.get_current_best()
+            print("Current best: ", index+1, ", with fitness value: ", value)
+            self.current_generation = self.current_generation+1
+
+    def single_gen_step(self):
+        ind_fitness = []
+        for ind in range(self.population):
+            total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
+            ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
+            print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation+1, "/", LIFESPAN, ", fitness:", np.round(ind_fitness[ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
+        self.fitnesses.append(ind_fitness)
+        self.update(genetic_algorithm(self.fitnesses[self.current_generation], self.genome_list))
 
     def update(self, new_weights):
         for i in range(self.population):
@@ -125,6 +132,10 @@ class Evolution:
         collision_number = robot.collisions
         sensor_values = np.sum(robot.sensor_values()) - robot.radius * SENSORS
         return total_area, collision_number, sensor_values
+
+    def get_current_best(self):
+        index, value = max(enumerate(self.fitnesses[self.current_generation]), key=operator.itemgetter(1))
+        return self.nn[index], index, value
 
 def decode_output(rnn_output, robot_sim):
     """
