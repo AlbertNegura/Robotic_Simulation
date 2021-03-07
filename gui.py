@@ -14,6 +14,7 @@ import tkinter as tk
 from tkinter import filedialog
 import utils
 import numpy as np
+import evolution
 
 # set up the pygame environment and keyboard
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -101,6 +102,9 @@ def map_user_input(pgkey):
     global MAP_MENU
     if pgkey[pygame.K_ESCAPE]:
         MAP_MENU = None
+
+def stop_evolving():
+    EVOLVE = False
 
 
 def user_input(pgkey):
@@ -299,9 +303,11 @@ def execute():
     current_frame = 0
     clean_cells = 0
 
-    rnn = neuralnetwork.RNN(np.zeros((SENSORS,1)), np.zeros((2,1)),SENSORS, HIDDEN_NODES, 2)
+    # EVOLUTION
+    evolve = evolution.Evolution(grid_1)
+    evolve.single_gen_step()
+    current_generation = evolve.current_generation
 
-    grid_1 = visualization.create_grid(GRID_SIZE, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
     visualization.draw_grid(pygame, screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
     while not terminate:
@@ -349,9 +355,17 @@ def execute():
         if accel:
             accelerate()
         if AUTONOMOUS_MODE:
-            vels = rnn.feedforward(robot.sensor_values())
+            nn, index, value = evolve.get_current_best()
+            vels = nn.feedforward(robot.sensor_values())
             robot.velocity_left += vels[0]
             robot.velocity_right += vels[1]
+        if EVOLVE:
+            print("Evolution step starts")
+            evolve.single_gen_step()
+            stop_evolving()
+            print("Evolution step ends")
+
+
 
         robot.move(WALLS)
 
@@ -410,6 +424,9 @@ def execute():
         # Collisions
         visualization.write_text(pygame,screen,"- Collisions ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.7*HEIGHT)))
         visualization.write_text(pygame,screen,str(robot.collisions),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.7*HEIGHT)))
+        # Current generation
+        visualization.write_text(pygame,screen,"- Generation ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.65*HEIGHT)))
+        visualization.write_text(pygame,screen,str(current_generation),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.65*HEIGHT)))
 
         pygame.display.update()
         clock.tick(TICK_RATE)

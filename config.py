@@ -11,6 +11,7 @@ import keyboardlayout.pygame as klp
 import  neuralnetwork
 import math
 import pickle
+import  visualization
 
 # Constants loaded via configs.
 WIDTH = None
@@ -131,11 +132,6 @@ config.read('config.ini')
 load_config(config)
 robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH)
 
-# POPULATION
-individuals_list = []
-for i in range(math.floor(POPULATION)):
-    individuals_list.append(neuralnetwork.RNN(robot.sensor_values(), robot.vr_vl()))
-
 # MAZE
 WALLS = []
 EDGE_WALLS = []
@@ -145,7 +141,7 @@ EDGE_WALLS.append([[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 
 EDGE_WALLS.append([[0, 0], [WIDTH, 0]])
 EDGE_WALLS.append([[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]])
 WALLS.append([[0,0],[-1,-1]]) # need to add a dummy wall
-
+grid_1 = visualization.create_grid(GRID_SIZE, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
 
 grey = pygame.Color('grey')
 black = pygame.Color('black')

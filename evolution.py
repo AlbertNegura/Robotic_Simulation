@@ -95,7 +95,6 @@ class Evolution:
             self.single_gen_step()
             genome_best, index, value = self.get_current_best()
             print("Current best: ", index+1, ", with fitness value: ", value)
-            self.current_generation = self.current_generation+1
 
     def single_gen_step(self):
         ind_fitness = []
@@ -105,6 +104,7 @@ class Evolution:
             print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation+1, "/", LIFESPAN, ", fitness:", np.round(ind_fitness[ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
         self.fitnesses.append(ind_fitness)
         self.update(genetic_algorithm(self.fitnesses[self.current_generation], self.genome_list))
+        self.current_generation = self.current_generation+1
 
     def update(self, new_weights):
         for i in range(self.population):
@@ -134,7 +134,7 @@ class Evolution:
         return total_area, collision_number, sensor_values
 
     def get_current_best(self):
-        index, value = max(enumerate(self.fitnesses[self.current_generation]), key=operator.itemgetter(1))
+        index, value = max(enumerate(self.fitnesses[self.current_generation-1]), key=operator.itemgetter(1))
         return self.nn[index], index, value
 
 def decode_output(rnn_output, robot_sim):
