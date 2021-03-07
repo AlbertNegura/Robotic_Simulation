@@ -242,7 +242,7 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.N, unused_key_info)
     if pgkey[pygame.K_a]:
-        AUTONOMOUS_MODE = True
+        AUTONOMOUS_MODE = not AUTONOMOUS_MODE
         keyboard.update_key(keyboard_layout, kl.Key.A, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.A, unused_key_info)
@@ -294,6 +294,8 @@ def execute():
     current_frame = 0
     clean_cells = 0
 
+    rnn = neuralnetwork.RNN(np.zeros((SENSORS,1)), np.zeros((2,1)),SENSORS, HIDDEN_NODES, 2)
+
     grid_1 = visualization.create_grid(GRID_SIZE, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
     visualization.draw_grid(pygame, screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
@@ -342,7 +344,9 @@ def execute():
         if accel:
             accelerate()
         if AUTONOMOUS_MODE:
-            pass # TODO: AUTONOMOUS MODE
+            vels = rnn.feedforward(robot.sensor_values())
+            robot.velocity_left = vels[0]
+            robot.velocity_right = vels[1]
 
         robot.move(WALLS)
 
