@@ -72,7 +72,7 @@ class Robot:
 
         # calculate force
         sum_vels = self.velocity_right + self.velocity_left
-        sign = -1 if sum_vels < 1 else 1
+        sign = -1 if sum_vels < 0 else 1
         mag = math.sqrt(self.velocity_right**2 + self.velocity_left**2)
         self.force = mag * sign
 
