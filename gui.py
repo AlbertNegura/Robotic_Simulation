@@ -350,8 +350,8 @@ def execute():
             accelerate()
         if AUTONOMOUS_MODE:
             vels = rnn.feedforward(robot.sensor_values())
-            robot.velocity_left = vels[0]
-            robot.velocity_right = vels[1]
+            robot.velocity_left = vels[0]*robot.max_vel
+            robot.velocity_right = vels[1]*robot.max_vel
 
         robot.move(WALLS)
 
