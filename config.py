@@ -53,6 +53,7 @@ REPLAY_MODE = None
 # not handled by config - yet
 ITERATIONS = None
 MUTATIONS = None # number of genes modified per mutation
+MUTATION_RATE = None
 AUTONOMOUS_MODE = False
 RNN = True
 DRAW_GHOSTS = False
