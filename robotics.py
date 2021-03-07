@@ -216,7 +216,7 @@ def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005,num_sensor
     robot.sensors = []
     robot.position_history = [robot.position]
     robot.orientation_history = [robot.orientation]
-    robot.max_vel = radius / 1.5
+    robot.max_vel = radius / 2.
     prev_degree = robot.orientation #starting angle
     for s in range(num_sensors):
         sensor = Sensor(robot.position, prev_degree, num_sensors, robot, max_radius)
