@@ -49,14 +49,12 @@ DRAW_TRAIL = None
 DISAPPEARING_TRAIL = None
 CLEANING_MODE = None
 REPLAY_MODE = None
-
-# not handled by config - yet
 ITERATIONS = None
-MUTATIONS = None # number of genes modified per mutation
-MUTATION_RATE = None
-AUTONOMOUS_MODE = False
-RNN = True
-DRAW_GHOSTS = False
+MUTATIONS = None
+AUTONOMOUS_MODE = None
+EVOLVE = None
+RNN = None
+DRAW_GHOSTS = None
 
 def load_config(config):
     """
@@ -113,14 +111,18 @@ def load_config(config):
     TICK_RATE = int(visualization_settings['TICK_RATE'])
     WALL_WIDTH = int(visualization_settings['WALL_WIDTH'])
 
-    global SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, CLEANING_MODE
+    global SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, DRAW_GHOSTS, RNN, CLEANING_MODE, AUTONOMOUS_MODE, EVOLVE
     SHOW_VELOCITY_PER_WHEEL = True if str(debug_settings['SHOW_VELOCITY_PER_WHEEL']) == "True" else False
     SHOW_SENSORS = True if str(debug_settings['SHOW_SENSORS']) == "True" else False
     SHOW_SENSOR_INFO = True if str(debug_settings['SHOW_SENSOR_INFO']) == "True" else False
     DRAW_GRID = True if str(debug_settings['DRAW_GRID']) == "True" else False
     DRAW_TRAIL = True if str(debug_settings['DRAW_TRAIL']) == "True" else False
     DISAPPEARING_TRAIL = True if str(debug_settings['DISAPPEARING_TRAIL']) == "True" else False
+    DRAW_GHOSTS = True if str(debug_settings['DRAW_GHOSTS']) == "True" else False
+    RNN = True if str(debug_settings['RNN']) == "True" else False
     CLEANING_MODE = True if str(debug_settings['CLEANING_MODE']) == "True" else False
+    AUTONOMOUS_MODE = True if str(debug_settings['AUTONOMOUS_MODE']) == "True" else False
+    EVOLVE = True if str(debug_settings['EVOLVE']) == "True" else False
 
 
 # Load the configuration and set up some globals
@@ -156,4 +158,4 @@ key_size = KEY_SIZE
 # Keys currently being used, needs to be updated with new keys according to keyboardlayour key key values
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
                  kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.C,
-                 kl.Key.A]
+                 kl.Key.A, kl.Key.Q]

@@ -246,6 +246,11 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.A, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.A, unused_key_info)
+    if pgkey[pygame.K_q]:
+        EVOLVE = not EVOLVE
+        keyboard.update_key(keyboard_layout, kl.Key.Q, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.Q, unused_key_info)
 
     # TODO:
     # IF EVOLUTION MODE KEY IS PRESSED
