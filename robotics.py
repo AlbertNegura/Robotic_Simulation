@@ -6,6 +6,7 @@ Albert Negura
 Sergi Nogues Farres
 """
 import numpy as np
+import math
 import motion
 import physics
 import utils
@@ -70,10 +71,10 @@ class Robot:
             self.velocity_left = -round(self.max_vel,1)
 
         # calculate force
-        self.force = np.linalg.norm([self.velocity_left, self.velocity_right]) * np.sign(
-            self.velocity_left + self.velocity_right)
-        if self.force == np.nan:
-            self.force = 0.
+        sum_vels = self.velocity_right + self.velocity_left
+        sign = -1 if sum_vels < 1 else 1
+        mag = math.sqrt(self.velocity_right**2 + self.velocity_left**2)
+        self.force = mag * sign
 
         # if wheels are not moving the equal velocity, resolve their movement differently
         if self.velocity_right != self.velocity_left:
