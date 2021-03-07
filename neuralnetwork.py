@@ -42,9 +42,12 @@ class RNN:
         self.input = x[0]
 
         # hidden layer (input ~+ prev_hidden)
-        self.layer_1 = utils.sigmoid(np.dot(self.input, self.synapse_0) + np.dot(self.layer_1_values[-1], self.synapse_h)) if RNN else utils.sigmoid(np.dot(self.input, self.synapse_0))
+        self.input = np.round(self.input, 5)
+        prev_values = np.round(self.layer_1_values[-1], 5)
+        self.layer_1 = utils.sigmoid(np.dot(self.input, self.synapse_0) + np.dot(prev_values, self.synapse_h)) if RNN else utils.sigmoid(np.dot(self.input, self.synapse_0))
 
         # output layer
+        np.round(self.layer_1, 5)
         self.output = utils.tanh(np.dot(self.layer_1, self.synapse_1))
 
         # store hidden layer so we can use it in the next time step

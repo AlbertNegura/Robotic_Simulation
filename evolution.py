@@ -130,8 +130,8 @@ def decode_output(rnn_output, robot_sim):
     """
     Mapping of the RNN output to robot's wheel velocities. Same as gui.accelerate()
     """
-    robot_sim.velocity_left = robot_sim.max_vel*rnn_output[0]
-    robot_sim.velocity_right = robot_sim.max_vel*rnn_output[1]
+    robot_sim.velocity_left += ACCELERATION*rnn_output[0]
+    robot_sim.velocity_right += ACCELERATION*rnn_output[1]
 
 def decode_output_deprecated(rnn_output, robot_sim):
     """
