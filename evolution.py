@@ -88,27 +88,40 @@ class Evolution:
         self.WALLS2 = [[[0,0],[-1,-1]], [[650,0],[650,125]],[[650,175],[650,425]], [[650, 475], [650, 600]], [[0,300],[305, 300]],[[345,300],[955,300]], [[995, 300], [1300, 300]],[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]],[[0, 0], [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
         self.EDGEWALLS = [[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]],[[0, 0], [WIDTH, 0],[WIDTH - int(HEIGHT / 3), 0]], [[WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
         self.walls = self.WALLS2
+        self.area_cleaned = []
         self.evaluate()
-        self.writer = open("best_individuals.txt", "w")
+        self.best_fitness = []
+        self.most_area_cleaned = []
+        self.writer = open("best_individuals.txt", "w+")
 
     def evolve(self):
         """
         :return: the evolved population after 30 generations
         """
+        if MULTIPROCESSING:
+            self.fitnesses = np.zeros((self.generations, self.population))
+            self.area_cleaned = np.zeros((self.generations, self.population))
         for gen in range(self.generations-1):
             if gen > int(self.generations/2):
                 self.walls = self.WALLS2
             # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
             # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
-            genome_best, index, value = self.get_current_best()
+            genome_best, index, value, area = self.get_current_best()
             print("Generation: ", self.current_generation, ", Current best: ", index + 1, ", Fitness value: ", value,
-                  ", Weights: ", self.weights[index])
+                  ", Area Cleaned: ", area, ", Weights: ", self.weights[index])
             self.writer.write(str(self.weights[index]))
+            self.most_area_cleaned.append(area)
+            self.best_fitness.append(value)
             self.writer.write(" ")
             self.single_gen_step()
 
-        genome_best, index, value = self.get_current_best()
+        genome_best, index, value, area = self.get_current_best()
         print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", value, ", Weights: ", self.weights[index])
+        self.most_area_cleaned.append(area)
+        self.best_fitness.append(value)
+        print("Individual\tFitness Value\tArea Cleaned")
+        for i in range(len(self.best_fitness)):
+            print("{}\t{}\t{}\n".format(i, self.best_fitness[i],self.most_area_cleaned[i]))
         self.writer.write(str(self.weights[index]))
         self.writer.write(" ")
         self.writer.close()
@@ -121,16 +134,20 @@ class Evolution:
             pool.close()
         else:
             ind_fitness = []
+            ind_areas = []
             for ind in range(self.population):
                 total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
+                ind_areas.append(total_area)
                 ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
                 print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation, "/", LIFESPAN-1, ", fitness:", np.round(ind_fitness[ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
             self.fitnesses.append(ind_fitness)
+            self.area_cleaned.append(ind_areas)
 
 
     def parallel_evaluation(self, ind):
         total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
-        self.fitnesses[-1][ind] = (fitness.fitness(total_area, collision_number, sensor_values))
+        self.area_cleaned[current_generation][ind] = total_area
+        self.fitnesses[current_generation][ind] = (fitness.fitness(total_area, collision_number, sensor_values))
         print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation, "/", LIFESPAN-1, ", fitness:", np.round(self.fitnesses[-1][ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
 
 
@@ -168,7 +185,8 @@ class Evolution:
 
     def get_current_best(self):
         index, value = max(enumerate(self.fitnesses[self.current_generation]), key=operator.itemgetter(1))
-        return self.nn[index], index, value
+        area = self.area_cleaned[self.current_generation][index]
+        return self.nn[index], index, value, area
 
 def decode_output(rnn_output, robot_sim):
     """
@@ -266,10 +284,9 @@ def genetic_algorithm(fitness_list, genome_list):
             else:
                 # CROSSOVER
                 if len(selected_agents) > 0:
-                    dad = np.random.choice(selected_agents)
-                    mom = np.random.choice(selected_agents)
-                    while dad == mom:
-                        mom = np.random.choice(selected_agents)
+                    parents = np.random.choice(selected_agents,2,replace=False)
+                    dad = parents[0]
+                    mom = parents[1]
                 else: # Roulette selection is special
                     parents = np.random.choice(range(POPULATION), 2, replace=False)
                     dad = parents[0]
