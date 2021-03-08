@@ -8,10 +8,12 @@ import robotics
 import pygame
 import keyboardlayout as kl
 import keyboardlayout.pygame as klp
-import  neuralnetwork
+import neuralnetwork
 import math
 import pickle
-import  visualization
+import visualization
+import utils
+import numpy as np
 
 # Constants loaded via configs.
 WIDTH = None
@@ -157,3 +159,9 @@ key_size = KEY_SIZE
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
                  kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.C,
                  kl.Key.A, kl.Key.Q]
+
+current_generation = 0
+best_individuals = utils.read_weights()
+
+nn = neuralnetwork.RNN(robot.sensor_values(), np.array([0, 0]), SENSORS, HIDDEN_NODES)
+nn.update_weights(best_individuals[current_generation])

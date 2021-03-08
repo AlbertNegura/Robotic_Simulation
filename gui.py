@@ -12,8 +12,6 @@ from typing import Any
 import grid
 import tkinter as tk
 from tkinter import filedialog
-import utils
-import numpy as np
 import evolution
 import asyncio
 
@@ -104,9 +102,6 @@ def map_user_input(pgkey):
     if pgkey[pygame.K_ESCAPE]:
         MAP_MENU = None
 
-def stop_evolving():
-    EVOLVE = False
-
 
 def user_input(pgkey):
     """
@@ -116,7 +111,7 @@ def user_input(pgkey):
     """
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE
-    global accel, wheel, direction, clean_cells, grid_1
+    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals
     if pgkey[pygame.K_w]:
         accel = True
         wheel = LEFT
@@ -252,6 +247,11 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.A, unused_key_info)
     if pgkey[pygame.K_q]:
+        if current_generation == len(best_individuals)-1:
+            current_generation = 0
+        else:
+            current_generation = current_generation + 1
+        nn.update_weights(best_individuals[current_generation])
         EVOLVE = not EVOLVE
         keyboard.update_key(keyboard_layout, kl.Key.Q, used_key_info)
     else:
@@ -303,21 +303,6 @@ def execute():
     current_frame = 0
     clean_cells = 0
 
-    # READ Weights from file
-    best_individuals = utils.read_weights()
-    nn = neuralnetwork.RNN(robot.sensor_values(), np.array([0, 0]), SENSORS, HIDDEN_NODES)
-    nn.update_weights([0.15845746,-0.71671721,-0.07495522,0.73639948,0.59403107,0.1166376
-                ,-0.26808884,0.53901437,0.66008767,0.0570196,0.32370764,0.95669316
-                ,0.91539696,0.53377395,-0.02625245,0.31674884,0.71912427,-0.69196913
-                ,-0.74433554,-0.5855526,-0.43567968,0.76179755,-0.3599174,-0.74460445
-                ,0.02875988,-0.99763163,-0.29768402,0.54858579,0.298951,-0.02607221
-                ,0.67149758,-0.59927183,-0.78686768,-0.56457549,-0.65791056,-0.36300381
-                ,-0.18750289,-0.77247412,0.57811291,-0.87269965,-0.14735662,-0.36817899
-                ,-0.80870496,0.54858579,0.57479371,-0.92259632,-0.1083189,0.54858579
-                ,0.67918599,-0.02524207,-0.91153884,-0.48926884,-0.7885214,0.54385344
-                ,0.63648782,0.13367969,-0.82010537,0.35128875,0.39375489,-0.71083447
-                ,0.67969223,0.92345431,0.54858579,-0.43787687,-0.10860643,0.54858579
-                ,0.89337743,0.92044987,-0.99807985,0.54858579,0.07891252,0.54459309])
     visualization.draw_grid(pygame, screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
     while not terminate:
@@ -369,8 +354,8 @@ def execute():
             vels = nn.feedforward(robot.sensor_values())
             robot.velocity_left += vels[0]
             robot.velocity_right += vels[1]
-        if EVOLVE:
-            evolve = asyncio.run(asyncevol(evolve))
+        #if EVOLVE:
+            #evolve = asyncio.run(asyncevol(evolve))
 
 
 
@@ -432,8 +417,8 @@ def execute():
         visualization.write_text(pygame,screen,"- Collisions ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.7*HEIGHT)))
         visualization.write_text(pygame,screen,str(robot.collisions),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.7*HEIGHT)))
         # Current generation
-        #visualization.write_text(pygame,screen,"- Generation ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.65*HEIGHT)))
-        #visualization.write_text(pygame,screen,str(current_generation),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.65*HEIGHT)))
+        visualization.write_text(pygame,screen,"- Generation ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.65*HEIGHT)))
+        visualization.write_text(pygame,screen,str(current_generation),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.65*HEIGHT)))
         # Current generation
         visualization.write_text(pygame,screen,"- Autonomous ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.60*HEIGHT)))
         visualization.write_text(pygame,screen,str(AUTONOMOUS_MODE),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.60*HEIGHT)))
