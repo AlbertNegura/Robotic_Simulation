@@ -199,7 +199,7 @@ def genetic_algorithm(fitness_list, genome_list):
         left_bracket = random_order[:num_selected]
         right_bracket = random_order[num_selected:]
         sorted_order = np.argsort(fitness_list)
-        selected_sorted_order = [i for i in sorted_order if fitness_list[i] > 1.0]
+        selected_sorted_order = [i for i in sorted_order if fitness_list[i] > np.min(fitness_list)+1]
         if len(selected_sorted_order) == 0:
             selected_sorted_order.append(sorted_order[0])
             selected_sorted_order.append(sorted_order[1])
