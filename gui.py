@@ -115,7 +115,7 @@ def user_input(pgkey):
     """
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE
-    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses
+    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas
     if pgkey[pygame.K_w]:
         accel = True
         wheel = LEFT
@@ -177,6 +177,7 @@ def user_input(pgkey):
         robot.velocity_right=STOP
         clean_cells = 0
         fitnesses = [0]
+        areas = [0]
         for cells in grid_1:
             for cell in cells:
                 cell.visited = False
@@ -303,14 +304,41 @@ def plot(data):
 
     return pygame.image.fromstring(raw_data, size, "RGB")
 fitnesses = [0]
+areas = [0]
 surf = plot(fitnesses)
+surf2 = plot(areas)
+
+WALLS1 = [[[0, 0], [-1, -1]], [[352, 82], [349, 264]], [[349, 263], [494, 258]], [[494, 258], [497, 80]],
+               [[497, 80], [352, 80]], [[776, 242], [764, 486]], [[764, 486], [956, 493]], [[956, 493], [947, 242]],
+               [[947, 242], [775, 243]], [[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],
+               [[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0], [WIDTH, 0]],
+               [[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
+
+WALLS2 = [[[0, 0], [-1, -1]], [[650, 0], [650, 125]], [[650, 175], [650, 425]], [[650, 475], [650, 600]],
+               [[0, 300], [305, 300]], [[345, 300], [955, 300]], [[995, 300], [1300, 300]],
+               [[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],
+               [[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0], [WIDTH, 0]],
+               [[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
+
+WALLS3 = [[[0, 0], [-1, -1]], [[106, 96], [1201, 95]], [[1178, 362], [1001, 241]], [[1001, 241], [812, 362]],
+          [[812, 362], [673, 238]], [[673, 238], [505, 352]], [[505, 352], [331, 218]], [[331, 218], [184, 351]],
+          [[85, 509], [1185, 507]],[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)],
+           [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0], [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0],
+           [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
+
+WALLS4 = [[[0, 0], [-1, -1]], [[311, 6], [308, 171]], [[309, 246], [307, 384]], [[305, 471], [293, 600]], [[429, 247],
+           [531, 166]], [[531, 166], [689, 248]], [[689, 249], [875, 158]], [[883, 163], [1106, 260]], [[1106, 369],
+           [977, 479]], [[977, 479], [825, 382]], [[824, 382], [621, 480]], [[621, 480], [440, 389]],[[0, 0],
+           [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
+           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
+
 
 def execute():
     """
     Execute the main loop of the game - add walls, robot, sensors and simulate motion, collisions and user input.
     :return:
     """
-    global WALLS, surf
+    global WALLS, surf, surf2
     global EDIT_MODE
     global accel, wheel, direction
     global current_frame
@@ -446,6 +474,7 @@ def execute():
         visualization.write_text(pygame,screen,str(round(robot.velocity_left,3)),(WIDTH-int(0.11875*WIDTH),HEIGHT-int(0.8*HEIGHT)))
         visualization.write_text(pygame,screen,str(round(robot.velocity_right,3)),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.8*HEIGHT)))
         # Cells cleaned
+        areas.append(round(clean_cells/size_of_grid*100,3))
         visualization.write_text(pygame,screen,"- Cells Cleaned ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.75*HEIGHT)))
         visualization.write_text(pygame,screen,str(clean_cells)+" / "+str(round(clean_cells/size_of_grid*100,3))+"%",(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.75*HEIGHT)))
         # Collisions
@@ -464,12 +493,16 @@ def execute():
         # Fitness plot
         if current_frame%TICK_RATE==0:
             surf=plot(fitnesses)
+            surf2=plot(areas)
         screen.blit(surf, (WIDTH-int(0.4*WIDTH), HEIGHT-int(0.33*HEIGHT)))
         visualization.write_text(pygame,screen,"Fitness",(WIDTH-int(0.325*WIDTH),HEIGHT-int(0.31*HEIGHT)))
+        screen.blit(surf2, (WIDTH-int(0.2*WIDTH), HEIGHT-int(0.33*HEIGHT)))
+        visualization.write_text(pygame,screen,"Area Cleaned",(WIDTH-int(0.125*WIDTH),HEIGHT-int(0.31*HEIGHT)))
 
         pygame.display.update()
         clock.tick(TICK_RATE)
         current_frame += 1
+        print(WALLS)
 
     pygame.quit()
 
