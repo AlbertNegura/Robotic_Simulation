@@ -103,7 +103,7 @@ class Robot:
                     #update = True
             # determine new position after accounting for parallel velocity component
             self.frame += 1
-            self.collisions += 1 if collision and self.frame % 10 == 0 else 0
+            self.collisions += 1 if collision and self.frame % 2 == 0 else 0
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
             # if it moves too quickly, try to resolve continuous collisions
             # resolve collisions using continuous collision detection - if no collisions, just returns the new_position itself
@@ -141,7 +141,7 @@ class Robot:
             collisions = []
             # determine new position after accounting for parallel velocity component
             self.frame += 1
-            self.collisions += 1 if collision and self.frame % 10 == 0 else 0
+            self.collisions += 1 if collision and self.frame % 2 == 0 else 0
             new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
             # if it moves too quickly, try to resolve continuous collisions
             # resolve collisions using continuous collision detection - if no collisions, just returns the new_position itself

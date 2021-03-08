@@ -6,7 +6,7 @@ def fitness(total_area, num_c, sensor_values):
     :param sensor_values: Average value of the robot's sensors
     """
     a = 2000 # to be determined manually
-    b = -100
+    b = -2000
     c = -1
     f = a*total_area + b*num_c + c*sensor_values
     if(f<0): f=0
