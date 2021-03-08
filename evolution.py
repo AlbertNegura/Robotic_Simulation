@@ -179,7 +179,7 @@ def genetic_algorithm(fitness_list, genome_list):
     :return:
     """
 
-    num_selected = int(POPULATION/5) if SELECTION == "elitism" or SELECTION == "roulette" else int(POPULATION/5*4) if SELECTION == "steady" else int(POPULATION/2)
+    num_selected = int(POPULATION/2) if SELECTION == "elitism" or SELECTION == "roulette" else int(POPULATION/5*4) if SELECTION == "steady" else int(POPULATION/2)
     selected_agents = []
     # region SELECTION
     if SELECTION == "elitism" or SELECTION == "steady":
