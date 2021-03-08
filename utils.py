@@ -194,7 +194,7 @@ def tanh(z):
     return ez
 
 def read_weights():
-    f = open("best_individuals.txt", "r")
+    f = open("best_individuals2.txt", "r")
     text = f.read()
     text_p = text.split("[")
     individuals = []

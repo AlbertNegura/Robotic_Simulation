@@ -13,7 +13,7 @@ import grid
 import tkinter as tk
 from tkinter import filedialog
 import evolution
-import asyncio
+import fitness
 
 # set up the pygame environment and keyboard
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -256,6 +256,16 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.Q, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.Q, unused_key_info)
+    if pgkey[pygame.K_z]:
+        if current_generation == 0:
+            current_generation = len(best_individuals)-1
+        else:
+            current_generation = current_generation - 1
+        nn.update_weights(best_individuals[current_generation])
+        EVOLVE = not EVOLVE
+        keyboard.update_key(keyboard_layout, kl.Key.Z, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.Z, unused_key_info)
 
     # TODO:
     # IF EVOLUTION MODE KEY IS PRESSED
@@ -422,6 +432,9 @@ def execute():
         # Current generation
         visualization.write_text(pygame,screen,"- Autonomous ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.60*HEIGHT)))
         visualization.write_text(pygame,screen,str(AUTONOMOUS_MODE),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.60*HEIGHT)))
+        # Current fitness
+        visualization.write_text(pygame,screen,"- Fitness ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.55*HEIGHT)))
+        visualization.write_text(pygame,screen,str(fitness.fitness(round(clean_cells/size_of_grid*100,3), robot.collisions, np.sum(robot.sensor_values()))),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.55*HEIGHT)))
 
         pygame.display.update()
         clock.tick(TICK_RATE)
@@ -433,7 +446,6 @@ def execute():
 async def asyncevol(evolve):
     print("Evolution step starts")
     evolve.single_gen_step()
-    stop_evolving()
     print("Evolution step ends")
     return evolve
 
