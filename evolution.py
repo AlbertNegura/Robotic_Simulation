@@ -107,7 +107,7 @@ class Evolution:
             # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
             # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
             genome_best, index, value, area = self.get_current_best()
-            print("Generation: ", self.current_generation, ", Current best: ", index + 1, ", Fitness value: ", value,
+            print("Generation: ", self.current_generation, ", Current best: ", index + 1, ", Fitness value: ", np.round(value,3),
                   ", Area Cleaned: ", area, ", Weights: ", self.weights[index])
             self.writer.write(str(self.weights[index]))
             self.most_area_cleaned.append(area)
@@ -116,7 +116,7 @@ class Evolution:
             self.single_gen_step()
 
         genome_best, index, value, area = self.get_current_best()
-        print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", value, ", Weights: ", self.weights[index])
+        print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", np.round(value,3), ", Weights: ", self.weights[index])
         self.most_area_cleaned.append(area)
         self.best_fitness.append(value)
         print("Generation\tFitness Value\tArea Cleaned")
@@ -139,7 +139,7 @@ class Evolution:
                 total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
                 ind_areas.append(total_area)
                 ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
-                print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation, "/", LIFESPAN-1, ", fitness:", np.round(ind_fitness[ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
+                print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation, "/", LIFESPAN-1, ", fitness:", np.round(ind_fitness[ind],2), ", n.collisions: ", collision_number, ", area:", np.round(total_area,3), ", sensors:",np.round(sensor_values,3))
             self.fitnesses.append(ind_fitness)
             self.area_cleaned.append(ind_areas)
 
@@ -148,7 +148,7 @@ class Evolution:
         total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
         self.area_cleaned[current_generation][ind] = total_area
         self.fitnesses[current_generation][ind] = (fitness.fitness(total_area, collision_number, sensor_values))
-        print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation, "/", LIFESPAN-1, ", fitness:", np.round(self.fitnesses[-1][ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
+        print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation, "/", LIFESPAN-1, ", fitness:", np.round(self.fitnesses[-1][ind],2), ", n.collisions: ", collision_number, ", area:", np.round(total_area,3), ", sensors:",np.round(sensor_values,3))
 
 
 
@@ -171,16 +171,18 @@ class Evolution:
         robot = genome.robot
         robot.collisions = 0
         clean_cells = 0
+        total_sensor_values = 0
         for cycle in range(self.iterations):
             rnn_output = nn.feedforward(robot.sensor_values())
             decode_output(rnn_output, robot)
             robot.move(self.walls)
             robot.adjust_sensors(self.walls)
             clean_cells = grid.get_cells_at_position_in_radius(map, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
+            total_sensor_values += np.sum(robot.sensor_values())
         map = grid.reset_grid(map)
         total_area = round(clean_cells/len(map)/len(map[0])*100,3)
         collision_number = robot.collisions
-        sensor_values = np.min(robot.sensor_values())
+        sensor_values = total_sensor_values/(SENSOR_LENGTH*SENSORS*ITERATIONS)
         return total_area, collision_number, sensor_values
 
     def get_current_best(self):

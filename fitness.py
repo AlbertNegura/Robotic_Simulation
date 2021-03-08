@@ -13,7 +13,7 @@ def fitness(total_area, num_c, sensor_values):
     if sensor_values == 0:
         f = a*total_area + b*num_c - 1000
     elif SENSOR_EXPONENTIAL:
-        f = a*total_area + b*num_c + c*np.exp(1/(sensor_values-2))
+        f = a*total_area + b*num_c + c*np.exp(1/(sensor_values-(RADIUS+2)*SENSORS))
     else:
         f = a*total_area + b*num_c + c*sensor_values
     if(f<0): f=0
