@@ -205,9 +205,9 @@ def genetic_algorithm(fitness_list, genome_list):
             selected_sorted_order.append(sorted_order[1])
             selected_sorted_order.append(sorted_order[2])
         for i in range(num_selected):
-            if fitness_list[left_bracket[i]] < 1.0:
+            if fitness_list[left_bracket[i]] < np.min(fitness_list)+1.0:
                 left_bracket[i] = np.random.choice(selected_sorted_order,1, replace = False)
-            if fitness_list[right_bracket[i]] < 1.0:
+            if fitness_list[right_bracket[i]] < np.min(fitness_list)+1.0:
                 left_bracket[i] = np.random.choice(selected_sorted_order,1, replace = False)
             selected_agent = left_bracket[i] if fitness_list[left_bracket[i]] > fitness_list[right_bracket[i]] else right_bracket[i] if fitness_list[left_bracket[i]] < fitness_list[right_bracket[i]] else np.random.choice([left_bracket[i], right_bracket[i]])
             selected_agents.append(selected_agent)
