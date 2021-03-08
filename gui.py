@@ -461,9 +461,11 @@ def execute():
         fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
         visualization.write_text(pygame,screen,"- Fitness ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.55*HEIGHT)))
         visualization.write_text(pygame,screen,str(fitnesses[-1]),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.55*HEIGHT)))
+        # Fitness plot
         if current_frame%TICK_RATE==0:
             surf=plot(fitnesses)
         screen.blit(surf, (WIDTH-int(0.4*WIDTH), HEIGHT-int(0.33*HEIGHT)))
+        visualization.write_text(pygame,screen,"Fitness",(WIDTH-int(0.325*WIDTH),HEIGHT-int(0.31*HEIGHT)))
 
         pygame.display.update()
         clock.tick(TICK_RATE)
