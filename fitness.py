@@ -9,6 +9,12 @@ def fitness(total_area, num_c, sensor_values):
     a = DIRT_VALUE # to be determined manually
     b = COLLISION_VALUE
     c = SENSOR_VALUE
-    f = a*total_area + b*num_c + c*sensor_values
+    sensor_values = np.round(sensor_values, 5)
+    if sensor_values == 0:
+        f = a*total_area + b*num_c - 1000
+    elif SENSOR_EXPONENTIAL:
+        f = a*total_area + b*num_c + c*np.exp(1/(sensor_values-2))
+    else:
+        f = a*total_area + b*num_c + c*sensor_values
     if(f<0): f=0
     return f/1000

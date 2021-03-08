@@ -180,7 +180,7 @@ class Evolution:
         map = grid.reset_grid(map)
         total_area = round(clean_cells/len(map)/len(map[0])*100,3)
         collision_number = robot.collisions
-        sensor_values = np.sum(robot.sensor_values()) - robot.radius * SENSORS
+        sensor_values = np.min(robot.sensor_values())
         return total_area, collision_number, sensor_values
 
     def get_current_best(self):

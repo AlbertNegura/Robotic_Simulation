@@ -61,6 +61,7 @@ RNN = None
 DRAW_GHOSTS = None
 MULTIPROCESSING = None
 PROCESSES = None
+SENSOR_EXPONENTIAL = None
 
 def load_config(config):
     """
@@ -106,12 +107,13 @@ def load_config(config):
     SELECTION = str(model_settings['SELECTION'])
     SHOW_EVERY_X_GENERATIONS = int(model_settings['SHOW_EVERY_X_GENERATIONS'])
 
-    global DIRT, DIRT_VALUE, COLLISION_VALUE, SENSOR_VALUE, CLEANING_RANGE
+    global DIRT, DIRT_VALUE, COLLISION_VALUE, SENSOR_VALUE, CLEANING_RANGE, SENSOR_EXPONENTIAL
     DIRT = int(terrain_settings['DIRT'])
     CLEANING_RANGE = int(RADIUS/GRID_SIZE)
     DIRT_VALUE = int(terrain_settings['DIRT_VALUE'])
     COLLISION_VALUE = int(terrain_settings['COLLISION_VALUE'])
     SENSOR_VALUE = int(terrain_settings['SENSOR_VALUE'])
+    SENSOR_EXPONENTIAL = True if str(terrain_settings['SENSOR_EXPONENTIAL']) == "True" else False
 
     global KEY_SIZE, TICK_RATE, WALL_WIDTH
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])
