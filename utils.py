@@ -192,3 +192,22 @@ def tanh(z):
     ez_neg = np.exp(-z)
     ez = (ez_poz - ez_neg)/(ez_poz + ez_neg)
     return ez
+
+def read_weights():
+    f = open("best_individuals.txt", "r")
+    text = f.read()
+    text_p = text.split("[")
+    individuals = []
+    c = 0
+    for i in text_p:
+        text_pp = i.split("]")
+        if c != 0:
+            w_list = text_pp[0].split()
+            individual = []
+            for w in w_list:
+                individual.append(float(w))
+            individuals.append(individual)
+        c = c+1
+    return individuals
+
+

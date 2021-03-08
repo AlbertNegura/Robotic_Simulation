@@ -303,10 +303,8 @@ def execute():
     current_frame = 0
     clean_cells = 0
 
-    # EVOLUTION
-    #evolve = evolution.Evolution(grid_1)
-    #evolve = asyncio.run(asyncevol(evolve))
-    #current_generation = evolve.current_generation
+    # READ Weights from file
+    best_individuals = utils.read_weights()
     nn = neuralnetwork.RNN(robot.sensor_values(), np.array([0, 0]), SENSORS, HIDDEN_NODES)
     nn.update_weights([-0.31482596,-0.92942289,-0.44509698,-0.1800191,-0.18570844,0.14213849
         ,0.06676058,-0.3115082,0.95521258,0.65064432,0.28344587,-0.57010157

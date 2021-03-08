@@ -88,6 +88,7 @@ class Evolution:
         self.EDGEWALLS = [[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]],[[0, 0], [WIDTH, 0],[WIDTH - int(HEIGHT / 3), 0]], [[WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
         self.walls = self.WALLS2
         self.evaluate()
+        self.writer = open("best_individuals.txt", "w")
 
     def evolve(self):
         """
@@ -100,7 +101,10 @@ class Evolution:
             # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
             genome_best, index, value = self.get_current_best()
             print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", value, ", Weights: ", self.weights[index])
+            self.writer.write(str(self.weights[index]))
+            self.writer.write(" ")
             self.single_gen_step()
+        self.writer.close()
 
     def evaluate(self):
         ind_fitness = []
