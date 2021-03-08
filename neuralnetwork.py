@@ -28,7 +28,7 @@ class RNN:
         # nn weights
         self.synapse_0 = 2*np.random.random((input_dim, hidden_dim)) - 1
         self.synapse_1 = 2*np.random.random((hidden_dim, output_dim)) - 1
-        self.synapse_h = 2*np.random.random((hidden_dim, hidden_dim)) - 1
+        self.synapse_h = 2*np.random.random((hidden_dim, hidden_dim)) - 1 if RNN else []
 
         # initialize previous step layer values
         self.layer_1_values = list()
@@ -63,7 +63,7 @@ class RNN:
         # nn weights
         synapse_0 = 2*np.random.random((self.input_dim, self.hidden_dim)) - 1
         synapse_1 = 2*np.random.random((self.hidden_dim, self.output_dim)) - 1
-        synapse_h = 2*np.random.random((self.hidden_dim, self.hidden_dim)) - 1
+        synapse_h = 2*np.random.random((self.hidden_dim, self.hidden_dim)) - 1 if RNN else []
 
         pos = 0
         if type(weights_list) == list:
@@ -71,10 +71,11 @@ class RNN:
                 for col in range(self.hidden_dim):
                     synapse_0[row, col] = weights_list[pos]
                     pos = pos+1
-            for row in range(self.hidden_dim):
-                for col in range(self.hidden_dim):
-                    synapse_h[row, col] = weights_list[pos]
-                    pos = pos+1
+            if RNN:
+                for row in range(self.hidden_dim):
+                    for col in range(self.hidden_dim):
+                        synapse_h[row, col] = weights_list[pos]
+                        pos = pos+1
             for col in range(2):
                 for row in range(self.hidden_dim):
                     synapse_1[row, col] = weights_list[pos]
@@ -84,10 +85,11 @@ class RNN:
                 for col in range(self.hidden_dim):
                     synapse_0[row, col] = weights_list.genome[pos]
                     pos = pos+1
-            for row in range(self.hidden_dim):
-                for col in range(self.hidden_dim):
-                    synapse_h[row, col] = weights_list.genome[pos]
-                    pos = pos+1
+            if RNN:
+                for row in range(self.hidden_dim):
+                    for col in range(self.hidden_dim):
+                        synapse_h[row, col] = weights_list.genome[pos]
+                        pos = pos+1
             for col in range(2):
                 for row in range(self.hidden_dim):
                     synapse_1[row, col] = weights_list.genome[pos]
