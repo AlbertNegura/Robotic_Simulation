@@ -14,6 +14,10 @@ import tkinter as tk
 from tkinter import filedialog
 import evolution
 import fitness
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.backends.backend_agg as agg
 
 # set up the pygame environment and keyboard
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -111,7 +115,7 @@ def user_input(pgkey):
     """
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE
-    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals
+    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses
     if pgkey[pygame.K_w]:
         accel = True
         wheel = LEFT
@@ -172,6 +176,7 @@ def user_input(pgkey):
         robot.velocity_left=STOP
         robot.velocity_right=STOP
         clean_cells = 0
+        fitnesses = [0]
         for cells in grid_1:
             for cell in cells:
                 cell.visited = False
@@ -283,12 +288,29 @@ def user_input(pgkey):
 
     # TODO: pickle dump nn weights of current best robot if key is pressed
     # TODO: pickle load nn weights of robot from saved default pickle file from previous todo
+fig = plt.figure(figsize=[3, 3])
+ax = fig.add_subplot(111)
+canvas = agg.FigureCanvasAgg(fig)
+
+def plot(data):
+    ax.clear()
+    ax.plot(data, color="b")
+    canvas.draw()
+    renderer = canvas.get_renderer()
+
+    raw_data = renderer.tostring_rgb()
+    size = canvas.get_width_height()
+
+    return pygame.image.fromstring(raw_data, size, "RGB")
+fitnesses = [0]
+surf = plot(fitnesses)
+
 def execute():
     """
     Execute the main loop of the game - add walls, robot, sensors and simulate motion, collisions and user input.
     :return:
     """
-    global WALLS
+    global WALLS, surf
     global EDIT_MODE
     global accel, wheel, direction
     global current_frame
@@ -297,6 +319,7 @@ def execute():
     global REPLAY_MODE
     global POSITION_HISTORY
     global ORIENTATION_HISTORY
+    global fitnesses
 
     DRAWING = False
     origin = None
@@ -315,6 +338,8 @@ def execute():
 
     visualization.draw_grid(pygame, screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
+
+
     while not terminate:
         screen.fill((255,255,255))
         keyboard_layout.draw(screen)
@@ -433,8 +458,12 @@ def execute():
         visualization.write_text(pygame,screen,"- Autonomous ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.60*HEIGHT)))
         visualization.write_text(pygame,screen,str(AUTONOMOUS_MODE),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.60*HEIGHT)))
         # Current fitness
+        fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
         visualization.write_text(pygame,screen,"- Fitness ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.55*HEIGHT)))
-        visualization.write_text(pygame,screen,str(round(fitness.fitness(round(clean_cells/size_of_grid*100,3), robot.collisions, np.sum(robot.sensor_values())),3)),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.55*HEIGHT)))
+        visualization.write_text(pygame,screen,str(fitnesses[-1]),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.55*HEIGHT)))
+        if current_frame%TICK_RATE==0:
+            surf=plot(fitnesses)
+        screen.blit(surf, (WIDTH-int(0.4*WIDTH), HEIGHT-int(0.33*HEIGHT)))
 
         pygame.display.update()
         clock.tick(TICK_RATE)
@@ -442,12 +471,6 @@ def execute():
 
     pygame.quit()
 
-
-async def asyncevol(evolve):
-    print("Evolution step starts")
-    evolve.single_gen_step()
-    print("Evolution step ends")
-    return evolve
 
 def map_settings():
     """
