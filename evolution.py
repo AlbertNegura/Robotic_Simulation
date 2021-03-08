@@ -79,10 +79,13 @@ class Evolution:
         self.nn = [neuralnetwork.RNN(np.random.uniform(0, SENSOR_LENGTH, SENSORS), np.array([0,0]), SENSORS, HIDDEN_NODES, 2) for _ in range(self.population)]
         self.weights = [nn.weight_vector() for nn in self.nn]
         self.map = [this_grid.copy() for _ in range(self.population)]
-        self.robots = [robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH) for _ in range(self.population)]
+        self.robots = [robotics.create_robot(init_pos=(200,200), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH) for _ in range(self.population)]
         self.genome_list = [Genome(self.robots[i], self.map[i], self.weights[i]) for i in range(self.population)]
         self.current_generation = 0
         self.fitnesses = []
+        self.WALLS1 = [[[0, 0], [-1, -1]], [[352, 82], [349, 264]], [[349, 263], [494, 258]], [[494, 258], [497, 80]], [[497, 80], [352, 80]], [[776, 242], [764, 486]], [[764, 486], [956, 493]], [[956, 493], [947, 242]], [[947, 242], [775, 243]]]
+        self.WALLS2 = [[[0,0],[-1,-1]], [[650,0],[650,125]],[[650,175],[650,425]], [[650, 475], [650, 600]], [[0,300],[305, 300]],[[345,300],[955,300]], [[995, 300], [1300, 300]]]
+        self.walls = self.WALLS2
         self.evaluate()
 
     def evolve(self):
@@ -90,6 +93,8 @@ class Evolution:
         :return: the evolved population after 30 generations
         """
         for gen in range(self.generations-1):
+            if gen > int(self.generations/2):
+                self.walls = self.WALLS2
             # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
             # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
             genome_best, index, value = self.get_current_best()
@@ -126,8 +131,8 @@ class Evolution:
         for cycle in range(self.iterations):
             rnn_output = nn.feedforward(robot.sensor_values())
             decode_output(rnn_output, robot)
-            robot.move(WALLS)
-            robot.adjust_sensors(WALLS)
+            robot.move(self.walls)
+            robot.adjust_sensors(self.walls)
             robot.adjust_sensors(EDGE_WALLS)
             clean_cells = grid.get_cells_at_position_in_radius(map, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
         map = grid.reset_grid(map)
@@ -233,7 +238,6 @@ def genetic_algorithm(fitness_list, genome_list):
 
 if __name__ == "__main__":
     this_grid = grid.create_grid(GRID_SIZE, WIDTH, HEIGHT)
-    WALLS.extend([[[0,0],[-1,-1]], [[650,0],[650,125]],[[650,175],[650,425]], [[650, 475], [650, 600]], [[0,300],[305, 300]],[[345,300],[955,300]], [[995, 300], [1300, 300]]])
     #WALLS.extend([[[280, 124], [282, 281]], [[282, 281], [431, 290]], [[433, 124], [426, 286]], [[522, 295], [525, 453]], [[520, 295], [679, 297]], [[679, 297], [676, 105]], [[97, 361], [75, 535]], [[75, 535], [317, 550]], [[850, 362], [844, 545]], [[844, 545], [733, 549]], [[1112, 79], [1121, 280]], [[1121, 280], [980, 286]], [[1116, 77], [930, 92]], [[973, 522], [963, 366]], [[963, 366], [1107, 344]], [[1107, 344], [1117, 440]], [[774, 249], [768, 104]], [[62, 50], [174, 54]], [[108, 173], [106, 263]]])
     e = Evolution(this_grid)
     e.evolve()

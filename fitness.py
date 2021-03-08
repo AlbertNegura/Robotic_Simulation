@@ -7,7 +7,7 @@ def fitness(total_area, num_c, sensor_values):
     """
     a = 2000 # to be determined manually
     b = -100
-    c = -0.01
+    c = -1
     f = a*total_area + b*num_c + c*sensor_values
     if(f<0): f=0
-    return f
+    return f/1000
