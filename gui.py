@@ -15,6 +15,7 @@ from tkinter import filedialog
 import utils
 import numpy as np
 import evolution
+import asyncio
 
 # set up the pygame environment and keyboard
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -272,7 +273,6 @@ def user_input(pgkey):
 
     # TODO: pickle dump nn weights of current best robot if key is pressed
     # TODO: pickle load nn weights of robot from saved default pickle file from previous todo
-
 def execute():
     """
     Execute the main loop of the game - add walls, robot, sensors and simulate motion, collisions and user input.
@@ -304,9 +304,10 @@ def execute():
     clean_cells = 0
 
     # EVOLUTION
-    evolve = evolution.Evolution(grid_1)
-    evolve.single_gen_step()
-    current_generation = evolve.current_generation
+    #evolve = evolution.Evolution(grid_1)
+    #evolve = asyncio.run(asyncevol(evolve))
+    #current_generation = evolve.current_generation
+    nn = neuralnetwork.RNN(robot.sensor_values(), np.array([0, 0]), SENSORS, HIDDEN_NODES)
 
     visualization.draw_grid(pygame, screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
@@ -355,15 +356,12 @@ def execute():
         if accel:
             accelerate()
         if AUTONOMOUS_MODE:
-            nn, index, value = evolve.get_current_best()
+            #nn, index, value = evolve.get_current_best()
             vels = nn.feedforward(robot.sensor_values())
             robot.velocity_left += vels[0]
             robot.velocity_right += vels[1]
         if EVOLVE:
-            print("Evolution step starts")
-            evolve.single_gen_step()
-            stop_evolving()
-            print("Evolution step ends")
+            evolve = asyncio.run(asyncevol(evolve))
 
 
 
@@ -425,8 +423,8 @@ def execute():
         visualization.write_text(pygame,screen,"- Collisions ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.7*HEIGHT)))
         visualization.write_text(pygame,screen,str(robot.collisions),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.7*HEIGHT)))
         # Current generation
-        visualization.write_text(pygame,screen,"- Generation ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.65*HEIGHT)))
-        visualization.write_text(pygame,screen,str(current_generation),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.65*HEIGHT)))
+        #visualization.write_text(pygame,screen,"- Generation ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.65*HEIGHT)))
+        #visualization.write_text(pygame,screen,str(current_generation),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.65*HEIGHT)))
         # Current generation
         visualization.write_text(pygame,screen,"- Autonomous ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.60*HEIGHT)))
         visualization.write_text(pygame,screen,str(AUTONOMOUS_MODE),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.60*HEIGHT)))
@@ -437,6 +435,13 @@ def execute():
 
     pygame.quit()
 
+
+async def asyncevol(evolve):
+    print("Evolution step starts")
+    evolve.single_gen_step()
+    stop_evolving()
+    print("Evolution step ends")
+    return evolve
 
 def map_settings():
     """
