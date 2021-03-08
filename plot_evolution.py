@@ -146,8 +146,8 @@ class Evolution:
             print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(i, round(self.best_fitness[i],3),round(self.best_fitness_error[i],3),round(self.most_area_cleaned[i],3), round(self.av_fitness[i],3),round(self.fitness_error[i],3),round(self.diversity[i],3),round(self.diversity_error[i],3)))
 
         plt.figure()
-        plt.errorbar(range(len(self.best_fitness)),self.best_fitness,yerr=self.best_fitness_error)
-        plt.errorbar(range(len(self.av_fitness)),self.av_fitness,yerr=self.fitness_error)
+        plt.errorbar(range(len(self.best_fitness)),self.best_fitness,yerr=self.best_fitness_error, color="b")
+        plt.errorbar(range(len(self.av_fitness)),self.av_fitness,yerr=self.fitness_error, color="r")
         plt.xlabel("Generation")
         plt.ylabel("Fitness")
         plt.legend(["Best Fitness","Average Fitness"])
@@ -196,8 +196,16 @@ class Evolution:
             self.fitnesses.append(ind_fitness)
             self.av_fitness.append(np.average(ind_fitness))
             self.fitness_error.append(1.96*np.std(ind_fitness)/np.sqrt(self.population))
-            self.diversity.append(np.average(ind_fitness))
-            self.diversity_error.append(1.96*np.std(ind_fitness)/np.sqrt(self.population))
+            diversity = 0
+            genome = []
+            for i in range(len(self.genome_list)):
+                genome.append(self.genome_list[i].genome)
+            for i in range(len(self.genome_list)):
+                for j in range(len(self.genome_list)):
+                    if i != j:
+                        diversity += np.linalg.norm(np.array(self.genome_list[i].genome)-np.array(self.genome_list[j].genome))
+            self.diversity.append(diversity)
+            self.diversity_error.append(1.96*np.std(genome)/np.sqrt(self.population))
             self.area_cleaned.append(ind_areas)
             sorted_fitnesses = np.sort(ind_fitness)
             self.best_fitness_error.append(1.96*np.std(sorted_fitnesses[:int(self.population/4*3)])/np.sqrt(int(self.population/4*3)))
