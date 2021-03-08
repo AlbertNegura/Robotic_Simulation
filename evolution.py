@@ -119,9 +119,9 @@ class Evolution:
         print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", value, ", Weights: ", self.weights[index])
         self.most_area_cleaned.append(area)
         self.best_fitness.append(value)
-        print("Individual\tFitness Value\tArea Cleaned")
+        print("Generation\tFitness Value\tArea Cleaned")
         for i in range(len(self.best_fitness)):
-            print("{}\t{}\t{}\n".format(i, self.best_fitness[i],self.most_area_cleaned[i]))
+            print("{}\t{}\t{}\n".format(i, round(self.best_fitness[i],3),round(self.most_area_cleaned[i],3)))
         self.writer.write(str(self.weights[index]))
         self.writer.write(" ")
         self.writer.close()
