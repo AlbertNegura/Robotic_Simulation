@@ -66,18 +66,32 @@ class RNN:
         synapse_h = 2*np.random.random((self.hidden_dim, self.hidden_dim)) - 1
 
         pos = 0
-        for row in range(self.input_dim):
-            for col in range(self.hidden_dim):
-                synapse_0[row, col] = weights_list.genome[pos]
-                pos = pos+1
-        for row in range(self.hidden_dim):
-            for col in range(self.hidden_dim):
-                synapse_h[row, col] = weights_list.genome[pos]
-                pos = pos+1
-        for col in range(2):
+        if type(weights_list) == list:
+            for row in range(self.input_dim):
+                for col in range(self.hidden_dim):
+                    synapse_0[row, col] = weights_list[pos]
+                    pos = pos+1
             for row in range(self.hidden_dim):
-                synapse_1[row, col] = weights_list.genome[pos]
-                pos = pos+1
+                for col in range(self.hidden_dim):
+                    synapse_h[row, col] = weights_list[pos]
+                    pos = pos+1
+            for col in range(2):
+                for row in range(self.hidden_dim):
+                    synapse_1[row, col] = weights_list[pos]
+                    pos = pos+1
+        else:
+            for row in range(self.input_dim):
+                for col in range(self.hidden_dim):
+                    synapse_0[row, col] = weights_list.genome[pos]
+                    pos = pos+1
+            for row in range(self.hidden_dim):
+                for col in range(self.hidden_dim):
+                    synapse_h[row, col] = weights_list.genome[pos]
+                    pos = pos+1
+            for col in range(2):
+                for row in range(self.hidden_dim):
+                    synapse_1[row, col] = weights_list.genome[pos]
+                    pos = pos+1
 
         self.synapse_h = synapse_h
         self.synapse_0 = synapse_0

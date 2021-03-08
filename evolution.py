@@ -83,8 +83,9 @@ class Evolution:
         self.genome_list = [Genome(self.robots[i], self.map[i], self.weights[i]) for i in range(self.population)]
         self.current_generation = 0
         self.fitnesses = []
-        self.WALLS1 = [[[0, 0], [-1, -1]], [[352, 82], [349, 264]], [[349, 263], [494, 258]], [[494, 258], [497, 80]], [[497, 80], [352, 80]], [[776, 242], [764, 486]], [[764, 486], [956, 493]], [[956, 493], [947, 242]], [[947, 242], [775, 243]]]
-        self.WALLS2 = [[[0,0],[-1,-1]], [[650,0],[650,125]],[[650,175],[650,425]], [[650, 475], [650, 600]], [[0,300],[305, 300]],[[345,300],[955,300]], [[995, 300], [1300, 300]]]
+        self.WALLS1 = [[[0, 0], [-1, -1]], [[352, 82], [349, 264]], [[349, 263], [494, 258]], [[494, 258], [497, 80]], [[497, 80], [352, 80]], [[776, 242], [764, 486]], [[764, 486], [956, 493]], [[956, 493], [947, 242]], [[947, 242], [775, 243]],[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]],[[0, 0], [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
+        self.WALLS2 = [[[0,0],[-1,-1]], [[650,0],[650,125]],[[650,175],[650,425]], [[650, 475], [650, 600]], [[0,300],[305, 300]],[[345,300],[955,300]], [[995, 300], [1300, 300]],[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]],[[0, 0], [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
+        self.EDGEWALLS = [[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]],[[0, 0], [WIDTH, 0],[WIDTH - int(HEIGHT / 3), 0]], [[WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
         self.walls = self.WALLS2
         self.evaluate()
 
@@ -133,7 +134,6 @@ class Evolution:
             decode_output(rnn_output, robot)
             robot.move(self.walls)
             robot.adjust_sensors(self.walls)
-            robot.adjust_sensors(EDGE_WALLS)
             clean_cells = grid.get_cells_at_position_in_radius(map, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
         map = grid.reset_grid(map)
         total_area = round(clean_cells/len(map)/len(map[0])*100,3)
