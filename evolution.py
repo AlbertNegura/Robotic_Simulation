@@ -108,7 +108,8 @@ class Evolution:
 
         genome_best, index, value = self.get_current_best()
         print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", value, ", Weights: ", self.weights[index])
-
+        self.writer.write(str(self.weights[index]))
+        self.writer.write(" ")
         self.writer.close()
 
     def evaluate(self):
