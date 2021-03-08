@@ -142,8 +142,10 @@ EDGE_WALLS = []
 EDGE_WALLS.append([[0, 0], [0, HEIGHT - int(HEIGHT / 3)]])
 EDGE_WALLS.append([[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]])
 EDGE_WALLS.append([[0, 0], [WIDTH, 0]])
-EDGE_WALLS.append([[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]])
-WALLS.append([[0,0],[-1,-1]]) # need to add a dummy wall
+EDGE_WALLS.append([[WIDTH - int(HEIGHT / 3)-5, 5], [WIDTH - int(HEIGHT / 3)-5, HEIGHT - int(HEIGHT / 3)-5]])
+WALLS = [[[5, 5], [5, HEIGHT - int(HEIGHT / 3)-5]], [[5, HEIGHT - int(HEIGHT / 3)-5], [WIDTH, HEIGHT - int(HEIGHT / 3)-5]],
+         [[5, 5], [WIDTH, 5]], [[WIDTH - int(HEIGHT / 3)-5, 5], [WIDTH - int(HEIGHT / 3)-5, HEIGHT - int(HEIGHT / 3)-5]],
+         [[5, 5], [0, 0]]]
 WALLS.extend(EDGE_WALLS)
 grid_1 = visualization.create_grid(GRID_SIZE, WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3))
 

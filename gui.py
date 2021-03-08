@@ -434,7 +434,7 @@ def execute():
         visualization.write_text(pygame,screen,str(AUTONOMOUS_MODE),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.60*HEIGHT)))
         # Current fitness
         visualization.write_text(pygame,screen,"- Fitness ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.55*HEIGHT)))
-        visualization.write_text(pygame,screen,str(fitness.fitness(round(clean_cells/size_of_grid*100,3), robot.collisions, np.sum(robot.sensor_values()))),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.55*HEIGHT)))
+        visualization.write_text(pygame,screen,str(round(fitness.fitness(round(clean_cells/size_of_grid*100,3), robot.collisions, np.sum(robot.sensor_values())),3)),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.55*HEIGHT)))
 
         pygame.display.update()
         clock.tick(TICK_RATE)
