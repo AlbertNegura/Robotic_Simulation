@@ -166,4 +166,5 @@ current_generation = 0
 best_individuals = utils.read_weights()
 
 nn = neuralnetwork.RNN(robot.sensor_values(), np.array([0, 0]), SENSORS, HIDDEN_NODES)
-nn.update_weights(best_individuals[current_generation])
+if len(best_individuals)>0:
+    nn.update_weights(best_individuals[current_generation])
