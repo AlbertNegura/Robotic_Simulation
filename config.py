@@ -59,6 +59,8 @@ AUTONOMOUS_MODE = None
 EVOLVE = None
 RNN = None
 DRAW_GHOSTS = None
+MULTIPROCESSING = None
+PROCESSES = None
 
 def load_config(config):
     """
@@ -71,6 +73,7 @@ def load_config(config):
     model_settings = config['MODEL']
     terrain_settings = config['TERRAIN']
     visualization_settings = config['VISUALIZATION']
+    multiprocessing_settings = config['MULTIPROCESSING']
     debug_settings = config['DEBUG']
 
     global WIDTH, HEIGHT
@@ -114,6 +117,10 @@ def load_config(config):
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])
     TICK_RATE = int(visualization_settings['TICK_RATE'])
     WALL_WIDTH = int(visualization_settings['WALL_WIDTH'])
+
+    global MULTIPROCESSING, PROCESSES
+    MULTIPROCESSING = True if str(multiprocessing_settings['MULTIPROCESSING']) == "True" else False
+    PROCESSES = int(multiprocessing_settings['PROCESSES'])
 
     global SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, DRAW_GHOSTS, RNN, CLEANING_MODE, AUTONOMOUS_MODE, EVOLVE
     SHOW_VELOCITY_PER_WHEEL = True if str(debug_settings['SHOW_VELOCITY_PER_WHEEL']) == "True" else False

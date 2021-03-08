@@ -5,6 +5,7 @@ import robotics
 import neuralnetwork
 import grid
 import operator
+from multiprocessing.dummy import Pool
 
 # sensors * hidden nodes because fully connected input + hidden layer
 # hidden nodes * 2 because each hidden node is fully connected to output
@@ -113,12 +114,26 @@ class Evolution:
         self.writer.close()
 
     def evaluate(self):
-        ind_fitness = []
-        for ind in range(self.population):
-            total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
-            ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
-            print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation, "/", LIFESPAN-1, ", fitness:", np.round(ind_fitness[ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
-        self.fitnesses.append(ind_fitness)
+        if MULTIPROCESSING:
+            pool = Pool(PROCESSES)
+            self.fitnesses.append(np.zeros(self.population))
+            pool.map(self.parallel_evaluation,range(self.population))
+            pool.close()
+        else:
+            ind_fitness = []
+            for ind in range(self.population):
+                total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
+                ind_fitness.append(fitness.fitness(total_area, collision_number, sensor_values))
+                print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation, "/", LIFESPAN-1, ", fitness:", np.round(ind_fitness[ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
+            self.fitnesses.append(ind_fitness)
+
+
+    def parallel_evaluation(self, ind):
+        total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
+        self.fitnesses[-1][ind] = (fitness.fitness(total_area, collision_number, sensor_values))
+        print("individual:", ind+1, "/", POPULATION, ", generation:", self.current_generation, "/", LIFESPAN-1, ", fitness:", np.round(self.fitnesses[-1][ind],2), ", n.collisions: ", collision_number, ", area:", total_area, ", sensors:",sensor_values)
+
+
 
     def single_gen_step(self):
         self.update(genetic_algorithm(self.fitnesses[self.current_generation], self.genome_list))
