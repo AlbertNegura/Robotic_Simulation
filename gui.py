@@ -12,11 +12,8 @@ from typing import Any
 import grid
 import tkinter as tk
 from tkinter import filedialog
-import utils
-import numpy as np
 import evolution
 import asyncio
-
 # set up the pygame environment and keyboard
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
@@ -104,9 +101,6 @@ def map_user_input(pgkey):
     if pgkey[pygame.K_ESCAPE]:
         MAP_MENU = None
 
-def stop_evolving():
-    EVOLVE = False
-
 
 def user_input(pgkey):
     """
@@ -116,7 +110,7 @@ def user_input(pgkey):
     """
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE
-    global accel, wheel, direction, clean_cells, grid_1
+    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals
     if pgkey[pygame.K_w]:
         accel = True
         wheel = LEFT
@@ -252,10 +246,16 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.A, unused_key_info)
     if pgkey[pygame.K_q]:
+        if current_generation == len(best_individuals)-1:
+            current_generation = 0
+        else:
+            current_generation = current_generation + 1
+        nn.update_weights(best_individuals[current_generation])
         EVOLVE = not EVOLVE
         keyboard.update_key(keyboard_layout, kl.Key.Q, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.Q, unused_key_info)
+
 
     # TODO:
     # IF EVOLUTION MODE KEY IS PRESSED
@@ -303,21 +303,6 @@ def execute():
     current_frame = 0
     clean_cells = 0
 
-    # READ Weights from file
-    best_individuals = utils.read_weights()
-    nn = neuralnetwork.RNN(robot.sensor_values(), np.array([0, 0]), SENSORS, HIDDEN_NODES)
-    nn.update_weights([0.04616762,0.36480635,-0.06493519,0.02631083,-0.96869644,0.57514784
-                    ,-0.21812041,0.86300468,0.91411589,-0.65778472,0.38873972,0.92127334
-                    ,-0.05203381,0.76274518,-0.34801058,-0.31727262,0.09407597,0.26870131
-                    ,0.97441684,0.95567549,0.20990291,0.16664874,-0.97309238,-0.82262483
-                    ,-0.16592572,0.67422198,-0.54213903,-0.85365994,-0.11937894,0.63278333
-                    ,0.65835213,0.4079162,-0.43264851,0.35265241,0.46862669,-0.82173877
-                    ,-0.59326369,-0.05700747,-0.5554427,0.78890098,0.5226097,0.4625241
-                    ,0.9925459,-0.00172199,-0.60461452,-0.54998686,-0.41329611,-0.04356056
-                    ,0.00952045,0.51416247,0.78085407,-0.01094003,0.93933201,0.5891472
-                    ,-0.27251642,-0.67435744,0.37746548,-0.12188304,-0.80144635,0.21663045
-                    ,-0.79625359,-0.78799366,0.64619332,0.22348307,-0.02402942,0.79273202
-                    ,0.12468282,0.80164012,0.2417558,-0.45858256,0.96895684,-0.22085545])
     visualization.draw_grid(pygame, screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
     while not terminate:
@@ -369,8 +354,8 @@ def execute():
             vels = nn.feedforward(robot.sensor_values())
             robot.velocity_left += vels[0]
             robot.velocity_right += vels[1]
-        if EVOLVE:
-            evolve = asyncio.run(asyncevol(evolve))
+        #if EVOLVE:
+            #evolve = asyncio.run(asyncevol(evolve))
 
 
 
@@ -432,8 +417,8 @@ def execute():
         visualization.write_text(pygame,screen,"- Collisions ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.7*HEIGHT)))
         visualization.write_text(pygame,screen,str(robot.collisions),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.7*HEIGHT)))
         # Current generation
-        #visualization.write_text(pygame,screen,"- Generation ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.65*HEIGHT)))
-        #visualization.write_text(pygame,screen,str(current_generation),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.65*HEIGHT)))
+        visualization.write_text(pygame,screen,"- Generation ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.65*HEIGHT)))
+        visualization.write_text(pygame,screen,str(current_generation),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.65*HEIGHT)))
         # Current generation
         visualization.write_text(pygame,screen,"- Autonomous ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.60*HEIGHT)))
         visualization.write_text(pygame,screen,str(AUTONOMOUS_MODE),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.60*HEIGHT)))
