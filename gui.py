@@ -362,8 +362,8 @@ def execute():
         if AUTONOMOUS_MODE:
             #nn, index, value = evolve.get_current_best()
             vels = nn.feedforward(robot.sensor_values())
-            robot.velocity_left += vels[0]
-            robot.velocity_right += vels[1]
+            robot.velocity_left = robot.max_vel*vels[0]
+            robot.velocity_right = robot.max_vel*vels[1]
         #if EVOLVE:
             #evolve = asyncio.run(asyncevol(evolve))
 

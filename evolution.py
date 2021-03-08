@@ -159,8 +159,8 @@ def decode_output(rnn_output, robot_sim):
     """
     Mapping of the RNN output to robot's wheel velocities. Same as gui.accelerate()
     """
-    robot_sim.velocity_left += ACCELERATION*rnn_output[0]
-    robot_sim.velocity_right += ACCELERATION*rnn_output[1]
+    robot_sim.velocity_left = robot_sim.max_vel*rnn_output[0]
+    robot_sim.velocity_right = robot_sim.max_vel*rnn_output[1]
 
 def decode_output_deprecated(rnn_output, robot_sim):
     """
@@ -198,7 +198,17 @@ def genetic_algorithm(fitness_list, genome_list):
         random_order = np.random.choice(range(POPULATION),POPULATION, replace=False)
         left_bracket = random_order[:num_selected]
         right_bracket = random_order[num_selected:]
+        sorted_order = np.argsort(fitness_list)
+        selected_sorted_order = [i for i in sorted_order if fitness_list[i] > 1.0]
+        if len(selected_sorted_order) == 0:
+            selected_sorted_order.append(sorted_order[0])
+            selected_sorted_order.append(sorted_order[1])
+            selected_sorted_order.append(sorted_order[2])
         for i in range(num_selected):
+            if fitness_list[left_bracket[i]] < 1.0:
+                left_bracket[i] = np.random.choice(selected_sorted_order,1, replace = False)
+            if fitness_list[right_bracket[i]] < 1.0:
+                left_bracket[i] = np.random.choice(selected_sorted_order,1, replace = False)
             selected_agent = left_bracket[i] if fitness_list[left_bracket[i]] > fitness_list[right_bracket[i]] else right_bracket[i] if fitness_list[left_bracket[i]] < fitness_list[right_bracket[i]] else np.random.choice([left_bracket[i], right_bracket[i]])
             selected_agents.append(selected_agent)
     elif SELECTION == "roulette":
@@ -215,6 +225,21 @@ def genetic_algorithm(fitness_list, genome_list):
                 i+=1
                 if i >= num_selected:
                     break
+    elif SELECTION == "custom":
+        selected_agents_temp = np.argsort(fitness_list)
+        print(fitness_list)
+        print(selected_agents_temp)
+        best_agent = fitness_list[selected_agents_temp[0]]
+        selected_agents = np.zeros(num_selected+1)
+        j = 0
+        for i in range(len(selected_agents)):
+            if j > num_selected+1:
+                break
+            if fitness_list[i] > best_agent/2:
+                selected_agents[j] = selected_agents_temp[i]
+            else:
+                selected_agents[j] = selected_agents_temp[0]
+            j+=1
     else: # in case of error, default to elitism
         selected_agents = np.argpartition(fitness_list, num_selected+1)
     # endregion
