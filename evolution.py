@@ -100,10 +100,15 @@ class Evolution:
             # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
             # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
             genome_best, index, value = self.get_current_best()
-            print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", value, ", Weights: ", self.weights[index])
+            print("Generation: ", self.current_generation, ", Current best: ", index + 1, ", Fitness value: ", value,
+                  ", Weights: ", self.weights[index])
             self.writer.write(str(self.weights[index]))
             self.writer.write(" ")
             self.single_gen_step()
+
+        genome_best, index, value = self.get_current_best()
+        print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", value, ", Weights: ", self.weights[index])
+
         self.writer.close()
 
     def evaluate(self):
