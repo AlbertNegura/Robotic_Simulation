@@ -211,7 +211,7 @@ def read_weights():
     return individuals
 
 def read_weights_gui():
-    f = open("allmaps.txt", "r")
+    f = open("best_individuals.txt", "r")
     text = f.read()
     text_p = text.split("[")
     individuals = []

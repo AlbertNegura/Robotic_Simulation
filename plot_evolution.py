@@ -16,6 +16,37 @@ import matplotlib.pyplot as plt
 # total weights for 12 sensors and 4 hidden nodes = 12*4 + 4*2 = 56
 # if RNN
 # total weights for 12 sensors and 4 hidden nodes = 12*4 + 4*4 + 4*2 = 56
+ALLWALLS = [
+           [[[0,5],[WIDTH-int(HEIGHT/3),5]],[[0,HEIGHT-int(HEIGHT/3)-5],[WIDTH-int(HEIGHT/3),HEIGHT-int(HEIGHT/3)-5]],[[5,0],[5,HEIGHT-int(HEIGHT/3)]],[[WIDTH-int(HEIGHT/3)-5,0],[WIDTH-int(HEIGHT/3)-5,HEIGHT-int(HEIGHT/3)]]],
+
+           [[[0, 0], [-1, -1]], [[352, 82], [349, 264]], [[349, 263], [494, 258]], [[494, 258], [497, 80]],
+               [[497, 80], [352, 80]], [[776, 242], [764, 486]], [[764, 486], [956, 493]], [[956, 493], [947, 242]],
+               [[947, 242], [775, 243]],
+            [[0,5],[WIDTH-int(HEIGHT/3),5]],[[0,HEIGHT-int(HEIGHT/3)-5],[WIDTH-int(HEIGHT/3),HEIGHT-int(HEIGHT/3)-5]],[[5,0],[5,HEIGHT-int(HEIGHT/3)]],[[WIDTH-int(HEIGHT/3)-5,0],[WIDTH-int(HEIGHT/3)-5,HEIGHT-int(HEIGHT/3)]]],
+
+            [[[0, 0], [-1, -1]], [[650, 0], [650, 125]], [[650, 175], [650, 425]], [[650, 475], [650, 600]],
+               [[0, 300], [305, 300]], [[345, 300], [955, 300]], [[995, 300], [1300, 300]],
+             [[0,5],[WIDTH-int(HEIGHT/3),5]],[[0,HEIGHT-int(HEIGHT/3)-5],[WIDTH-int(HEIGHT/3),HEIGHT-int(HEIGHT/3)-5]],[[5,0],[5,HEIGHT-int(HEIGHT/3)]],[[WIDTH-int(HEIGHT/3)-5,0],[WIDTH-int(HEIGHT/3)-5,HEIGHT-int(HEIGHT/3)]]],
+
+            [[[0, 0], [-1, -1]], [[106, 96], [1201, 95]], [[1178, 362], [1001, 241]], [[1001, 241], [812, 362]],
+            [[812, 362], [673, 238]], [[673, 238], [505, 352]], [[505, 352], [331, 218]], [[331, 218], [184, 351]],
+            [[85, 509], [1185, 507]],
+             [[0,5],[WIDTH-int(HEIGHT/3),5]],[[0,HEIGHT-int(HEIGHT/3)-5],[WIDTH-int(HEIGHT/3),HEIGHT-int(HEIGHT/3)-5]],[[5,0],[5,HEIGHT-int(HEIGHT/3)]],[[WIDTH-int(HEIGHT/3)-5,0],[WIDTH-int(HEIGHT/3)-5,HEIGHT-int(HEIGHT/3)]]],
+
+            [[[0, 0], [-1, -1]], [[311, 6], [308, 171]], [[309, 246], [307, 384]], [[305, 471], [293, 600]], [[429, 247],
+           [531, 166]], [[531, 166], [689, 248]], [[689, 249], [875, 158]], [[883, 163], [1106, 260]], [[1106, 369],
+           [977, 479]], [[977, 479], [825, 382]], [[824, 382], [621, 480]], [[621, 480], [440, 389]],
+             [[0,5],[WIDTH-int(HEIGHT/3),5]],[[0,HEIGHT-int(HEIGHT/3)-5],[WIDTH-int(HEIGHT/3),HEIGHT-int(HEIGHT/3)-5]],[[5,0],[5,HEIGHT-int(HEIGHT/3)]],[[WIDTH-int(HEIGHT/3)-5,0],[WIDTH-int(HEIGHT/3)-5,HEIGHT-int(HEIGHT/3)]]],
+
+           [[[5, 5], [5, 595]], [[5, 595], [1600, 595]], [[5, 5], [1600, 5]], [[1295, 5], [1295, 595]], [[5, 5], [0, 0]], [[0, 0], [0, 600]], [[0, 600], [1600, 600]], [[0, 0], [1600, 0]], [[1295, 5], [1295, 595]], [[164, 122], [185, 277]], [[183, 278], [389, 268]], [[389, 268], [373, 128]], [[374, 124], [166, 125]], [[840, 136], [842, 287]], [[842, 287], [1102, 294]], [[1102, 294], [1105, 142]], [[1107, 138], [843, 131]], [[500, 220], [635, 162]], [[635, 162], [743, 261]], [[971, 499], [745, 371]], [[738, 366], [680, 435]], [[680, 435], [573, 351]], [[573, 351], [443, 431]], [[973, 366], [975, 525]], [[975, 525], [1134, 519]], [[1134, 519], [1141, 372]], [[1135, 371], [973, 368]], [[135, 468], [236, 395]], [[236, 395], [280, 480]],
+            [[0,5],[WIDTH-int(HEIGHT/3),5]],[[0,HEIGHT-int(HEIGHT/3)-5],[WIDTH-int(HEIGHT/3),HEIGHT-int(HEIGHT/3)-5]],[[5,0],[5,HEIGHT-int(HEIGHT/3)]],[[WIDTH-int(HEIGHT/3)-5,0],[WIDTH-int(HEIGHT/3)-5,HEIGHT-int(HEIGHT/3)]]],
+
+           [[[5, 5], [5, 595]], [[5, 595], [1600, 595]], [[5, 5], [1600, 5]], [[1295, 5], [1295, 595]], [[5, 5], [0, 0]], [[0, 0], [0, 600]], [[0, 600], [1600, 600]], [[0, 0], [1600, 0]], [[1295, 5], [1295, 595]], [[252, 110], [255, 245]], [[255, 245], [481, 248]], [[481, 248], [487, 119]], [[488, 117], [252, 113]], [[580, 245], [822, 238]], [[928, 113], [960, 248]], [[960, 248], [1088, 241]], [[1088, 241], [1085, 111]], [[1085, 110], [932, 113]], [[1091, 238], [1222, 241]], [[255, 245], [86, 236]], [[468, 596], [478, 334]], [[972, 323], [981, 596]], [[579, 244], [587, 355]], [[587, 355], [833, 358]], [[833, 358], [824, 241]],
+            [[0,5],[WIDTH-int(HEIGHT/3),5]],[[0,HEIGHT-int(HEIGHT/3)-5],[WIDTH-int(HEIGHT/3),HEIGHT-int(HEIGHT/3)-5]],[[5,0],[5,HEIGHT-int(HEIGHT/3)]],[[WIDTH-int(HEIGHT/3)-5,0],[WIDTH-int(HEIGHT/3)-5,HEIGHT-int(HEIGHT/3)]]],
+
+            [[[5, 5], [5, 595]], [[5, 595], [1600, 595]], [[5, 5], [1600, 5]], [[1295, 5], [1295, 595]], [[5, 5], [0, 0]], [[0, 0], [0, 600]], [[0, 600], [1600, 600]], [[0, 0], [1600, 0]], [[1295, 5], [1295, 595]], [[78, 92], [472, 83]], [[471, 83], [470, 348]], [[574, 348], [584, 90]], [[584, 88], [869, 101]], [[870, 101], [876, 5]], [[93, 195], [389, 190]], [[389, 190], [378, 595]], [[103, 595], [113, 270]], [[114, 270], [298, 280]], [[298, 280], [288, 380]], [[288, 380], [196, 376]], [[383, 427], [882, 423]], [[743, 422], [744, 169]], [[998, 14], [989, 427]], [[594, 430], [603, 518]], [[603, 514], [786, 510]], [[990, 422], [1143, 423]], [[1294, 347], [1222, 343]], [[1144, 9], [1145, 249]],
+             [[0,5],[WIDTH-int(HEIGHT/3),5]],[[0,HEIGHT-int(HEIGHT/3)-5],[WIDTH-int(HEIGHT/3),HEIGHT-int(HEIGHT/3)-5]],[[5,0],[5,HEIGHT-int(HEIGHT/3)]],[[WIDTH-int(HEIGHT/3)-5,0],[WIDTH-int(HEIGHT/3)-5,HEIGHT-int(HEIGHT/3)]]]]
+
 
 class Genome:
     genome_size =  SENSORS*HIDDEN_NODES+HIDDEN_NODES*HIDDEN_NODES + HIDDEN_NODES*2 if RNN else SENSORS*HIDDEN_NODES+HIDDEN_NODES*2 if HIDDEN_NODES > 0 else SENSORS * 2
@@ -117,49 +148,45 @@ class Evolution:
         """
         :return: the evolved population after 30 generations
         """
-        for i in range(1):
-            self.evaluate()
-            self.WALLS = self.WALLS2 if i == 0 else self.WALLS2 if i == 1 else self.WALLS3
-            if MULTIPROCESSING:
-                self.fitnesses = np.zeros((self.generations, self.population))
-                self.area_cleaned = np.zeros((self.generations, self.population))
-            for gen in range(self.generations-1):
-                i = np.random.randint(0,3)
-                self.WALLS = self.WALLS2 if i == 0 else self.WALLS2 if i == 1 else self.WALLS3
-                # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
-                # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
-                genome_best, index, value, area = self.get_current_best()
-                print("Generation: ", self.current_generation, ", Current best: ", index + 1, ", Fitness value: ", np.round(value,3),
-                      ", Area Cleaned: ", area, ", Weights:\n", self.weights[index])
-                self.writer.write(str(self.weights[index]))
-                self.most_area_cleaned.append(area)
-                self.best_fitness.append(value)
-                self.writer.write(" ")
-                self.single_gen_step()
-
+        self.WALLS = ALLWALLS[SELECTED_WALLS]
+        if MULTIPROCESSING:
+            self.fitnesses = np.zeros((self.generations, self.population))
+            self.area_cleaned = np.zeros((self.generations, self.population))
+        for gen in range(self.generations-1):
+            # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
+            # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
             genome_best, index, value, area = self.get_current_best()
-            print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", np.round(value,3), ", Weights:\n", self.weights[index])
+            print("Generation: ", self.current_generation, ", Current best: ", index + 1, ", Fitness value: ", np.round(value,3),
+                  ", Area Cleaned: ", area, ", Weights:\n", self.weights[index])
+            self.writer.write(str(self.weights[index]))
             self.most_area_cleaned.append(area)
             self.best_fitness.append(value)
-            self.writer.write(str(self.weights[index]))
             self.writer.write(" ")
+            self.single_gen_step()
+
+        genome_best, index, value, area = self.get_current_best()
+        print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", np.round(value,3), ", Weights:\n", self.weights[index])
+        self.most_area_cleaned.append(area)
+        self.best_fitness.append(value)
+        self.writer.write(str(self.weights[index]))
+        self.writer.write(" ")
         print("Generation\tFitness Value\tError\tArea Cleaned\tAverage Fitness\tError\tDiversity\tError\n")
         for i in range(len(self.best_fitness)):
             print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(i, round(self.best_fitness[i],3),round(self.best_fitness_error[i],3),round(self.most_area_cleaned[i],3), round(self.av_fitness[i],3),round(self.fitness_error[i],3),round(self.diversity[i],3),round(self.diversity_error[i],3)))
 
         plt.figure()
-        plt.errorbar(range(len(self.best_fitness)),self.best_fitness,yerr=self.best_fitness_error, color="b")
-        plt.errorbar(range(len(self.av_fitness)),self.av_fitness,yerr=self.fitness_error, color="r")
+        plt.errorbar(range(len(self.best_fitness)),self.best_fitness,yerr=self.best_fitness_error, color="b", ecolor='k')
+        plt.errorbar(range(len(self.av_fitness)),self.av_fitness,yerr=self.fitness_error, color="r", ecolor='gray')
         plt.xlabel("Generation")
         plt.ylabel("Fitness")
         plt.legend(["Best Fitness","Average Fitness"])
         plt.show()
         plt.figure()
         ax1 = plt.subplot()
-        plt.errorbar(range(len(self.best_fitness)),self.best_fitness,yerr=self.best_fitness_error,color="b", label="Fitness")
+        plt.errorbar(range(len(self.best_fitness)),self.best_fitness,yerr=self.best_fitness_error,color="b", label="Fitness", ecolor='k')
         plt.ylabel("Fitness")
         ax2 = ax1.twinx()
-        ax2.errorbar(range(len(self.diversity)),self.av_fitness,yerr=self.diversity_error,color="r", label="Diversity")
+        ax2.errorbar(range(len(self.diversity)),self.diversity,yerr=self.diversity_error,color="r", label="Diversity", ecolor='gray')
         lines, labels = ax1.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
         ax2.legend(lines + lines2, labels + labels2, loc=0)
@@ -168,10 +195,10 @@ class Evolution:
         plt.show()
         plt.figure()
         ax3 = plt.subplot()
-        plt.errorbar(range(len(self.best_fitness)),self.best_fitness,yerr=self.best_fitness_error,color="b", label="Fitness")
+        plt.errorbar(range(len(self.best_fitness)),self.best_fitness,yerr=self.best_fitness_error,color="b", label="Fitness", ecolor='k')
         plt.ylabel("Fitness")
         ax4 = ax3.twinx()
-        ax4.plot(range(len(self.area_cleaned)),self.most_area_cleaned, color="r", label="Area cleaned")
+        ax4.plot(range(len(self.area_cleaned)),self.most_area_cleaned, color="r", label="Area cleaned", ecolor='gray')
         lines, labels = ax3.get_legend_handles_labels()
         lines2, labels2 = ax4.get_legend_handles_labels()
         ax4.legend(lines + lines2, labels + labels2, loc=0)
