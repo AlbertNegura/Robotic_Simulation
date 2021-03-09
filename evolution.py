@@ -26,6 +26,11 @@ class Genome:
 
 
     def __init__(self, robot, grid, weights):
+        """
+        param robot: robot to use as an agent
+        param grid: grid to cover
+        param weights: NN weights treated as genome
+        """
         size = len(weights)
         assert size >= self.genome_size, "Expected {} weights, got {} instead".format(self.genome_size,size)
         self.robot = robot
@@ -37,11 +42,24 @@ class Genome:
 
 
     def evaluate(self, cells_covered, num_collisions, sensor_values):
+        """
+        function to get the fitness value for the individual with this genome
+        :param cells_covered: maximise total area covered
+        :param num_collisions: minimise number of collisions
+        :param sensor_values: Average value of the robot's sensors
+        :return: fitness value
+        """
         self.fitness = fitness.fitness(cells_covered, num_collisions, sensor_values)
         return self.fitness
 
 
     def cross_over(self, dad, mom):
+        """
+        get new cross over genome from 2 parent cells
+        param dad: dad cell
+        param mom: mom cell
+        :return: new genome based on the dad and mom cell cross-over
+        """
         dad_sel = np.random.choice(range(self.genome_size),int(self.genome_size/2), replace = False)
         mom_sel = [i for i in range(self.genome_size) if i not in dad_sel]
         self.genome[dad_sel] = dad.genome[dad_sel]
@@ -49,6 +67,9 @@ class Genome:
         return self
 
     def mutate(self):
+        """
+        mutate some part of the genome based on the MUTATIONS hyperparameter
+        """
         pos = np.random.choice(range(self.genome_size), MUTATIONS, replace=False)
         self.genome[pos] = np.random.uniform()
         return self
@@ -98,7 +119,7 @@ class Evolution:
 
     def evolve(self):
         """
-        :return: the evolved population after 30 generations
+        :return: the evolved population after the training for generations based on LIFESPAN hyperapameter
         """
         if MULTIPROCESSING:
             self.fitnesses = np.zeros((self.generations, self.population))
@@ -129,6 +150,10 @@ class Evolution:
         self.writer.close()
 
     def evaluate(self):
+        """
+        evaluate each individual from the generation pool
+        append every individual fitness and their areas cleared
+        """
         if MULTIPROCESSING:
             pool = Pool(PROCESSES)
             self.fitnesses.append(np.zeros(self.population))
@@ -147,6 +172,10 @@ class Evolution:
 
 
     def parallel_evaluation(self, ind):
+        """
+        evaluates each individual in the generation
+        used only for multiprocessing purposes
+        """
         total_area, collision_number, sensor_values = self.step(self.genome_list[ind], self.map[ind], self.nn[ind])
         self.area_cleaned[current_generation][ind] = total_area
         self.fitnesses[current_generation][ind] = (fitness.fitness(total_area, collision_number, sensor_values))
@@ -155,10 +184,18 @@ class Evolution:
 
 
     def single_gen_step(self):
+        """
+        performs single generation step:
+        1. Updates the new weights (genome) for the next generation
+        2. Evaluate the fitness of the new generation
+        """
         self.update(genetic_algorithm(self.fitnesses[self.current_generation], self.genome_list))
         self.evaluate()
 
     def update(self, new_weights):
+        """
+        update the next generation with new NN weights, genome and set the current generation to be next
+        """
         for i in range(self.population):
             self.nn[i].update_weights(new_weights[i])
         self.weights = [nn.weight_vector() for nn in self.nn]
@@ -188,6 +225,10 @@ class Evolution:
         return total_area, collision_number, sensor_values
 
     def get_current_best(self):
+        """
+        Find best fitness for the current generation
+        :return: Neural weights, index, fitness value, area covered: of the best current generation individual
+        """
         index, value = max(enumerate(self.fitnesses[self.current_generation]), key=operator.itemgetter(1))
         area = self.area_cleaned[self.current_generation][index]
         self.average_fitness.append(np.mean(self.fitnesses[self.current_generation]))
@@ -222,9 +263,13 @@ def decode_output_deprecated(rnn_output, robot_sim):
 
 def genetic_algorithm(fitness_list, genome_list):
     """
+    1. Perform selection of the best individuals based on the selection type
+    2. Perform cross-over of genomes based on the best found individuals
+    3. Perform genomes mutation based on MUTATION hyperparameter
+
     :param fitness_list: fitness_list.size = POPULATION
     :param genome_list: genome_list.size = POPULATION containing self.genome_list[i].genome a list of "weights" of size 12*4 + 4*4 + 4*2 = 72 (see RNN)
-    :return:
+    :return: new genome_list for the next generation
     """
 
     num_selected = int(POPULATION/2) if SELECTION == "elitism" or SELECTION == "roulette" else int(POPULATION/5*4) if SELECTION == "steady" else int(POPULATION/2)
@@ -308,8 +353,11 @@ def genetic_algorithm(fitness_list, genome_list):
     return genome_list
 
 def save_graph(best_fitness, average_fitness):
+    """
+    Create and save bar charts with best fitness and average fitness for all generations
+    """
     x = np.arange(len(best_fitness))
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 5), dpi=100)
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(16, 5), dpi=100)
     fig.suptitle('Fitness Function Evolution', fontsize=20)
     axes[0].bar(x, best_fitness, color='blue')
     axes[0].set_xlabel('Generation')
@@ -328,6 +376,9 @@ def save_graph(best_fitness, average_fitness):
 
 
 if __name__ == "__main__":
+    """
+    Create new grid and perform evolution over the population
+    """
     this_grid = grid.create_grid(GRID_SIZE, WIDTH, HEIGHT)
     #WALLS.extend([[[280, 124], [282, 281]], [[282, 281], [431, 290]], [[433, 124], [426, 286]], [[522, 295], [525, 453]], [[520, 295], [679, 297]], [[679, 297], [676, 105]], [[97, 361], [75, 535]], [[75, 535], [317, 550]], [[850, 362], [844, 545]], [[844, 545], [733, 549]], [[1112, 79], [1121, 280]], [[1121, 280], [980, 286]], [[1116, 77], [930, 92]], [[973, 522], [963, 366]], [[963, 366], [1107, 344]], [[1107, 344], [1117, 440]], [[774, 249], [768, 104]], [[62, 50], [174, 54]], [[108, 173], [106, 263]]])
     e = Evolution(this_grid)
