@@ -62,6 +62,7 @@ DRAW_GHOSTS = None
 MULTIPROCESSING = None
 PROCESSES = None
 SENSOR_EXPONENTIAL = None
+SELECTED_WALLS = None
 
 def load_config(config):
     """
@@ -96,7 +97,7 @@ def load_config(config):
     SENSOR_LENGTH = int(robot_settings['SENSOR_LENGTH'])
     GRID_SIZE = int(robot_settings['GRID_SIZE'])
 
-    global HIDDEN_NODES, POPULATION, ITERATIONS, MUTATION, MUTATIONS, MUTATION_RATE, LIFESPAN, SHOW_EVERY_X_GENERATIONS, SELECTION
+    global HIDDEN_NODES, POPULATION, ITERATIONS, MUTATION, MUTATIONS, MUTATION_RATE, LIFESPAN, SHOW_EVERY_X_GENERATIONS, SELECTION, SELECTED_WALLS
     HIDDEN_NODES = int(model_settings['HIDDEN_NODES'])
     POPULATION = int(model_settings['POPULATION'])
     ITERATIONS = int(model_settings['ITERATIONS'])
@@ -106,6 +107,7 @@ def load_config(config):
     MUTATION_RATE = float(model_settings['MUTATION_RATE'])
     SELECTION = str(model_settings['SELECTION'])
     SHOW_EVERY_X_GENERATIONS = int(model_settings['SHOW_EVERY_X_GENERATIONS'])
+    SELECTED_WALLS = str(model_settings['SELECTED_WALLS'])
 
     global DIRT, DIRT_VALUE, COLLISION_VALUE, SENSOR_VALUE, CLEANING_RANGE, SENSOR_EXPONENTIAL
     DIRT = int(terrain_settings['DIRT'])
