@@ -1,3 +1,10 @@
+"""
+Generate plots of data with preloaded data.
+Authors:
+Albert Negura
+Kamil Inglot
+"""
+
 import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.rcParams.update({'errorbar.capsize': 2})

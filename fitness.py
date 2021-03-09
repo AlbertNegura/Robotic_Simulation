@@ -1,3 +1,10 @@
+"""Fitness function used for controller evolution
+Authors:
+Julien Havel
+Kamil Inglot
+Albert Negura
+Sergi Nogues Farres
+"""
 import numpy as np
 from config import *
 def fitness(total_area, num_c, sensor_values):

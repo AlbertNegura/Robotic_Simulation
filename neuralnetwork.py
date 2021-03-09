@@ -18,6 +18,14 @@ class RNN:
     """
 
     def __init__(self, x, y, input_dim=12, hidden_dim=4, output_dim=2):
+        """
+
+        :param x: a list of size [input_dim,1]
+        :param y: a list of size [output_dim,1]
+        :param input_dim: input dimension
+        :param hidden_dim: hidden layer dimension
+        :param output_dim: output dimension
+        """
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.output_dim = output_dim
@@ -56,9 +64,9 @@ class RNN:
 
     def update_weights(self, weights_list):
         """
-        synapse_0 = 12*4
-        synapse_h = 4*4
-        synapse_1 = 4*2
+        Update the current weight values to the specified ones.
+        :param weights_list: A flattened list of weights
+        :return:
         """
         # nn weights
         synapse_0 = 2*np.random.random((self.input_dim, self.hidden_dim)) - 1
@@ -106,7 +114,8 @@ class RNN:
 
     def round_output(self):
         """
-        return values to be strictly 0, 1 or 0.5.
+        Round the output values.
+        :return: the rounded values
         """
         r_list = [0, 0.5, 1]
         round_values = []
@@ -115,6 +124,10 @@ class RNN:
         return round_values
 
     def weight_vector(self):
+        """
+        Obtain a flattened version of the current weight vector
+        :return: the flattened weight vector as a 1d numpy array.
+        """
         weights = np.concatenate((self.synapse_0, self.synapse_h, self.synapse_1.transpose()), axis=0).flatten()
         return weights
 

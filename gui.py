@@ -359,6 +359,11 @@ ax = fig.add_subplot(111)
 canvas = agg.FigureCanvasAgg(fig)
 
 def plot(data):
+    """
+    Generate a plot of some data
+    :param data: the data to plot
+    :return: the plot as a pygame image
+    """
     ax.clear()
     ax.plot(data, color="b")
     canvas.draw()
@@ -642,6 +647,11 @@ def set_walls(walls):
 
 
 def save_bot_data(robot):
+    """
+    Saves the current robot position and orientation history based on the current hour, minute, second time.
+    :param robot: the robot to save
+    :return:
+    """
     t = time.localtime()
     current_time = time.strftime("%H:%M:%S", t)
     filename = str('BOT' + current_time + '.npz')

@@ -2,6 +2,7 @@
 Robotic Simulation Software grid display.
 Authors:
 Albert Negura
+Kamil Inglot
 """
 
 
@@ -91,6 +92,15 @@ def create_grid(square_size, width, height):
 
 
 def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_cells):
+    """
+    Get the dirty and clean cells around the robot.
+    :param grid: the current grid as a 2d list
+    :param position: the position of the robot
+    :param size: the size of the dirt
+    :param cleaning_range: the range at which to clean
+    :param clean_cells: the current number of clean cells
+    :return: the new number of clean cells, if any
+    """
     center_x = int(position[0] / size)
     center_y = int(position[1] / size)
     xs = [center_x + i for i in range(-cleaning_range, cleaning_range + 1)]
@@ -105,9 +115,8 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
 
 def reset_grid(grid):
     """
-    resets grid visited positions creating dust everywhere
-    Authors:
-    Kamil Inglot
+    Resets grid visited positions creating dust everywhere
+    :param grid: the grid to reset as a 2d list
     """
     rows = len(grid)
     columns = len(grid[0])

@@ -166,6 +166,14 @@ def circle_line_tangent_point(wall_init, wall_end, P, R, tol=1e-9):
 
 
 def circle_intersect(line1, line2, radius, angle):
+    """
+    Whether a circle's trajectory intersects a line
+    :param line1: The circle's trajectory
+    :param line2: The intersected line
+    :param radius: The radius of the circle
+    :param angle: The angle at which the circle is travelling
+    :return: The point at which there is an intersection, if any, as a 1d list of the form (x,y)
+    """
     intersection_point = intersection(line1, line2)
     if intersection_point is None:
         # work in radians
@@ -185,15 +193,29 @@ def circle_intersect(line1, line2, radius, angle):
 
 
 def sigmoid(z):
+    """
+    Sigmoid activation function.
+    :param z: Data
+    :return: Sigmoid activation function value
+    """
     return 1/(1 + np.exp(-z))
 
 def tanh(z):
+    """
+    Tanh activation function
+    :param z: Data
+    :return: Tanh activation function value
+    """
     ez_poz = np.exp(z)
     ez_neg = np.exp(-z)
     ez = (ez_poz - ez_neg)/(ez_poz + ez_neg)
     return ez
 
 def read_weights():
+    """
+    Read the weights saved in best_individuals.txt and load them in.
+    :return: a list of weights of all individuals
+    """
     f = open("best_individuals.txt", "r")
     text = f.read()
     text_p = text.split("[")
@@ -211,6 +233,10 @@ def read_weights():
     return individuals
 
 def read_weights_gui():
+    """
+    Read the weights saved in best_individuals.txt and load them in the gui.
+    :return: a list of weights of all individuals
+    """
     f = open("best_individuals.txt", "r")
     text = f.read()
     text_p = text.split("[")
