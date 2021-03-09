@@ -5,6 +5,7 @@ import robotics
 import neuralnetwork
 import grid
 import operator
+import matplotlib.pyplot as plt
 from multiprocessing.dummy import Pool
 
 # sensors * hidden nodes because fully connected input + hidden layer
@@ -91,6 +92,7 @@ class Evolution:
         self.area_cleaned = []
         self.evaluate()
         self.best_fitness = []
+        self.average_fitness = []
         self.most_area_cleaned = []
         self.writer = open("best_individuals.txt", "w+")
 
@@ -107,7 +109,7 @@ class Evolution:
             # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
             # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
             genome_best, index, value, area = self.get_current_best()
-            print("Generation: ", self.current_generation, ", Current best: ", index + 1, ", Fitness value: ", np.round(value,3),
+            print("Generation: ", self.current_generation,", Average Fitness: ", self.average_fitness[self.current_generation], ", Current best: ", index + 1, ", Fitness value: ", np.round(value,3),
                   ", Area Cleaned: ", area, ", Weights: ", self.weights[index])
             self.writer.write(str(self.weights[index]))
             self.most_area_cleaned.append(area)
@@ -116,7 +118,7 @@ class Evolution:
             self.single_gen_step()
 
         genome_best, index, value, area = self.get_current_best()
-        print("Generation: ", self.current_generation,", Current best: ", index+1, ", Fitness value: ", np.round(value,3), ", Weights: ", self.weights[index])
+        print("Generation: ", self.current_generation,", Average Fitness: ", self.average_fitness[self.current_generation] ,", Current best: ", index+1, ", Fitness value: ", np.round(value,3), ", Weights: ", self.weights[index])
         self.most_area_cleaned.append(area)
         self.best_fitness.append(value)
         print("Generation\tFitness Value\tArea Cleaned")
@@ -188,6 +190,7 @@ class Evolution:
     def get_current_best(self):
         index, value = max(enumerate(self.fitnesses[self.current_generation]), key=operator.itemgetter(1))
         area = self.area_cleaned[self.current_generation][index]
+        self.average_fitness.append(np.mean(self.fitnesses[self.current_generation]))
         return self.nn[index], index, value, area
 
 def decode_output(rnn_output, robot_sim):
@@ -304,12 +307,32 @@ def genetic_algorithm(fitness_list, genome_list):
 
     return genome_list
 
+def save_graph(best_fitness, average_fitness):
+    x = np.arange(len(best_fitness))
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 5), dpi=100)
+    fig.suptitle('Fitness Function Evolution', fontsize=20)
+    axes[0].bar(x, best_fitness, color='blue')
+    axes[0].set_xlabel('Generation')
+    axes[0].set_ylabel('Best fitness')
+    axes[0].set_title('Best Fitness Evolution')
+    axes[0].set_xticks(x)
+
+    axes[1].bar(x, average_fitness, color='blue')
+    axes[1].set_xlabel('Generation')
+    axes[1].set_ylabel('Average fitness')
+    axes[1].set_title('Average Fitness Evolution')
+    axes[1].set_xticks(x)
+
+
+    fig.savefig('best_fitness.png', dpi=100)
+
 
 if __name__ == "__main__":
     this_grid = grid.create_grid(GRID_SIZE, WIDTH, HEIGHT)
     #WALLS.extend([[[280, 124], [282, 281]], [[282, 281], [431, 290]], [[433, 124], [426, 286]], [[522, 295], [525, 453]], [[520, 295], [679, 297]], [[679, 297], [676, 105]], [[97, 361], [75, 535]], [[75, 535], [317, 550]], [[850, 362], [844, 545]], [[844, 545], [733, 549]], [[1112, 79], [1121, 280]], [[1121, 280], [980, 286]], [[1116, 77], [930, 92]], [[973, 522], [963, 366]], [[963, 366], [1107, 344]], [[1107, 344], [1117, 440]], [[774, 249], [768, 104]], [[62, 50], [174, 54]], [[108, 173], [106, 263]]])
     e = Evolution(this_grid)
     e.evolve()
+    save_graph(e.best_fitness, e.average_fitness)
 
 
 
