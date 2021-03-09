@@ -119,7 +119,7 @@ class Evolution:
         """
         for i in range(1):
             self.evaluate()
-            self.WALLS = self.WALLS1 if i == 0 else self.WALLS2 if i == 1 else self.WALLS3
+            self.WALLS = self.WALLS2 if i == 0 else self.WALLS2 if i == 1 else self.WALLS3
             if MULTIPROCESSING:
                 self.fitnesses = np.zeros((self.generations, self.population))
                 self.area_cleaned = np.zeros((self.generations, self.population))
