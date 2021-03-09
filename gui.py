@@ -30,6 +30,57 @@ direction = 0
 clean_cells = 0
 
 
+CURRENT_WALL_CONFIG = 0
+
+
+ALLWALLS = [
+           [[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
+           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]],
+
+           [[[0, 0], [-1, -1]], [[352, 82], [349, 264]], [[349, 263], [494, 258]], [[494, 258], [497, 80]],
+               [[497, 80], [352, 80]], [[776, 242], [764, 486]], [[764, 486], [956, 493]], [[956, 493], [947, 242]],
+               [[947, 242], [775, 243]], [[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],
+               [[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0], [WIDTH, 0]],
+               [[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]],
+
+            [[[0, 0], [-1, -1]], [[650, 0], [650, 125]], [[650, 175], [650, 425]], [[650, 475], [650, 600]],
+               [[0, 300], [305, 300]], [[345, 300], [955, 300]], [[995, 300], [1300, 300]],
+               [[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],
+               [[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0], [WIDTH, 0]],
+               [[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]],
+
+            [[[0, 0], [-1, -1]], [[106, 96], [1201, 95]], [[1178, 362], [1001, 241]], [[1001, 241], [812, 362]],
+            [[812, 362], [673, 238]], [[673, 238], [505, 352]], [[505, 352], [331, 218]], [[331, 218], [184, 351]],
+            [[85, 509], [1185, 507]],[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)],
+           [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0], [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0],
+           [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]],
+
+            [[[0, 0], [-1, -1]], [[311, 6], [308, 171]], [[309, 246], [307, 384]], [[305, 471], [293, 600]], [[429, 247],
+           [531, 166]], [[531, 166], [689, 248]], [[689, 249], [875, 158]], [[883, 163], [1106, 260]], [[1106, 369],
+           [977, 479]], [[977, 479], [825, 382]], [[824, 382], [621, 480]], [[621, 480], [440, 389]],[[0, 0],
+           [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
+           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]],
+           [[[5, 5], [5, 595]], [[5, 595], [1600, 595]], [[5, 5], [1600, 5]], [[1295, 5], [1295, 595]], [[5, 5], [0, 0]], [[0, 0], [0, 600]], [[0, 600], [1600, 600]], [[0, 0], [1600, 0]], [[1295, 5], [1295, 595]], [[164, 122], [185, 277]], [[183, 278], [389, 268]], [[389, 268], [373, 128]], [[374, 124], [166, 125]], [[840, 136], [842, 287]], [[842, 287], [1102, 294]], [[1102, 294], [1105, 142]], [[1107, 138], [843, 131]], [[500, 220], [635, 162]], [[635, 162], [743, 261]], [[971, 499], [745, 371]], [[738, 366], [680, 435]], [[680, 435], [573, 351]], [[573, 351], [443, 431]], [[973, 366], [975, 525]], [[975, 525], [1134, 519]], [[1134, 519], [1141, 372]], [[1135, 371], [973, 368]], [[135, 468], [236, 395]], [[236, 395], [280, 480]],[[0, 0],
+           [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
+           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]],
+
+           [[[5, 5], [5, 595]], [[5, 595], [1600, 595]], [[5, 5], [1600, 5]], [[1295, 5], [1295, 595]], [[5, 5], [0, 0]], [[0, 0], [0, 600]], [[0, 600], [1600, 600]], [[0, 0], [1600, 0]], [[1295, 5], [1295, 595]], [[252, 110], [255, 245]], [[255, 245], [481, 248]], [[481, 248], [487, 119]], [[488, 117], [252, 113]], [[580, 245], [822, 238]], [[928, 113], [960, 248]], [[960, 248], [1088, 241]], [[1088, 241], [1085, 111]], [[1085, 110], [932, 113]], [[1091, 238], [1222, 241]], [[255, 245], [86, 236]], [[468, 596], [478, 334]], [[972, 323], [981, 596]], [[579, 244], [587, 355]], [[587, 355], [833, 358]], [[833, 358], [824, 241]],[[0, 0],
+           [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
+           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]],
+
+            [[[5, 5], [5, 595]], [[5, 595], [1600, 595]], [[5, 5], [1600, 5]], [[1295, 5], [1295, 595]], [[5, 5], [0, 0]], [[0, 0], [0, 600]], [[0, 600], [1600, 600]], [[0, 0], [1600, 0]], [[1295, 5], [1295, 595]], [[78, 92], [472, 83]], [[471, 83], [470, 348]], [[574, 348], [584, 90]], [[584, 88], [869, 101]], [[870, 101], [876, 5]], [[93, 195], [389, 190]], [[389, 190], [378, 595]], [[103, 595], [113, 270]], [[114, 270], [298, 280]], [[298, 280], [288, 380]], [[288, 380], [196, 376]], [[383, 427], [882, 423]], [[743, 422], [744, 169]], [[998, 14], [989, 427]], [[594, 430], [603, 518]], [[603, 514], [786, 510]], [[990, 422], [1143, 423]], [[1294, 347], [1222, 343]], [[1144, 9], [1145, 249]],[[0, 0],
+           [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
+           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]]
+
+WALL_NAMES = ["(D) Empty Room", "(R) Boxes", "(R) Four Rooms", "(R) Zigzag Corridor", "(T) Zigzag Barrier", "(T) Boxes and Zigzags", "(T) Boxface", "(T) Maze"]
+
+current_generation = 0
+best_individuals = utils.read_weights_gui()
+
+nn = neuralnetwork.RNN(robot.sensor_values(), np.array([0, 0]), SENSORS, HIDDEN_NODES)
+if len(best_individuals)>0:
+    nn.update_weights(best_individuals[current_generation])
+
 pygame.font.init()
 keyboard_info = kl.KeyboardInfo(
     position=(0, HEIGHT - int(HEIGHT / 3)),
@@ -115,6 +166,7 @@ def user_input(pgkey):
     """
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE
+    global CURRENT_WALL_CONFIG
     global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas
     if pgkey[pygame.K_w]:
         accel = True
@@ -272,6 +324,27 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.Z, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.Z, unused_key_info)
+    if pgkey[pygame.K_LEFTBRACKET]:
+        if CURRENT_WALL_CONFIG == 0:
+            CURRENT_WALL_CONFIG = len(ALLWALLS)-1
+        else:
+            CURRENT_WALL_CONFIG -= 1
+        WALLS = ALLWALLS[CURRENT_WALL_CONFIG]
+        EVOLVE = not EVOLVE
+        keyboard.update_key(keyboard_layout, kl.Key.LEFTBRACKET, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.LEFTBRACKET, unused_key_info)
+
+    if pgkey[pygame.K_RIGHTBRACKET]:
+        if CURRENT_WALL_CONFIG == len(ALLWALLS)-1:
+            CURRENT_WALL_CONFIG = 0
+        else:
+            CURRENT_WALL_CONFIG += 1
+        WALLS = ALLWALLS[CURRENT_WALL_CONFIG]
+        keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)
+
 
     # TODO:
     # IF EVOLUTION MODE KEY IS PRESSED
@@ -307,42 +380,6 @@ fitnesses = [0]
 areas = [0]
 surf = plot(fitnesses)
 surf2 = plot(areas)
-
-WALLS1 = [[[0, 0], [-1, -1]], [[352, 82], [349, 264]], [[349, 263], [494, 258]], [[494, 258], [497, 80]],
-               [[497, 80], [352, 80]], [[776, 242], [764, 486]], [[764, 486], [956, 493]], [[956, 493], [947, 242]],
-               [[947, 242], [775, 243]], [[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],
-               [[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0], [WIDTH, 0]],
-               [[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
-
-WALLS2 = [[[0, 0], [-1, -1]], [[650, 0], [650, 125]], [[650, 175], [650, 425]], [[650, 475], [650, 600]],
-               [[0, 300], [305, 300]], [[345, 300], [955, 300]], [[995, 300], [1300, 300]],
-               [[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],
-               [[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0], [WIDTH, 0]],
-               [[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
-
-WALLS3 = [[[0, 0], [-1, -1]], [[106, 96], [1201, 95]], [[1178, 362], [1001, 241]], [[1001, 241], [812, 362]],
-          [[812, 362], [673, 238]], [[673, 238], [505, 352]], [[505, 352], [331, 218]], [[331, 218], [184, 351]],
-          [[85, 509], [1185, 507]],[[0, 0], [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)],
-           [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0], [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0],
-           [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
-
-WALLS4 = [[[0, 0], [-1, -1]], [[311, 6], [308, 171]], [[309, 246], [307, 384]], [[305, 471], [293, 600]], [[429, 247],
-           [531, 166]], [[531, 166], [689, 248]], [[689, 249], [875, 158]], [[883, 163], [1106, 260]], [[1106, 369],
-           [977, 479]], [[977, 479], [825, 382]], [[824, 382], [621, 480]], [[621, 480], [440, 389]],[[0, 0],
-           [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
-           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
-
-WALLS5 = [[[5, 5], [5, 595]], [[5, 595], [1600, 595]], [[5, 5], [1600, 5]], [[1295, 5], [1295, 595]], [[5, 5], [0, 0]], [[0, 0], [0, 600]], [[0, 600], [1600, 600]], [[0, 0], [1600, 0]], [[1295, 5], [1295, 595]], [[164, 122], [185, 277]], [[183, 278], [389, 268]], [[389, 268], [373, 128]], [[374, 124], [166, 125]], [[840, 136], [842, 287]], [[842, 287], [1102, 294]], [[1102, 294], [1105, 142]], [[1107, 138], [843, 131]], [[500, 220], [635, 162]], [[635, 162], [743, 261]], [[971, 499], [745, 371]], [[738, 366], [680, 435]], [[680, 435], [573, 351]], [[573, 351], [443, 431]], [[973, 366], [975, 525]], [[975, 525], [1134, 519]], [[1134, 519], [1141, 372]], [[1135, 371], [973, 368]], [[135, 468], [236, 395]], [[236, 395], [280, 480]],[[0, 0],
-           [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
-           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
-
-WALLS6 = [[[5, 5], [5, 595]], [[5, 595], [1600, 595]], [[5, 5], [1600, 5]], [[1295, 5], [1295, 595]], [[5, 5], [0, 0]], [[0, 0], [0, 600]], [[0, 600], [1600, 600]], [[0, 0], [1600, 0]], [[1295, 5], [1295, 595]], [[252, 110], [255, 245]], [[255, 245], [481, 248]], [[481, 248], [487, 119]], [[488, 117], [252, 113]], [[580, 245], [822, 238]], [[928, 113], [960, 248]], [[960, 248], [1088, 241]], [[1088, 241], [1085, 111]], [[1085, 110], [932, 113]], [[1091, 238], [1222, 241]], [[255, 245], [86, 236]], [[468, 596], [478, 334]], [[972, 323], [981, 596]], [[579, 244], [587, 355]], [[587, 355], [833, 358]], [[833, 358], [824, 241]],[[0, 0],
-           [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
-           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
-
-MAZE = [[[5, 5], [5, 595]], [[5, 595], [1600, 595]], [[5, 5], [1600, 5]], [[1295, 5], [1295, 595]], [[5, 5], [0, 0]], [[0, 0], [0, 600]], [[0, 600], [1600, 600]], [[0, 0], [1600, 0]], [[1295, 5], [1295, 595]], [[78, 92], [472, 83]], [[471, 83], [470, 348]], [[574, 348], [584, 90]], [[584, 88], [869, 101]], [[870, 101], [876, 5]], [[93, 195], [389, 190]], [[389, 190], [378, 595]], [[103, 595], [113, 270]], [[114, 270], [298, 280]], [[298, 280], [288, 380]], [[288, 380], [196, 376]], [[383, 427], [882, 423]], [[743, 422], [744, 169]], [[998, 14], [989, 427]], [[594, 430], [603, 518]], [[603, 514], [786, 510]], [[990, 422], [1143, 423]], [[1294, 347], [1222, 343]], [[1144, 9], [1145, 249]],[[0, 0],
-           [0, HEIGHT - int(HEIGHT / 3)]],[[0, HEIGHT - int(HEIGHT / 3)], [WIDTH, HEIGHT - int(HEIGHT / 3)]], [[0, 0],
-           [WIDTH, 0]],[[WIDTH - int(HEIGHT / 3), 0], [WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)]]]
 
 def execute():
     """
@@ -510,10 +547,14 @@ def execute():
         screen.blit(surf2, (WIDTH-int(0.2*WIDTH), HEIGHT-int(0.33*HEIGHT)))
         visualization.write_text(pygame,screen,"Area Cleaned",(WIDTH-int(0.125*WIDTH),HEIGHT-int(0.31*HEIGHT)))
 
+        # Wall Config
+        fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
+        visualization.write_text(pygame,screen,"- Walls ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.50*HEIGHT)))
+        visualization.write_text(pygame,screen,str(WALL_NAMES[CURRENT_WALL_CONFIG]),(WIDTH-int(0.12*WIDTH),HEIGHT-int(0.50*HEIGHT)))
+
         pygame.display.update()
         clock.tick(TICK_RATE)
         current_frame += 1
-        print(WALLS)
 
     pygame.quit()
 

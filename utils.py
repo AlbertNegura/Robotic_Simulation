@@ -210,4 +210,20 @@ def read_weights():
         c = c+1
     return individuals
 
+def read_weights_gui():
+    f = open("allmaps.txt", "r")
+    text = f.read()
+    text_p = text.split("[")
+    individuals = []
+    c = 0
+    for i in text_p:
+        text_pp = i.split("]")
+        if c != 0:
+            w_list = text_pp[0].split()
+            individual = []
+            for w in w_list:
+                individual.append(float(w))
+            individuals.append(individual)
+        c = c+1
+    return individuals
 

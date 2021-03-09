@@ -124,6 +124,8 @@ class Evolution:
                 self.fitnesses = np.zeros((self.generations, self.population))
                 self.area_cleaned = np.zeros((self.generations, self.population))
             for gen in range(self.generations-1):
+                i = np.random.randint(0,3)
+                self.WALLS = self.WALLS2 if i == 0 else self.WALLS2 if i == 1 else self.WALLS3
                 # Simulate all individuals with current wights config and get fitness value list [self.fitnesses]
                 # ind_fitness is the individual fitness value list and fitnesses is the list of ind_fitness
                 genome_best, index, value, area = self.get_current_best()

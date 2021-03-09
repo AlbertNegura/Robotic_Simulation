@@ -169,11 +169,5 @@ key_size = KEY_SIZE
 # Keys currently being used, needs to be updated with new keys according to keyboardlayour key key values
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
                  kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.C,
-                 kl.Key.A, kl.Key.Q, kl.Key.Z]
+                 kl.Key.A, kl.Key.Q, kl.Key.Z, kl.Key.LEFTBRACKET,kl.Key.RIGHTBRACKET]
 
-current_generation = 0
-best_individuals = utils.read_weights()
-
-nn = neuralnetwork.RNN(robot.sensor_values(), np.array([0, 0]), SENSORS, HIDDEN_NODES)
-if len(best_individuals)>0:
-    nn.update_weights(best_individuals[current_generation])
