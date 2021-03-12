@@ -14,6 +14,8 @@ class Square:
     bottom_line = None
     position = None
     visited = False
+    obstacle = False
+    beacon = False
     row = -1
     column = -1
 
@@ -125,3 +127,11 @@ def reset_grid(grid):
             grid[i][j].visited = False
     return grid
 
+def add_grid_obstacles(grid, walls):
+    # for each wall (two points), calculate all x,y positions between those points in the given resolution
+    # set the square containing that obstacle to true grid[x][y].obstacle = True
+    pass
+
+def add_grid_beacons(grid, beacon_locations):
+    # set the grid[x][y].beacon to true if that location is a beacon - note that it can be an obstacle!
+    pass

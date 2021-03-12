@@ -12,6 +12,7 @@ import physics
 import utils
 import config
 
+
 class Robot:
     colour = None
     colour2 = None
@@ -29,10 +30,10 @@ class Robot:
     grid_covered = []
     collisions = 0
     frame = 0
+    belief_map = []
 
     position_history = []
     orientation_history = []
-
 
     def save_position(self, new_position):
         """
@@ -50,37 +51,37 @@ class Robot:
         """
         self.orientation_history.append(new_orientation)
 
-
     def move(self, walls):
         """
         Move the robot while keeping track of all walls. Can update the walls so it only keeps track of the walls present in a neighbouring grid based on the distance the robot travels in one frame.
         :param walls:
         :return:
         """
-        update=False
+        update = False
         collision = False
         j = 0
         new_position = self.position
 
         if self.velocity_right > self.max_vel:
-            self.velocity_right = round(self.max_vel,1)
+            self.velocity_right = round(self.max_vel, 1)
         if self.velocity_right < -self.max_vel:
-            self.velocity_right = -round(self.max_vel,1)
+            self.velocity_right = -round(self.max_vel, 1)
         if self.velocity_left > self.max_vel:
-            self.velocity_left = round(self.max_vel,1)
+            self.velocity_left = round(self.max_vel, 1)
         if self.velocity_left < -self.max_vel:
-            self.velocity_left = -round(self.max_vel,1)
+            self.velocity_left = -round(self.max_vel, 1)
 
         # calculate force
         sum_vels = self.velocity_right + self.velocity_left
         sign = -1 if sum_vels < 0 else 1
-        mag = math.sqrt(self.velocity_right**2 + self.velocity_left**2)
+        mag = math.sqrt(self.velocity_right ** 2 + self.velocity_left ** 2)
         self.force = mag * sign
 
         # if wheels are not moving the equal velocity, resolve their movement differently
         if self.velocity_right != self.velocity_left:
             # motion model step
-            new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius*2, self.position[0], self.position[1], np.radians(self.orientation))
+            new_x, new_y, theta = motion.Step(self.velocity_right, self.velocity_left, self.radius * 2,
+                                              self.position[0], self.position[1], np.radians(self.orientation))
             # discrete collision detection and resolution, trying to loop over all walls as many times as necessary until all collision resolved
             # note that this does not handle collisions with boundary walls - boundary wall collisions take precedence and "break" the simulation
             # a trivial solution would be to place secondary boundary walls on top (but slightly closer to the inside) of the existing boundary walls and treat them as normal walls
@@ -95,23 +96,28 @@ class Robot:
                     update = False
                 wall = walls[j]
                 is_intersection, new_P = physics.resolve_wall_collision(wall[0], wall[1], new_position,
-                                                                                             self.force, self.radius,
-                                                                                             self.orientation)
+                                                                        self.force, self.radius,
+                                                                        self.orientation)
                 if is_intersection:
                     new_position = new_P
                     collision = True
-                    #update = True
+                    # update = True
             # determine new position after accounting for parallel velocity component
             self.frame += 1
             self.collisions += 1 if collision and self.frame % 2 == 0 else 0
-            new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
+            new_position = [new_position[0] + self.force * np.cos(np.radians(self.orientation)),
+                            new_position[1] + self.force * np.sin(np.radians(
+                                self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
             # if it moves too quickly, try to resolve continuous collisions
             # resolve collisions using continuous collision detection - if no collisions, just returns the new_position itself
-            new_position = physics.resolve_past_collision(walls, [],self.position, new_position, self.radius, self.force, self.orientation)
+            new_position = physics.resolve_past_collision(walls, [], self.position, new_position, self.radius,
+                                                          self.force, self.orientation)
             # set the robot position to the new position
-            self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
+            self.position = new_position  # utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
             # clip the robot's position to within the boundaries - can do it earlier
-            utils.clip(self.position, [self.radius+1, self.radius+1], [config.WIDTH - int(config.HEIGHT / 3) - self.radius-1, config.HEIGHT - int(config.HEIGHT / 3) - self.radius-1], self)
+            utils.clip(self.position, [self.radius + 1, self.radius + 1],
+                       [config.WIDTH - int(config.HEIGHT / 3) - self.radius - 1,
+                        config.HEIGHT - int(config.HEIGHT / 3) - self.radius - 1], self)
             # set the orientation to the new orientation determined by the motion model
             self.orientation = np.degrees(theta)
             # update the sensors when done
@@ -132,24 +138,29 @@ class Robot:
                     update = False
                 wall = walls[j]
                 is_intersection, new_P = physics.resolve_wall_collision(wall[0], wall[1], new_position,
-                                                                                             self.force, self.radius,
-                                                                                             self.orientation)
+                                                                        self.force, self.radius,
+                                                                        self.orientation)
                 if is_intersection:
                     new_position = new_P
                     collision = True
-                    #update = True
+                    # update = True
             collisions = []
             # determine new position after accounting for parallel velocity component
             self.frame += 1
             self.collisions += 1 if collision and self.frame % 2 == 0 else 0
-            new_position = [new_position[0]+self.force*np.cos(np.radians(self.orientation)),new_position[1]+self.force*np.sin(np.radians(self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
+            new_position = [new_position[0] + self.force * np.cos(np.radians(self.orientation)),
+                            new_position[1] + self.force * np.sin(np.radians(
+                                self.orientation))]  # utils.rotate(self.position, self.position+[self.velocity_left/2+self.velocity_right/2],np.radians(self.orientation))
             # if it moves too quickly, try to resolve continuous collisions
             # resolve collisions using continuous collision detection - if no collisions, just returns the new_position itself
-            new_position = physics.resolve_past_collision(walls, [],self.position, new_position, self.radius, self.force, self.orientation)
+            new_position = physics.resolve_past_collision(walls, [], self.position, new_position, self.radius,
+                                                          self.force, self.orientation)
             # set the robot position to the new position
-            self.position = new_position#utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
+            self.position = new_position  # utils.rotate(new_position, point_of_rotation, np.radians(self.orientation))
             # clip the robot's position to within the boundaries - can do it earlier
-            utils.clip(self.position, [self.radius+1, self.radius+1], [config.WIDTH - int(config.HEIGHT / 3) - self.radius-1, config.HEIGHT - int(config.HEIGHT / 3) - self.radius-1], self)
+            utils.clip(self.position, [self.radius + 1, self.radius + 1],
+                       [config.WIDTH - int(config.HEIGHT / 3) - self.radius - 1,
+                        config.HEIGHT - int(config.HEIGHT / 3) - self.radius - 1], self)
             # update the sensors when done
             for sensor in self.sensors:
                 sensor.update_sensor(self.position, 0, None)
@@ -167,10 +178,10 @@ class Robot:
         """
         for sensor in self.sensors:
             for wall in Walls:
-                sensor_line = np.array([self.position,sensor.line_end])
-                wall_line = np.array([wall[0],wall[1]])
+                sensor_line = np.array([self.position, sensor.line_end])
+                wall_line = np.array([wall[0], wall[1]])
                 # print("lines", sensor_line, wall_line)
-                intersec_point = utils.intersection(sensor_line,wall_line)
+                intersec_point = utils.intersection(sensor_line, wall_line)
                 if (intersec_point):
                     sensor.update_sensor(self.position, 0, intersec_point)
 
@@ -198,8 +209,23 @@ class Robot:
         """
         return np.array([[self.velocity_left, self.velocity_right]])
 
+    def initialize_belief_map(self, grid):
+        # initialize the self.belief_map with the probability of the robot's location using 1-(1/obstacles) in the grid
+        x_len = len(grid)
+        y_len = len(grid[0])
+        self.belief_map = [[0.0] * x_len] * y_len
+        obstacles = 0
+        for i in range(x_len):
+            for j in range(y_len):
+                obstacles += 1 if grid[j][i].obstacle else 0
+        prob = 1 - (1 / obstacles)
+        prob = 1.0 if prob > 1. else 0.0 if prob < 0. else prob  # ensure probability is clamped correctly
+        for i in range(x_len):
+            for j in range(y_len):
+                self.belief_map[j][i] = 0 if grid[j][i].obstacle else prob
 
-def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005,num_sensors = 12, max_radius = 50):
+
+def create_robot(init_pos=(100, 200), radius=50, acceleration=0.005, num_sensors=12, max_radius=50):
     """
     Create the robot with the specified parameters.
     :param init_pos: Upper bounds to the initial possition the robot can spawn at.
@@ -209,21 +235,22 @@ def create_robot(init_pos=(100,200),radius = 50, acceleration = 0.005,num_sensor
     :return:
     """
     robot = Robot()
-    robot.position = [int(np.random.randint(radius+1,init_pos[0]-radius-1)),int(np.random.randint(radius+1,init_pos[1]-radius-1))]
+    robot.position = [int(np.random.randint(radius + 1, init_pos[0] - radius - 1)),
+                      int(np.random.randint(radius + 1, init_pos[1] - radius - 1))]
     robot.radius = radius
-    robot.colour = (200,200,200) #light grey
-    robot.colour2 = (0,0,0) #black
+    robot.colour = (200, 200, 200)  # light grey
+    robot.colour2 = (0, 0, 0)  # black
     robot.orientation = 0
     robot.acceleration = acceleration
-    robot.facing_position = [robot.position[0]+robot.radius-1, robot.position[1]]
+    robot.facing_position = [robot.position[0] + robot.radius - 1, robot.position[1]]
     robot.sensors = []
     robot.position_history = [robot.position]
     robot.orientation_history = [robot.orientation]
     robot.max_vel = radius / 2.
-    prev_degree = robot.orientation #starting angle
+    prev_degree = robot.orientation  # starting angle
     for s in range(num_sensors):
         sensor = Sensor(robot.position, prev_degree, num_sensors, robot, max_radius)
-        sensor.colour = (255, 211, 0) #Cyber Yellow
+        sensor.colour = (255, 211, 0)  # Cyber Yellow
         prev_degree = np.degrees(sensor.radians)
         robot.sensors.append(sensor)
     return robot
@@ -250,7 +277,7 @@ class Sensor:
         self.robot = robot
         self.num_of_sensors = num_of_sensors
         self.line_start = position
-        self.radians = np.radians(prev_degree+(360/num_of_sensors))
+        self.radians = np.radians(prev_degree + (360 / num_of_sensors))
         self.line_end = utils.rotate_line(position, self.max_radius, self.radians)
 
     def update_sensor(self, new_position, angle, intersection):
@@ -270,4 +297,3 @@ class Sensor:
             self.radius = utils.distance_between(new_position, intersection)
         self.line_end = utils.rotate_line(new_position, self.radius, self.radians)
         self.line_start = utils.rotate_line(new_position, self.robot.radius, self.radians)
-
