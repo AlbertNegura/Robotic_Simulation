@@ -161,16 +161,22 @@ def user_input(pgkey):
     global CURRENT_WALL_CONFIG
     global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas
     if pgkey[pygame.K_w]:
-        accel = True
-        wheel = LEFT
-        direction = FORWARD
+        if not KALMAN_MODE:
+            accel = True
+            wheel = LEFT
+            direction = FORWARD
+        else:
+            print("KALMAN MODE NOT IMPLEMENTED")
         keyboard.update_key(keyboard_layout, kl.Key.W, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.W, unused_key_info)
     if pgkey[pygame.K_s]:
-        accel = True
-        wheel = LEFT
-        direction = BACKWARD
+        if not KALMAN_MODE:
+            accel = True
+            wheel = LEFT
+            direction = BACKWARD
+        else:
+            print("KALMAN MODE NOT IMPLEMENTED")
         keyboard.update_key(keyboard_layout, kl.Key.S, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.S, unused_key_info)
