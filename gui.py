@@ -157,7 +157,7 @@ def user_input(pgkey):
     :return:
     """
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
-    global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE
+    global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE, KALMAN_MODE
     global CURRENT_WALL_CONFIG
     global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas
     if pgkey[pygame.K_w]:
@@ -228,6 +228,12 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.V, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.V, unused_key_info)
+    if pgkey[pygame.K_k]:
+        KALMAN_MODE = not KALMAN_MODE
+        keyboard.update_key(keyboard_layout, kl.Key.K, used_key_info)
+    else:
+        if not KALMAN_MODE:
+            keyboard.update_key(keyboard_layout, kl.Key.K, unused_key_info)
     if pgkey[pygame.K_e]:
         EDIT_MODE = not EDIT_MODE
         keyboard.update_key(keyboard_layout, kl.Key.E, used_key_info)
@@ -292,10 +298,21 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.N, unused_key_info)
     if pgkey[pygame.K_a]:
-        AUTONOMOUS_MODE = not AUTONOMOUS_MODE
+        if not KALMAN_MODE:
+            AUTONOMOUS_MODE = not AUTONOMOUS_MODE
+        else:
+            print("KALMAN MODE NOT IMPLEMENTED")
         keyboard.update_key(keyboard_layout, kl.Key.A, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.A, unused_key_info)
+    if pgkey[pygame.K_d]:
+        if not KALMAN_MODE:
+            AUTONOMOUS_MODE = not AUTONOMOUS_MODE
+        else:
+            print("KALMAN MODE NOT IMPLEMENTED")
+        keyboard.update_key(keyboard_layout, kl.Key.D, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.D, unused_key_info)
     if pgkey[pygame.K_q]:
         if current_generation == len(best_individuals)-1:
             current_generation = 0
@@ -455,15 +472,16 @@ def execute():
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
         for wall in EDGE_WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100))
-        if accel:
-            accelerate()
-        if AUTONOMOUS_MODE:
-            #nn, index, value = evolve.get_current_best()
-            vels = nn.feedforward(robot.sensor_values())
-            robot.velocity_left = robot.max_vel*vels[0]
-            robot.velocity_right = robot.max_vel*vels[1]
-        #if EVOLVE:
-            #evolve = asyncio.run(asyncevol(evolve))
+        if not KALMAN_MODE:
+            if accel:
+                accelerate()
+            if AUTONOMOUS_MODE:
+                #nn, index, value = evolve.get_current_best()
+                vels = nn.feedforward(robot.sensor_values())
+                robot.velocity_left = robot.max_vel*vels[0]
+                robot.velocity_right = robot.max_vel*vels[1]
+            #if EVOLVE:
+                #evolve = asyncio.run(asyncevol(evolve))
 
 
 
