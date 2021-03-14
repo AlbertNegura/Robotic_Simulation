@@ -9,8 +9,12 @@ def estimate(prev_mean, prev_covariance, action, sensor, orientation):
     :param orientation: current orientation of the robot in rad
     :return: estimated mean and covariance
     """
+    # noise
     R = np.array([[np.random.random(), 0, 0], [0, np.random.random(), 0], [0, 0, np.random.random()]])
     Q = np.array([[np.random.random(), 0, 0], [0, np.random.random(), 0], [0, 0, np.random.random()]])
+    pose_noise = np.random.multivariate_normal(prev_mean.transpose()[0], R)
+    sensor_noise = np.random.multivariate_normal(np.array([prev_covariance[0][0], prev_covariance[1][1], prev_covariance[2][2]]), Q)
+    #ToDo: pose_noise and sensor_noise values are too big to be noise
 
     # prediction
     mean_pred = motion_prediction(prev_mean[0][0], prev_mean[1][0], prev_mean[2][0], orientation, action[0][0], action[1][0])
