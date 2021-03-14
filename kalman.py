@@ -1,23 +1,30 @@
 import numpy as np
 
-def estimate(prev_mean, prev_covariance, action, sensor, orientation):
+def estimate(prev_mean, prev_covariance, action, sensor):
     """
     :param prev_mean: column np.array([[x], [y], [theta]]) from previous step
     :param prev_covariance: covariance matrix np.array([[a,0,0], [0,b,0], [0,0,c]]) from previous step
     :param action: u_t = np.array([[v], [w]])
     :param sensor: sensor estimation z_t = np.array([[x], [y], [theta]])
-    :param orientation: current orientation of the robot in rad
     :return: estimated mean and covariance
     """
     # noise
-    R = np.array([[np.random.random(), 0, 0], [0, np.random.random(), 0], [0, 0, np.random.random()]])
-    Q = np.array([[np.random.random(), 0, 0], [0, np.random.random(), 0], [0, 0, np.random.random()]])
-    pose_noise = np.random.multivariate_normal(prev_mean.transpose()[0], R)
-    sensor_noise = np.random.multivariate_normal(np.array([prev_covariance[0][0], prev_covariance[1][1], prev_covariance[2][2]]), Q)
-    #ToDo: pose_noise and sensor_noise values are too big to be noise
+    R = np.array([[np.random.normal(prev_mean[0][0]), 0, 0],
+                  [0, np.random.normal(prev_mean[1][0]), 0],
+                  [0, 0, np.random.normal(prev_mean[2][0])]])
+    Q = np.array([[np.random.normal(sensor[0][0]), 0, 0],
+                  [0, np.random.normal(sensor[1][0]), 0],
+                  [0, 0, np.random.normal(sensor[2][0])]])
+
+    pose_noise = np.random.multivariate_normal(prev_mean.T[0], R)
+    sensor_noise = np.random.multivariate_normal(sensor.T[0], Q)
+
+    B = np.array([[sensor_noise[0]*np.cos(prev_mean[2][0]), 0],
+                  [sensor_noise[1]*np.sin(prev_mean[2][0]), 0],
+                  [0, sensor_noise[2]]])
 
     # prediction
-    mean_pred = motion_prediction(prev_mean[0][0], prev_mean[1][0], prev_mean[2][0], orientation, action[0][0], action[1][0])
+    mean_pred = motion_prediction(np.identity(3), prev_mean, B, action)
     covariance_pred = np.add(prev_covariance, R)
 
     # correction
@@ -27,11 +34,10 @@ def estimate(prev_mean, prev_covariance, action, sensor, orientation):
 
     return mean, covariance
 
-def motion_prediction(x_prev, y_prev, theta_prev, orientation, v, w):
-    x = x_prev + v*np.cos(orientation)
-    y = y_prev + v*np.sin(orientation)
-    theta = theta_prev + w
-    return np.array([[x], [y], [theta]])
+def motion_prediction(A, prev_mean, B, action):
+    a = np.dot(A, prev_mean)
+    b = np.dot(B, action)
+    return np.add(a, b)
 
 def kalman_gain(covariance_pred, noise):
     inverse = np.linalg.inv(np.add(covariance_pred, noise))
@@ -51,4 +57,4 @@ prev_covariance = np.array([[3,0,0], [0,2,0], [0,0,9]])
 action = np.array([[10], [np.deg2rad(70)]])
 sensor = np.array([[390], [50], [np.deg2rad(55)]])
 orientation = np.deg2rad(74)
-estimate(prev_mean, prev_covariance, action, sensor, orientation)"""
+estimate(prev_mean, prev_covariance, action, sensor)"""
