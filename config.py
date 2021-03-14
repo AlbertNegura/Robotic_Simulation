@@ -63,6 +63,7 @@ MULTIPROCESSING = None
 PROCESSES = None
 SENSOR_EXPONENTIAL = None
 SELECTED_WALLS = None
+KALMAN_MODE = None
 
 def load_config(config):
     """
@@ -74,6 +75,7 @@ def load_config(config):
     robot_settings = config['ROBOT']
     model_settings = config['MODEL']
     terrain_settings = config['TERRAIN']
+    kalman_settings = config['KALMAN']
     visualization_settings = config['VISUALIZATION']
     multiprocessing_settings = config['MULTIPROCESSING']
     debug_settings = config['DEBUG']
@@ -116,6 +118,9 @@ def load_config(config):
     COLLISION_VALUE = int(terrain_settings['COLLISION_VALUE'])
     SENSOR_VALUE = int(terrain_settings['SENSOR_VALUE'])
     SENSOR_EXPONENTIAL = True if str(terrain_settings['SENSOR_EXPONENTIAL']) == "True" else False
+
+    global KALMAN_MODE
+    KALMAN_MODE = True if str(kalman_settings['KALMAN_MODE']) == "True" else False
 
     global KEY_SIZE, TICK_RATE, WALL_WIDTH
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])
