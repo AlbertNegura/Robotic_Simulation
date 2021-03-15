@@ -1,4 +1,9 @@
+"""Robotic Simulation Software Kalman Filter
+Authors:
+Sergi Nogues Farres
+"""
 import numpy as np
+
 
 def estimate(prev_mean, prev_covariance, action, sensor):
     """
@@ -34,19 +39,23 @@ def estimate(prev_mean, prev_covariance, action, sensor):
 
     return mean, covariance
 
+
 def motion_prediction(A, prev_mean, B, action):
     a = np.dot(A, prev_mean)
     b = np.dot(B, action)
     return np.add(a, b)
 
+
 def kalman_gain(covariance_pred, noise):
     inverse = np.linalg.inv(np.add(covariance_pred, noise))
     return np.dot(covariance_pred, inverse)
+
 
 def mean_estimation(mean_pred, K, sensor):
     a = np.subtract(sensor, mean_pred)
     b = np.dot(K, a)
     return np.add(mean_pred, b)
+
 
 def covariance_estimation(K, covariance_pred):
     return np.dot(np.subtract(np.identity(3), K), covariance_pred)
