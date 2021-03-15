@@ -54,16 +54,42 @@ def estimate(real_pose, f_list):
         y2 = landmarks[1][4]
         r2 = landmarks[1][0]
 
-        position = utils.bilateration(x1, y1, r1, x2, y2, r2)
+        a, b = utils.bilateration(x1, y1, r1, x2, y2, r2)
+        position = [(a[0]+b[0])/2, (a[1]+b[1])/2]
 
-    # ToDo: orientation estimation
+    orientation = 0
+    x_axis = np.array([[0, 0], [5, 0]])
+    for f in landmarks:
+        segment = np.array([position, [f[3], f[4]]])
+        segment_origin = segment - segment[0]
+        angle = utils.angle(segment_origin, x_axis)[1][0] - np.deg2rad(90)
 
-    return position
+        if f[3] >= position[0]:
+            if f[4] >= position[1]:
+                # landmark at north-east
+                orientation = -(f[1] - np.absolute(angle))
+            else:
+                # landmark at south-east
+                orientation = -(f[1] + np.absolute(angle))
+        else:
+            if f[4] >= position[1]:
+                # landmark at north-west
+                a = np.deg2rad(180) - f[1]
+                orientation = a + angle
+            else:
+                # landmark at south-west
+                a = np.deg2rad(180) - (np.deg2rad(360) + f[1])
+                orientation = a + angle
+
+    # ToDo: add noise to z_t
+    return [position[0], position[1], orientation]
 
 
-"""pose = [1, 1, np.deg2rad(30)]
-p1 = [-1, 1]
-p2 = [3, 0]
+"""pose = [1, 1, np.deg2rad(-90)]
+p1 = [-1, 2]
+p2 = [9, -52]
 p3 = [1, 2]
-print(estimate(pose, [p1, p2, p3]))
+p4 = [-20, -5]
+p5 = [8, 2]
+print(estimate(pose, [p4, p5, p3]))
 print(estimate(pose, [p1, p2]))"""
