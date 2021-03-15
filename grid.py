@@ -4,7 +4,8 @@ Authors:
 Albert Negura
 Kamil Inglot
 """
-
+import utils
+import numpy as np
 
 class Square:
     lines = None
@@ -125,13 +126,44 @@ def reset_grid(grid):
     for i in range(rows):
         for j in range(columns):
             grid[i][j].visited = False
+            grid[i][j].obstacle = False
+            grid[i][j].beacon = False
     return grid
+
 
 def add_grid_obstacles(grid, walls):
     # for each wall (two points), calculate all x,y positions between those points in the given resolution
     # set the square containing that obstacle to true grid[x][y].obstacle = True
-    pass
+    rows = len(grid)
+    columns = len(grid[0])
+    obstacle_cells = 0
+    for i in range(rows):
+        for j in range(columns):
+            for wall in walls:
+                wall_line = np.array([wall[0], wall[1]])
+                if utils.intersection(grid[i][j].left_line, wall_line) or utils.intersection(grid[i][j].right_line, wall_line) or utils.intersection(grid[i][j].top_line, wall_line) or utils.intersection(grid[i][j].bottom_line, wall_line):
+                    grid[i][j].obstacle = True
+                    obstacle_cells+=1
+    return obstacle_cells
 
-def add_grid_beacons(grid, beacon_locations):
+
+def add_grid_beacons_wall(grid, walls, grid_size):
     # set the grid[x][y].beacon to true if that location is a beacon - note that it can be an obstacle!
-    pass
+    beacon_cells = 0
+    for wall in walls:
+        if wall[0][0] <= 5 or wall[0][0] >= 1600 or wall[0][1] <= 5 or wall[0][1] >= 595 or wall[1][0] <= 5 or wall[1][0] >= 1600 or wall[1][1] <= 5 or wall[1][1] >= 595:
+            continue
+
+        wall_originx = int(wall[0][0] / grid_size)
+        wall_originy = int(wall[0][1] / grid_size)
+        wall_endx = int(wall[1][0] / grid_size)
+        wall_endy = int(wall[1][1] / grid_size)
+
+        if not grid[wall_endy][wall_endx].beacon:
+            grid[wall_endy][wall_endx].beacon = True
+            beacon_cells+=1
+        if not grid[wall_originy][wall_originx].beacon:
+            grid[wall_originy][wall_originx].beacon = True
+            beacon_cells += 1
+    return beacon_cells
+

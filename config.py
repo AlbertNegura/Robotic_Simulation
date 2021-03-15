@@ -182,5 +182,5 @@ key_size = KEY_SIZE
 # Keys currently being used, needs to be updated with new keys according to keyboardlayour key key values
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
                  kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.C,
-                 kl.Key.A, kl.Key.Q, kl.Key.D, kl.Key.K, kl.Key.Z, kl.Key.LEFTBRACKET,kl.Key.RIGHTBRACKET]
+                 kl.Key.A, kl.Key.Q, kl.Key.D, kl.Key.K, kl.Key.Z, kl.Key.LEFTBRACKET,kl.Key.RIGHTBRACKET, kl.Key.B]
 

@@ -384,6 +384,13 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)
 
+    if pgkey[pygame.K_b]:
+        grid.add_grid_obstacles(grid_1, WALLS)
+        grid.add_grid_beacons_wall(grid_1, WALLS, GRID_SIZE)
+        keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)
+
 
     # TODO:
     # IF EVOLUTION MODE KEY IS PRESSED
@@ -486,6 +493,7 @@ def execute():
                                         if origin[1] != end[1] and origin[1] != 0 or end[1] != 0: # not top wall
                                             if origin[1] != HEIGHT - int(HEIGHT / 3) or end[1] != HEIGHT - int(HEIGHT / 3): # not bottom wall
                                                 WALLS.append((origin, end))
+
                             # print('Drawn')
                     origin = None
                     end = None
