@@ -253,3 +253,35 @@ def read_weights_gui():
         c = c+1
     return individuals
 
+
+def trilateration(x1, y1, r1, x2, y2, r2, x3, y3, r3):
+    """
+    :return: intersection between 3 circles
+    """
+    a = 2 * x2 - 2 * x1
+    b = 2 * y2 - 2 * y1
+    c = r1 ** 2 - r2 ** 2 - x1 ** 2 + x2 ** 2 - y1 ** 2 + y2 ** 2
+    d = 2 * x3 - 2 * x2
+    e = 2 * y3 - 2 * y2
+    f = r2 ** 2 - r3 ** 2 - x2 ** 2 + x3 ** 2 - y2 ** 2 + y3 ** 2
+    x = (c * e - f * b) / (e * a - b * d)
+    y = (c * d - a * f) / (b * d - a * e)
+    return x, y
+
+
+def bilateration(x1, y1, r1, x2, y2, r2):
+    """
+    :return: intersection between 2 circles
+    """
+    d = distance_between(np.array([x1, y1]), np.array([x2, y2]))
+    a = (r1**2 - r2**2 + d**2)/(2*d)
+    h = np.sqrt(r1**2 - a**2)
+    x3 = x1 + a*(x2-x1)/d
+    y3 = y1 + a*(y2-y1)/d
+
+    x = x3 + h*(y2-y1)/d
+    y = y3 - h*(x2-x1)/d
+    xx = x3 - h*(y2-y1)/d
+    yy = y3 + h*(x2-x1)/d
+
+    return [x, y], [xx, yy]
