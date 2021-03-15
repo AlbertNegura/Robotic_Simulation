@@ -27,6 +27,7 @@ clock = pygame.time.Clock()
 accel = False
 wheel = 0
 direction = 0
+turn = 0
 clean_cells = 0
 
 
@@ -127,16 +128,31 @@ def accelerate():
     if not accel:
         return
     # increase velocity of the corresponding wheel in the corresponding direction by the acceleration value set in the config.ini file
-    if wheel == LEFT:
+    if wheel == LEFT and not KALMAN_MODE:
         robot.velocity_left += robot.acceleration*direction
-    if wheel == RIGHT:
+    if wheel == RIGHT and not KALMAN_MODE:
         robot.velocity_right += robot.acceleration*direction
-    if wheel == BOTH and direction != STOP:
+    if wheel == BOTH and direction != STOP and not KALMAN_MODE:
         robot.velocity_left += robot.acceleration*direction
         robot.velocity_right += robot.acceleration*direction
-    elif wheel == BOTH:
+    elif wheel == BOTH and not KALMAN_MODE:
         robot.velocity_left = STOP
         robot.velocity_right = STOP
+
+    if KALMAN_MODE:
+        if wheel == BOTH and turn == NO_TURN and direction != STOP:
+            robot.velocity_left += robot.acceleration*direction
+            robot.velocity_right += robot.acceleration*direction
+        elif wheel == BOTH and direction == STOP:
+            robot.velocity_left = STOP
+            robot.velocity_right = STOP
+        if wheel == LEFT and turn == TURN_LEFT:
+            robot.velocity_left += robot.acceleration*1
+            robot.velocity_right += robot.acceleration*-1
+        if wheel == RIGHT and turn == TURN_RIGHT:
+            robot.velocity_left += robot.acceleration*-1
+            robot.velocity_right += robot.acceleration*1
+
 
 
 def map_user_input(pgkey):
@@ -159,24 +175,28 @@ def user_input(pgkey):
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE, KALMAN_MODE
     global CURRENT_WALL_CONFIG
-    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas
+    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas, turn
     if pgkey[pygame.K_w]:
+        accel = True
         if not KALMAN_MODE:
-            accel = True
             wheel = LEFT
             direction = FORWARD
         else:
-            print("KALMAN MODE NOT IMPLEMENTED")
+            wheel = BOTH
+            direction = FORWARD
+            turn = NO_TURN
         keyboard.update_key(keyboard_layout, kl.Key.W, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.W, unused_key_info)
     if pgkey[pygame.K_s]:
+        accel = True
         if not KALMAN_MODE:
-            accel = True
             wheel = LEFT
             direction = BACKWARD
         else:
-            print("KALMAN MODE NOT IMPLEMENTED")
+            wheel = BOTH
+            direction = BACKWARD
+            turn = NO_TURN
         keyboard.update_key(keyboard_layout, kl.Key.S, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.S, unused_key_info)
@@ -307,7 +327,9 @@ def user_input(pgkey):
         if not KALMAN_MODE:
             AUTONOMOUS_MODE = not AUTONOMOUS_MODE
         else:
-            print("KALMAN MODE NOT IMPLEMENTED")
+            accel = True
+            turn = TURN_LEFT
+            wheel = LEFT
         keyboard.update_key(keyboard_layout, kl.Key.A, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.A, unused_key_info)
@@ -315,7 +337,9 @@ def user_input(pgkey):
         if not KALMAN_MODE:
             AUTONOMOUS_MODE = not AUTONOMOUS_MODE
         else:
-            print("KALMAN MODE NOT IMPLEMENTED")
+            accel = True
+            turn = TURN_RIGHT
+            wheel = RIGHT
         keyboard.update_key(keyboard_layout, kl.Key.D, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.D, unused_key_info)
@@ -408,7 +432,7 @@ def execute():
     """
     global WALLS, surf, surf2
     global EDIT_MODE
-    global accel, wheel, direction
+    global accel, wheel, direction, turn
     global current_frame
     global clean_cells
     global grid_1
@@ -478,9 +502,9 @@ def execute():
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
         for wall in EDGE_WALLS:
             visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100))
+        if accel:
+            accelerate()
         if not KALMAN_MODE:
-            if accel:
-                accelerate()
             if AUTONOMOUS_MODE:
                 #nn, index, value = evolve.get_current_best()
                 vels = nn.feedforward(robot.sensor_values())

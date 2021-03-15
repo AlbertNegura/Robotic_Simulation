@@ -64,6 +64,9 @@ PROCESSES = None
 SENSOR_EXPONENTIAL = None
 SELECTED_WALLS = None
 KALMAN_MODE = None
+TURN_RIGHT = None
+TURN_LEFT = None
+NO_TURN = None
 
 def load_config(config):
     """
@@ -119,8 +122,11 @@ def load_config(config):
     SENSOR_VALUE = int(terrain_settings['SENSOR_VALUE'])
     SENSOR_EXPONENTIAL = True if str(terrain_settings['SENSOR_EXPONENTIAL']) == "True" else False
 
-    global KALMAN_MODE
+    global KALMAN_MODE, TURN_LEFT, TURN_RIGHT, NO_TURN
     KALMAN_MODE = True if str(kalman_settings['KALMAN_MODE']) == "True" else False
+    TURN_LEFT = int(kalman_settings['TURN_LEFT'])
+    TURN_RIGHT = int(kalman_settings['TURN_RIGHT'])
+    NO_TURN = int(kalman_settings['NO_TURN'])
 
     global KEY_SIZE, TICK_RATE, WALL_WIDTH
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])
