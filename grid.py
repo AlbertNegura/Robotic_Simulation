@@ -198,12 +198,38 @@ def quick_add_grid_beacons_wall(grid, wall, grid_size, width, height, x_length, 
     wall_endy = np.clip(int(wall[1][1] / grid_size),0,x_length-1)
 
     if not grid[wall_endy][wall_endx].beacon:
-        grid[wall_endy][wall_endx].beacon = True
-        beacon_cells.append((wall_endx, wall_endy))
-        beacons += 1
+        addx = 0 if wall_endx == y_length-1 else 1
+        addy = 0 if wall_endy == x_length-1 else 1
+        subx = 0 if wall_endx == 0 else -1
+        suby = 0 if wall_endy == 0 else -1
+        if not (grid[wall_endy+addy][wall_endx+addx].beacon or
+                grid[wall_endy][wall_endx+addx].beacon or
+                grid[wall_endy+addy][wall_endx].beacon or
+                grid[wall_endy][wall_endx+subx].beacon or
+                grid[wall_endy+addy][wall_endx+subx].beacon or
+                grid[wall_endy+suby][wall_endx+subx].beacon or
+                grid[wall_endy+suby][wall_endx+addx].beacon or
+                grid[wall_endy+suby][wall_endx].beacon):
+
+            grid[wall_endy][wall_endx].beacon = True
+            beacon_cells.append((wall_endx, wall_endy))
+            beacons += 1
     if not grid[wall_originy][wall_originx].beacon:
-        grid[wall_originy][wall_originx].beacon = True
-        beacon_cells.append((wall_originx, wall_originy))
-        beacons += 1
+        addx = 0 if wall_originx == y_length-1 else 1
+        addy = 0 if wall_originy == x_length-1 else 1
+        subx = 0 if wall_originx == 0 else -1
+        suby = 0 if wall_originy == 0 else -1
+        if not (grid[wall_originy+addy][wall_originx+addx].beacon or
+                grid[wall_originy][wall_originx+addx].beacon or
+                grid[wall_originy+addy][wall_originx].beacon or
+                grid[wall_originy][wall_originx+subx].beacon or
+                grid[wall_originy+addy][wall_originx+subx].beacon or
+                grid[wall_originy+suby][wall_originx+subx].beacon or
+                grid[wall_originy+suby][wall_originx+addx].beacon or
+                grid[wall_originy+suby][wall_originx].beacon):
+
+            grid[wall_originy][wall_originx].beacon = True
+            beacon_cells.append((wall_originx, wall_originy))
+            beacons += 1
 
     return beacons, beacon_cells
