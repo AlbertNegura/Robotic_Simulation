@@ -142,7 +142,7 @@ def add_grid_obstacles(grid, walls, grid_size, width, height):
     obstacles = 0
     for i,j in itertools.product(range(rows), range(columns)):
         for wall in walls:
-            if (i+1)*grid_size < min(wall[0][1],wall[1][1]) or (j+1)*grid_size < min(wall[0][0],wall[1][0]):
+            if (i+1)*grid_size < min(wall[0][1],wall[1][1]) or (j+1)*grid_size < min(wall[0][0],wall[1][0]) or (i-1)*grid_size > max(wall[0][1],wall[1][1]) or (j-1)*grid_size > max(wall[0][0],wall[1][0]):
                 continue
             if not grid[i][j].obstacle:
                 wall_line = np.array([wall[0], wall[1]])
