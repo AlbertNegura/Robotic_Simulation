@@ -142,8 +142,9 @@ def add_grid_obstacles(grid, walls):
             for wall in walls:
                 wall_line = np.array([wall[0], wall[1]])
                 if utils.intersection(grid[i][j].left_line, wall_line) or utils.intersection(grid[i][j].right_line, wall_line) or utils.intersection(grid[i][j].top_line, wall_line) or utils.intersection(grid[i][j].bottom_line, wall_line):
-                    grid[i][j].obstacle = True
-                    obstacle_cells+=1
+                    if not grid[i][j].obstacle:
+                        grid[i][j].obstacle = True
+                        obstacle_cells+=1
     return obstacle_cells
 
 
