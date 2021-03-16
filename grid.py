@@ -107,8 +107,14 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
     """
     center_x = int(position[0] / size)
     center_y = int(position[1] / size)
+
     xs = [center_x + i for i in range(-cleaning_range, cleaning_range + 1)]
     ys = [center_y + i for i in range(-cleaning_range, cleaning_range + 1)]
+
+    if beacons:
+        xs = np.clip(xs,0,len(grid[0])-1)
+        ys = np.clip(ys,0,len(grid)-1)
+
     beacon_cells = []
     for x, y in itertools.product(xs, ys):
         if not beacons:
@@ -117,7 +123,7 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
                 grid[y][x].visited = True
         else:
             if grid[y][x].beacon:
-                beacon_cells.append((y,x))
+                beacon_cells.append((x,y))
 
     if not beacons:
         return clean_cells, []
