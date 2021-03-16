@@ -8,6 +8,7 @@ Sergi Nogues Farres
 """
 from grid import *
 from pygame import gfxdraw
+import math
 
 def draw_robot(pygame, screen, robot):
     """
@@ -91,7 +92,7 @@ def draw_sensor_info(screen, robot, font):
         screen.blit(sensor_info, sensor_info_position)
 
 
-def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0)):
+def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0, 70)):
     """
 
     :param pygame:
@@ -102,7 +103,21 @@ def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0)):
     :param color:
     :return:
     """
-    pygame.draw.line(screen, color, origin, end, width)
+    end = np.asarray(end)
+    origin = np.asarray(origin)
+    center_L1 = (origin+end)/2
+    angle = math.atan2(origin[1]-end[1],origin[0]-end[0])
+    length = np.linalg.norm(end-origin)
+    UL = (center_L1[0] + (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+          center_L1[1] + (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+    UR = (center_L1[0] - (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+          center_L1[1] + (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+    BL = (center_L1[0] + (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+          center_L1[1] - (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+    BR = (center_L1[0] - (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+          center_L1[1] - (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+    pygame.gfxdraw.aapolygon(screen, (UL, UR, BR, BL), color)
+    pygame.gfxdraw.filled_polygon(screen, (UL, UR, BR, BL), color)
 
 
 def draw_grid(pygame, screen, grid_1):
