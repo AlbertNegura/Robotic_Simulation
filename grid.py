@@ -142,12 +142,13 @@ def add_grid_obstacles(grid, walls, grid_size, width, height):
     obstacles = 0
     for i,j in itertools.product(range(rows), range(columns)):
         for wall in walls:
+            if (i+1)*grid_size < min(wall[0][1],wall[1][1]) or (j+1)*grid_size < min(wall[0][0],wall[1][0]):
+                continue
             if not grid[i][j].obstacle:
                 wall_line = np.array([wall[0], wall[1]])
                 if utils.intersection(grid[i][j].left_line, wall_line) or utils.intersection(grid[i][j].right_line, wall_line) or utils.intersection(grid[i][j].top_line, wall_line) or utils.intersection(grid[i][j].bottom_line, wall_line):
                     if not grid[i][j].obstacle:
                         grid[i][j].obstacle = True
-                        grid[i][j].visited = True
                         obstacles += 1
                         obstacle_cells.append((i,j))
                 beacons_temp, beacon_cells_temp = quick_add_grid_beacons_wall(grid, wall, grid_size, width, height)
