@@ -584,7 +584,8 @@ def execute():
             clean_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
             visualization.draw_dirt(pygame, screen, grid_1)
         if KALMAN_MODE:
-            clean_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
+            if CLEANING_MODE:
+                clean_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
             visualization.draw_dirt(pygame, screen, grid_1, CLEANING_MODE, OBSTACLE_GRID, KALMAN_MODE)
 
         # Position text

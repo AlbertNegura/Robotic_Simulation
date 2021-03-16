@@ -134,9 +134,10 @@ def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obs
                                        (0, 0, 0, 10))
             if draw_beacons:
                 if square.beacon:
-                    pygame.gfxdraw.box(screen,
-                                       pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                       (17, 30, 108, 50))
+                    pygame.gfxdraw.aacircle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
+                                       (17, 30, 108, 100))
+                    pygame.gfxdraw.filled_circle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
+                                       (17, 30, 108, 100))
 
 def write_text(pygame, screen, text, position = (1300, 300)):
     """
