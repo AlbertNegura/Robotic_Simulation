@@ -285,13 +285,3 @@ def bilateration(x1, y1, r1, x2, y2, r2):
     yy = y3 + h*(x2-x1)/d
 
     return [x, y], [xx, yy]
-
-
-def distance_point_to_line(point, wall):
-    wall_origin = wall[0]
-    wall_end = wall[1]
-    x_diff = wall_end[0] - wall_origin[0]
-    y_diff = wall_end[1] - wall_origin[1]
-    num = abs(y_diff*point[0] - x_diff*point[1] + wall_end[0]*wall_origin[1] - wall_end[1]*wall_origin[0])
-    den = np.sqrt(y_diff**2 + x_diff**2)
-    return num/den

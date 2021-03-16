@@ -6,6 +6,7 @@ Kamil Inglot
 """
 import utils
 import numpy as np
+import itertools
 
 class Square:
     lines = None
@@ -108,11 +109,10 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
     center_y = int(position[1] / size)
     xs = [center_x + i for i in range(-cleaning_range, cleaning_range + 1)]
     ys = [center_y + i for i in range(-cleaning_range, cleaning_range + 1)]
-    for x in xs:
-        for y in ys:
-            if not grid[y][x].visited:
-                clean_cells += 1
-                grid[y][x].visited = True
+    for x, y in itertools.product(xs, ys):
+        if not grid[y][x].visited:
+            clean_cells += 1
+            grid[y][x].visited = True
     return clean_cells
 
 
@@ -123,11 +123,10 @@ def reset_grid(grid):
     """
     rows = len(grid)
     columns = len(grid[0])
-    for i in range(rows):
-        for j in range(columns):
-            grid[i][j].visited = False
-            grid[i][j].obstacle = False
-            grid[i][j].beacon = False
+    for i,j in itertools.product(range(rows), range(columns)):
+        grid[i][j].visited = False
+        grid[i][j].obstacle = False
+        grid[i][j].beacon = False
     return grid
 
 
@@ -141,23 +140,21 @@ def add_grid_obstacles(grid, walls, grid_size, width, height):
     beacons = 0
     beacon_cells = []
     obstacles = 0
-    for i in range(rows):
-        for j in range(columns):
-            for wall in walls:
-                if utils.distance_point_to_line([i*grid_size, j*grid_size], wall) <= grid_size:
-                    continue
-                if not grid[i][j].obstacle:
-                    wall_line = np.array([wall[0], wall[1]])
-                    if utils.intersection(grid[i][j].left_line, wall_line) or utils.intersection(grid[i][j].right_line, wall_line) or utils.intersection(grid[i][j].top_line, wall_line) or utils.intersection(grid[i][j].bottom_line, wall_line):
-                        if not grid[i][j].obstacle:
-                            grid[i][j].obstacle = True
-                            obstacles += 1
-                            obstacle_cells.append((i,j))
+    for i,j in itertools.product(range(rows), range(columns)):
+        for wall in walls:
+            if not grid[i][j].obstacle:
+                wall_line = np.array([wall[0], wall[1]])
+                if utils.intersection(grid[i][j].left_line, wall_line) or utils.intersection(grid[i][j].right_line, wall_line) or utils.intersection(grid[i][j].top_line, wall_line) or utils.intersection(grid[i][j].bottom_line, wall_line):
+                    if not grid[i][j].obstacle:
+                        grid[i][j].obstacle = True
+                        grid[i][j].visited = True
+                        obstacles += 1
+                        obstacle_cells.append((i,j))
                 beacons_temp, beacon_cells_temp = quick_add_grid_beacons_wall(grid, wall, grid_size, width, height)
                 beacons += beacons_temp
                 beacon_cells.extend(beacon_cells_temp)
-            if not grid[i][j].obstacle:
-                non_obstacle_cells.append((i,j))
+        if not grid[i][j].obstacle:
+            non_obstacle_cells.append((i,j))
     return obstacles, obstacle_cells, non_obstacle_cells, beacons, beacon_cells
 
 
@@ -206,4 +203,3 @@ def quick_add_grid_beacons_wall(grid, wall, grid_size, width, height):
         beacons += 1
 
     return beacons, beacon_cells
-
