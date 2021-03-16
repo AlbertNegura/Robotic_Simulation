@@ -68,6 +68,7 @@ TURN_RIGHT = None
 TURN_LEFT = None
 NO_TURN = None
 OBSTACLE_GRID = None
+ANTIALIASING = None
 
 def load_config(config):
     """
@@ -130,10 +131,11 @@ def load_config(config):
     TURN_RIGHT = int(kalman_settings['TURN_RIGHT'])
     NO_TURN = int(kalman_settings['NO_TURN'])
 
-    global KEY_SIZE, TICK_RATE, WALL_WIDTH
+    global KEY_SIZE, TICK_RATE, WALL_WIDTH, ANTIALIASING
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])
     TICK_RATE = int(visualization_settings['TICK_RATE'])
     WALL_WIDTH = int(visualization_settings['WALL_WIDTH'])
+    ANTIALIASING = True if str(visualization_settings['ANTIALIASING']) == "True" else False
 
     global MULTIPROCESSING, PROCESSES
     MULTIPROCESSING = True if str(multiprocessing_settings['MULTIPROCESSING']) == "True" else False

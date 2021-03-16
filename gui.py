@@ -528,9 +528,9 @@ def execute():
 
         for wall in WALLS:
             #print(WALLS)
-            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH)
+            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, ANTIALIASING)
         for wall in EDGE_WALLS:
-            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100))
+            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100), ANTIALIASING)
         if accel:
             accelerate()
         if not KALMAN_MODE:
@@ -560,14 +560,14 @@ def execute():
                 robot.orientation = ORIENTATION_HISTORY[0]
                 ORIENTATION_HISTORY = np.delete(ORIENTATION_HISTORY, (0), axis=0)
 
-        visualization.draw_robot(pygame, screen, robot)
+        visualization.draw_robot(pygame, screen, robot, ANTIALIASING)
         if current_frame > 2 and (DRAW_TRAIL or DISAPPEARING_TRAIL):
             visualization.draw_trail(pygame, screen, robot, DISAPPEARING_TRAIL)
         robot.adjust_sensors(WALLS)
         robot.adjust_sensors(EDGE_WALLS)
 
         if SHOW_SENSORS:
-            visualization.draw_sensors(pygame, screen, robot)
+            visualization.draw_sensors(pygame, screen, robot, antialiasing=ANTIALIASING)
         if SHOW_SENSOR_INFO:
             visualization.draw_sensor_info(screen, robot, mini_info_font)
 
@@ -617,18 +617,19 @@ def execute():
         visualization.write_text(pygame,screen,"- Fitness ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.55*HEIGHT)))
         visualization.write_text(pygame,screen,str(fitnesses[-1]),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.55*HEIGHT)))
         # Fitness plot
-        if current_frame%TICK_RATE==0:
-            surf=plot(fitnesses)
-            surf2=plot(areas)
-        screen.blit(surf, (WIDTH-int(0.4*WIDTH), HEIGHT-int(0.33*HEIGHT)))
-        visualization.write_text(pygame,screen,"Fitness",(WIDTH-int(0.325*WIDTH),HEIGHT-int(0.31*HEIGHT)))
-        screen.blit(surf2, (WIDTH-int(0.2*WIDTH), HEIGHT-int(0.33*HEIGHT)))
-        visualization.write_text(pygame,screen,"Area Cleaned",(WIDTH-int(0.125*WIDTH),HEIGHT-int(0.31*HEIGHT)))
+        if AUTONOMOUS_MODE:
+            if current_frame%TICK_RATE==0:
+                surf=plot(fitnesses)
+                surf2=plot(areas)
+            screen.blit(surf, (WIDTH-int(0.4*WIDTH), HEIGHT-int(0.33*HEIGHT)))
+            visualization.write_text(pygame,screen,"Fitness",(WIDTH-int(0.325*WIDTH),HEIGHT-int(0.31*HEIGHT)))
+            screen.blit(surf2, (WIDTH-int(0.2*WIDTH), HEIGHT-int(0.33*HEIGHT)))
+            visualization.write_text(pygame,screen,"Area Cleaned",(WIDTH-int(0.125*WIDTH),HEIGHT-int(0.31*HEIGHT)))
 
-        # Wall Config
-        fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
-        visualization.write_text(pygame,screen,"- Walls ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.50*HEIGHT)))
-        visualization.write_text(pygame,screen,str(WALL_NAMES[CURRENT_WALL_CONFIG]),(WIDTH-int(0.12*WIDTH),HEIGHT-int(0.50*HEIGHT)))
+            # Wall Config
+            fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
+            visualization.write_text(pygame,screen,"- Walls ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.50*HEIGHT)))
+            visualization.write_text(pygame,screen,str(WALL_NAMES[CURRENT_WALL_CONFIG]),(WIDTH-int(0.12*WIDTH),HEIGHT-int(0.50*HEIGHT)))
 
         pygame.display.update()
         clock.tick(TICK_RATE)

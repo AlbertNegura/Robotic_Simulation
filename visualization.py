@@ -10,7 +10,7 @@ from grid import *
 from pygame import gfxdraw
 import math
 
-def draw_robot(pygame, screen, robot):
+def draw_robot(pygame, screen, robot, width = 2, antialiasing = False):
     """
 
     :param pygame:
@@ -18,9 +18,36 @@ def draw_robot(pygame, screen, robot):
     :param robot:
     :return:
     """
-    pygame.draw.circle(screen, robot.colour, robot.position, robot.radius - 0.6)
-    pygame.draw.circle(screen, robot.colour2, robot.position, robot.radius - 0.1, 1)
-    pygame.draw.line(screen, robot.colour2, robot.position, robot.facing_position, 2)
+    if antialiasing:
+        pygame.gfxdraw.aacircle(screen, int(robot.position[0]),
+                                int(robot.position[1]), int(robot.radius-0.6),
+                                robot.colour)
+        pygame.gfxdraw.filled_circle(screen, int(robot.position[0]),
+                                int(robot.position[1]), int(robot.radius-0.6),
+                                robot.colour)
+        pygame.gfxdraw.aacircle(screen, int(robot.position[0]),
+                                int(robot.position[1]), int(robot.radius-0.1),
+                                robot.colour2)
+
+        end = np.asarray(robot.position)
+        origin = np.asarray(robot.facing_position)
+        center_L1 = (origin + end) / 2
+        angle = math.atan2(origin[1] - end[1], origin[0] - end[0])
+        length = np.linalg.norm(end - origin)
+        UL = (center_L1[0] + (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+              center_L1[1] + (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+        UR = (center_L1[0] - (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+              center_L1[1] + (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+        BL = (center_L1[0] + (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+              center_L1[1] - (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+        BR = (center_L1[0] - (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+              center_L1[1] - (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+        pygame.gfxdraw.aapolygon(screen, (UL, UR, BR, BL), robot.colour2)
+        pygame.gfxdraw.filled_polygon(screen, (UL, UR, BR, BL), robot.colour2)
+    else:
+        pygame.draw.circle(screen, robot.colour, robot.position, robot.radius - 0.6)
+        pygame.draw.circle(screen, robot.colour2, robot.position, robot.radius - 0.1, 1)
+        pygame.draw.line(screen, robot.colour2, robot.position, robot.facing_position, 2)
 
 def draw_ghost(pygame, screen, robot):
     """
@@ -63,7 +90,7 @@ def draw_trail(pygame, screen, robot, disappearing):
             pygame.draw.line(screen, (0,100,0), old_pos, new_pos, 2)
 
 
-def draw_sensors(pygame, screen, robot, width=5):
+def draw_sensors(pygame, screen, robot, width=5, antialiasing = False):
     """
 
     :param pygame:
@@ -72,21 +99,24 @@ def draw_sensors(pygame, screen, robot, width=5):
     :return:
     """
     for sensor in robot.sensors:
-        end = np.asarray(sensor.line_end)
-        origin = np.asarray(sensor.line_start)
-        center_L1 = (origin + end) / 2
-        angle = math.atan2(origin[1] - end[1], origin[0] - end[0])
-        length = np.linalg.norm(end - origin)
-        UL = (center_L1[0] + (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
-              center_L1[1] + (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
-        UR = (center_L1[0] - (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
-              center_L1[1] + (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
-        BL = (center_L1[0] + (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
-              center_L1[1] - (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
-        BR = (center_L1[0] - (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
-              center_L1[1] - (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
-        pygame.gfxdraw.aapolygon(screen, (UL, UR, BR, BL), sensor.colour)
-        pygame.gfxdraw.filled_polygon(screen, (UL, UR, BR, BL), sensor.colour)
+        if antialiasing:
+            end = np.asarray(sensor.line_end)
+            origin = np.asarray(sensor.line_start)
+            center_L1 = (origin + end) / 2
+            angle = math.atan2(origin[1] - end[1], origin[0] - end[0])
+            length = np.linalg.norm(end - origin)
+            UL = (center_L1[0] + (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+                  center_L1[1] + (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+            UR = (center_L1[0] - (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+                  center_L1[1] + (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+            BL = (center_L1[0] + (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+                  center_L1[1] - (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+            BR = (center_L1[0] - (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+                  center_L1[1] - (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+            pygame.gfxdraw.aapolygon(screen, (UL, UR, BR, BL), sensor.colour)
+            pygame.gfxdraw.filled_polygon(screen, (UL, UR, BR, BL), sensor.colour)
+        else:
+            pygame.draw.line(screen, sensor.colour, sensor.line_start, sensor.line_end, width)
 
 
 def draw_sensor_info(screen, robot, font):
@@ -106,7 +136,7 @@ def draw_sensor_info(screen, robot, font):
         screen.blit(sensor_info, sensor_info_position)
 
 
-def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0, 70)):
+def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0, 70), antialiasing = False):
     """
 
     :param pygame:
@@ -117,21 +147,24 @@ def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0, 70)):
     :param color:
     :return:
     """
-    end = np.asarray(end)
-    origin = np.asarray(origin)
-    center_L1 = (origin+end)/2
-    angle = math.atan2(origin[1]-end[1],origin[0]-end[0])
-    length = np.linalg.norm(end-origin)
-    UL = (center_L1[0] + (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
-          center_L1[1] + (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
-    UR = (center_L1[0] - (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
-          center_L1[1] + (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
-    BL = (center_L1[0] + (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
-          center_L1[1] - (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
-    BR = (center_L1[0] - (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
-          center_L1[1] - (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
-    pygame.gfxdraw.aapolygon(screen, (UL, UR, BR, BL), color)
-    pygame.gfxdraw.filled_polygon(screen, (UL, UR, BR, BL), color)
+    if antialiasing:
+        end = np.asarray(end)
+        origin = np.asarray(origin)
+        center_L1 = (origin+end)/2
+        angle = math.atan2(origin[1]-end[1],origin[0]-end[0])
+        length = np.linalg.norm(end-origin)
+        UL = (center_L1[0] + (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+              center_L1[1] + (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+        UR = (center_L1[0] - (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+              center_L1[1] + (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+        BL = (center_L1[0] + (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+              center_L1[1] - (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+        BR = (center_L1[0] - (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+              center_L1[1] - (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+        pygame.gfxdraw.aapolygon(screen, (UL, UR, BR, BL), color)
+        pygame.gfxdraw.filled_polygon(screen, (UL, UR, BR, BL), color)
+    else:
+        pygame.draw.line(screen, color, origin, end, width)
 
 
 def draw_grid(pygame, screen, grid_1):
