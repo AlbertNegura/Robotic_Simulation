@@ -528,9 +528,9 @@ def execute():
 
         for wall in WALLS:
             #print(WALLS)
-            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, ANTIALIASING)
+            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, antialiasing=ANTIALIASING)
         for wall in EDGE_WALLS:
-            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100), ANTIALIASING)
+            visualization.draw_wall(pygame, screen, wall[0], wall[1], WALL_WIDTH, (100,100,100), antialiasing=ANTIALIASING)
         if accel:
             accelerate()
         if not KALMAN_MODE:
@@ -560,7 +560,7 @@ def execute():
                 robot.orientation = ORIENTATION_HISTORY[0]
                 ORIENTATION_HISTORY = np.delete(ORIENTATION_HISTORY, (0), axis=0)
 
-        visualization.draw_robot(pygame, screen, robot, ANTIALIASING)
+        visualization.draw_robot(pygame, screen, robot, antialiasing=ANTIALIASING)
         if current_frame > 2 and (DRAW_TRAIL or DISAPPEARING_TRAIL):
             visualization.draw_trail(pygame, screen, robot, DISAPPEARING_TRAIL)
         robot.adjust_sensors(WALLS)
