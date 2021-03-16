@@ -119,13 +119,24 @@ def draw_grid(pygame, screen, grid_1):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
-def draw_dirt(pygame, screen, grid):
+def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obstacles=False):
     for squares in grid:
         for square in squares:
-            if not square.visited:
-                pygame.gfxdraw.box(screen,
-                                   pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                   (155, 118, 53, 50))
+            if draw_dirt:
+                if not square.visited:
+                    pygame.gfxdraw.box(screen,
+                                       pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                       (155, 118, 53, 50))
+            if draw_obstacles:
+                if square.obstacle:
+                    pygame.gfxdraw.box(screen,
+                                       pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                       (0, 0, 0, 10))
+            if draw_beacons:
+                if square.beacon:
+                    pygame.gfxdraw.box(screen,
+                                       pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                       (17, 30, 108, 50))
 
 def write_text(pygame, screen, text, position = (1300, 300)):
     """

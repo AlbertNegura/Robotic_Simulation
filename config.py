@@ -67,6 +67,7 @@ KALMAN_MODE = None
 TURN_RIGHT = None
 TURN_LEFT = None
 NO_TURN = None
+OBSTACLE_GRID = None
 
 def load_config(config):
     """
@@ -122,8 +123,9 @@ def load_config(config):
     SENSOR_VALUE = int(terrain_settings['SENSOR_VALUE'])
     SENSOR_EXPONENTIAL = True if str(terrain_settings['SENSOR_EXPONENTIAL']) == "True" else False
 
-    global KALMAN_MODE, TURN_LEFT, TURN_RIGHT, NO_TURN
+    global KALMAN_MODE, OBSTACLE_GRID, TURN_LEFT, TURN_RIGHT, NO_TURN
     KALMAN_MODE = True if str(kalman_settings['KALMAN_MODE']) == "True" else False
+    OBSTACLE_GRID = True if str(kalman_settings['OBSTACLE_GRID']) == "True" else False
     TURN_LEFT = int(kalman_settings['TURN_LEFT'])
     TURN_RIGHT = int(kalman_settings['TURN_RIGHT'])
     NO_TURN = int(kalman_settings['NO_TURN'])
@@ -181,6 +183,6 @@ keyboard = klp.KeyboardLayout
 key_size = KEY_SIZE
 # Keys currently being used, needs to be updated with new keys according to keyboardlayour key key values
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
-                 kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.C,
-                 kl.Key.A, kl.Key.Q, kl.Key.D, kl.Key.K, kl.Key.Z, kl.Key.LEFTBRACKET,kl.Key.RIGHTBRACKET, kl.Key.B]
+                 kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.DIGIT_7,
+                 kl.Key.C, kl.Key.A, kl.Key.Q, kl.Key.D, kl.Key.K, kl.Key.Z, kl.Key.LEFTBRACKET,kl.Key.RIGHTBRACKET, kl.Key.B]
 

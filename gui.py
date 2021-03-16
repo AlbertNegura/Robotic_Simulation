@@ -174,7 +174,7 @@ def user_input(pgkey):
     """
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE, KALMAN_MODE
-    global CURRENT_WALL_CONFIG
+    global CURRENT_WALL_CONFIG, OBSTACLE_GRID
     global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas, turn
     if pgkey[pygame.K_w]:
         accel = True
@@ -307,10 +307,10 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_6, unused_key_info)
     if pgkey[pygame.K_7]:
-        DRAW_GHOSTS = not DRAW_GHOSTS
-        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_6, used_key_info)
+        OBSTACLE_GRID = not OBSTACLE_GRID
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_7, used_key_info)
     else:
-        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_6, unused_key_info)
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_7, unused_key_info)
     if pgkey[pygame.K_m]:
         MAP_MENU = True
         keyboard.update_key(keyboard_layout, kl.Key.M, used_key_info)
@@ -580,9 +580,12 @@ def execute():
         if DRAW_GRID:
             visualization.draw_grid(pygame, screen, grid_1)
 
-        if CLEANING_MODE:
+        if CLEANING_MODE and not KALMAN_MODE:
             clean_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
             visualization.draw_dirt(pygame, screen, grid_1)
+        if KALMAN_MODE:
+            clean_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells)
+            visualization.draw_dirt(pygame, screen, grid_1, CLEANING_MODE, OBSTACLE_GRID, KALMAN_MODE)
 
         # Position text
         visualization.write_text(pygame,screen,"- Frame/FPS: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)))
