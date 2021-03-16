@@ -131,28 +131,42 @@ def reset_grid(grid):
     return grid
 
 
-def add_grid_obstacles(grid, walls):
+def add_grid_obstacles(grid, walls, grid_size, width, height):
     # for each wall (two points), calculate all x,y positions between those points in the given resolution
     # set the square containing that obstacle to true grid[x][y].obstacle = True
     rows = len(grid)
     columns = len(grid[0])
-    obstacle_cells = 0
+    obstacle_cells = []
+    non_obstacle_cells = []
+    beacons = 0
+    beacon_cells = []
+    obstacles = 0
     for i in range(rows):
         for j in range(columns):
             for wall in walls:
-                wall_line = np.array([wall[0], wall[1]])
-                if utils.intersection(grid[i][j].left_line, wall_line) or utils.intersection(grid[i][j].right_line, wall_line) or utils.intersection(grid[i][j].top_line, wall_line) or utils.intersection(grid[i][j].bottom_line, wall_line):
-                    if not grid[i][j].obstacle:
-                        grid[i][j].obstacle = True
-                        obstacle_cells+=1
-    return obstacle_cells
+                if utils.distance_point_to_line([i*grid_size, j*grid_size], wall) <= grid_size:
+                    continue
+                if not grid[i][j].obstacle:
+                    wall_line = np.array([wall[0], wall[1]])
+                    if utils.intersection(grid[i][j].left_line, wall_line) or utils.intersection(grid[i][j].right_line, wall_line) or utils.intersection(grid[i][j].top_line, wall_line) or utils.intersection(grid[i][j].bottom_line, wall_line):
+                        if not grid[i][j].obstacle:
+                            grid[i][j].obstacle = True
+                            obstacles += 1
+                            obstacle_cells.append((i,j))
+                beacons_temp, beacon_cells_temp = quick_add_grid_beacons_wall(grid, wall, grid_size, width, height)
+                beacons += beacons_temp
+                beacon_cells.extend(beacon_cells_temp)
+            if not grid[i][j].obstacle:
+                non_obstacle_cells.append((i,j))
+    return obstacles, obstacle_cells, non_obstacle_cells, beacons, beacon_cells
 
 
-def add_grid_beacons_wall(grid, walls, grid_size):
+def add_grid_beacons_wall(grid, walls, grid_size, width, height):
     # set the grid[x][y].beacon to true if that location is a beacon - note that it can be an obstacle!
-    beacon_cells = 0
+    beacon_cells = []
+    beacons = 0
     for wall in walls:
-        if wall[0][0] <= 5 or wall[0][0] >= 1600 or wall[0][1] <= 5 or wall[0][1] >= 595 or wall[1][0] <= 5 or wall[1][0] >= 1600 or wall[1][1] <= 5 or wall[1][1] >= 595:
+        if wall[0][0] <= 5 or wall[0][0] >= width or wall[0][1] <= 5 or wall[0][1] >= height - int(height/3) or wall[1][0] <= 5 or wall[1][0] >= width or wall[1][1] <= 5 or wall[1][1] >= height - int(height/3):
             continue
 
         wall_originx = int(wall[0][0] / grid_size)
@@ -162,9 +176,34 @@ def add_grid_beacons_wall(grid, walls, grid_size):
 
         if not grid[wall_endy][wall_endx].beacon:
             grid[wall_endy][wall_endx].beacon = True
-            beacon_cells+=1
+            beacon_cells.append((wall_endy,wall_endx))
+            beacons += 1
         if not grid[wall_originy][wall_originx].beacon:
             grid[wall_originy][wall_originx].beacon = True
-            beacon_cells += 1
-    return beacon_cells
+            beacon_cells.append((wall_originy,wall_originx))
+            beacons += 1
+    return beacons, beacon_cells
+
+def quick_add_grid_beacons_wall(grid, wall, grid_size, width, height):
+    beacon_cells = []
+    beacons = 0
+
+    if wall[0][0] <= 0 or wall[0][0] >= width or wall[0][1] <= 0 or wall[0][1] >= height - int(height / 3) or wall[1][
+        0] <= 0 or wall[1][0] >= width or wall[1][1] <= 0 or wall[1][1] >= height - int(height / 3):
+        return beacons, beacon_cells
+    wall_originx = int(wall[0][0] / grid_size)
+    wall_originy = int(wall[0][1] / grid_size)
+    wall_endx = int(wall[1][0] / grid_size)
+    wall_endy = int(wall[1][1] / grid_size)
+
+    if not grid[wall_endy][wall_endx].beacon:
+        grid[wall_endy][wall_endx].beacon = True
+        beacon_cells.append((wall_endy, wall_endx))
+        beacons += 1
+    if not grid[wall_originy][wall_originx].beacon:
+        grid[wall_originy][wall_originx].beacon = True
+        beacon_cells.append((wall_originy, wall_originx))
+        beacons += 1
+
+    return beacons, beacon_cells
 

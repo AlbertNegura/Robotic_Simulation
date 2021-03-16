@@ -385,9 +385,11 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)
 
     if pgkey[pygame.K_b]:
-        obstacles = grid.add_grid_obstacles(grid_1, WALLS)
-        beacons = grid.add_grid_beacons_wall(grid_1, WALLS, GRID_SIZE)
-        robot.initialize_belief_map(grid_1, obstacles)
+        obstacles, obstacle_cells, non_obstacle_cells, beacons, beacon_cells = grid.add_grid_obstacles(grid_1, WALLS, GRID_SIZE, WIDTH, HEIGHT)
+        print(beacons)
+        print(beacon_cells)
+        # beacons, beacon_cells = grid.add_grid_beacons_wall(grid_1, WALLS, GRID_SIZE, WIDTH, HEIGHT)
+        robot.initialize_belief_map(grid_1, obstacles, obstacle_cells, non_obstacle_cells)
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)

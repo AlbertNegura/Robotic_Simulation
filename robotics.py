@@ -10,6 +10,7 @@ import math
 import motion
 import physics
 import utils
+import itertools
 import config
 
 
@@ -209,19 +210,17 @@ class Robot:
         """
         return np.array([[self.velocity_left, self.velocity_right]])
 
-    def initialize_belief_map(self, grid, obstacles):
+    def initialize_belief_map(self, grid, obstacles, obstacle_cells, non_obstacle_cells):
         # initialize the self.belief_map with the probability of the robot's location using 1-(1/obstacles) in the grid
         x_len = len(grid)
         y_len = len(grid[0])
         self.belief_map = np.zeros((x_len,y_len))
         prob = 1 - (1 / obstacles)
         prob = 1.0 if prob > 1. else 0.0 if prob < 0. else prob  # ensure probability is clamped correctly
-        for i in range(x_len):
-            for j in range(y_len):
-                if grid[i][j].obstacle:
-                    self.belief_map[i][j] = 0.0
-                else:
-                    self.belief_map[i][j] = prob
+        for i,j in obstacle_cells:
+            self.belief_map[i][j] = 0.0
+        for i,j in non_obstacle_cells:
+            self.belief_map[i][j] = prob
 
 
 def create_robot(init_pos=(100, 200), radius=50, acceleration=0.005, num_sensors=12, max_radius=50):
