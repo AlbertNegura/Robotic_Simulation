@@ -63,7 +63,7 @@ def draw_trail(pygame, screen, robot, disappearing):
             pygame.draw.line(screen, (0,100,0), old_pos, new_pos, 2)
 
 
-def draw_sensors(pygame, screen, robot):
+def draw_sensors(pygame, screen, robot, width=5):
     """
 
     :param pygame:
@@ -72,7 +72,21 @@ def draw_sensors(pygame, screen, robot):
     :return:
     """
     for sensor in robot.sensors:
-        pygame.draw.line(screen, sensor.colour, sensor.line_start, sensor.line_end, 5)
+        end = np.asarray(sensor.line_end)
+        origin = np.asarray(sensor.line_start)
+        center_L1 = (origin + end) / 2
+        angle = math.atan2(origin[1] - end[1], origin[0] - end[0])
+        length = np.linalg.norm(end - origin)
+        UL = (center_L1[0] + (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+              center_L1[1] + (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+        UR = (center_L1[0] - (length / 2.) * np.cos(angle) - (width / 2.) * np.sin(angle),
+              center_L1[1] + (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+        BL = (center_L1[0] + (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+              center_L1[1] - (width / 2.) * np.cos(angle) + (length / 2.) * np.sin(angle))
+        BR = (center_L1[0] - (length / 2.) * np.cos(angle) + (width / 2.) * np.sin(angle),
+              center_L1[1] - (width / 2.) * np.cos(angle) - (length / 2.) * np.sin(angle))
+        pygame.gfxdraw.aapolygon(screen, (UL, UR, BR, BL), sensor.colour)
+        pygame.gfxdraw.filled_polygon(screen, (UL, UR, BR, BL), sensor.colour)
 
 
 def draw_sensor_info(screen, robot, font):
