@@ -370,6 +370,15 @@ def user_input(pgkey):
             CURRENT_WALL_CONFIG -= 1
         WALLS = ALLWALLS[CURRENT_WALL_CONFIG]
         EVOLVE = not EVOLVE
+        if KALMAN_MODE:
+            grid.reset_grid(grid_1)
+            obstacles, obstacle_cells, non_obstacle_cells, beacons, beacon_cells = grid.add_grid_obstacles(grid_1,
+                                                                                                           WALLS,
+                                                                                                           GRID_SIZE,
+                                                                                                           WIDTH,
+                                                                                                           HEIGHT)
+            # beacons, beacon_cells = grid.add_grid_beacons_wall(grid_1, WALLS, GRID_SIZE, WIDTH, HEIGHT)
+            robot.initialize_belief_map(grid_1, obstacles, obstacle_cells, non_obstacle_cells)
         keyboard.update_key(keyboard_layout, kl.Key.LEFTBRACKET, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.LEFTBRACKET, unused_key_info)
@@ -380,6 +389,16 @@ def user_input(pgkey):
         else:
             CURRENT_WALL_CONFIG += 1
         WALLS = ALLWALLS[CURRENT_WALL_CONFIG]
+        EVOLVE = not EVOLVE
+        if KALMAN_MODE:
+            grid.reset_grid(grid_1)
+            obstacles, obstacle_cells, non_obstacle_cells, beacons, beacon_cells = grid.add_grid_obstacles(grid_1,
+                                                                                                           WALLS,
+                                                                                                           GRID_SIZE,
+                                                                                                           WIDTH,
+                                                                                                           HEIGHT)
+            # beacons, beacon_cells = grid.add_grid_beacons_wall(grid_1, WALLS, GRID_SIZE, WIDTH, HEIGHT)
+            robot.initialize_belief_map(grid_1, obstacles, obstacle_cells, non_obstacle_cells)
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)

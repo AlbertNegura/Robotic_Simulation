@@ -151,7 +151,7 @@ def add_grid_obstacles(grid, walls, grid_size, width, height):
                         grid[i][j].obstacle = True
                         obstacles += 1
                         obstacle_cells.append((i,j))
-                beacons_temp, beacon_cells_temp = quick_add_grid_beacons_wall(grid, wall, grid_size, width, height)
+                beacons_temp, beacon_cells_temp = quick_add_grid_beacons_wall(grid, wall, grid_size, width, height, rows, columns)
                 beacons += beacons_temp
                 beacon_cells.extend(beacon_cells_temp)
             else:
@@ -184,17 +184,18 @@ def add_grid_beacons_wall(grid, walls, grid_size, width, height):
             beacons += 1
     return beacons, beacon_cells
 
-def quick_add_grid_beacons_wall(grid, wall, grid_size, width, height):
+def quick_add_grid_beacons_wall(grid, wall, grid_size, width, height, x_length, y_length):
     beacon_cells = []
     beacons = 0
+
 
     if wall[0][0] <= 0 or wall[0][0] >= width or wall[0][1] <= 0 or wall[0][1] >= height - int(height / 3) or wall[1][
         0] <= 0 or wall[1][0] >= width or wall[1][1] <= 0 or wall[1][1] >= height - int(height / 3):
         return beacons, beacon_cells
-    wall_originx = int(wall[0][0] / grid_size)
-    wall_originy = int(wall[0][1] / grid_size)
-    wall_endx = int(wall[1][0] / grid_size)
-    wall_endy = int(wall[1][1] / grid_size)
+    wall_originx = np.clip(int(wall[0][0] / grid_size),0,x_length)
+    wall_originy = np.clip(int(wall[0][1] / grid_size),0,y_length)
+    wall_endx = np.clip(int(wall[1][0] / grid_size),0,x_length)
+    wall_endy = np.clip(int(wall[1][1] / grid_size),0,y_length)
 
     if not grid[wall_endy][wall_endx].beacon:
         grid[wall_endy][wall_endx].beacon = True
