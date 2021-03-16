@@ -120,9 +120,9 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
                 beacon_cells.append((y,x))
 
     if not beacon_cells:
-        return clean_cells
+        return clean_cells, []
     else:
-        return beacon_cells, center_x, center_y
+        return beacon_cells, [center_x, center_y]
 
 
 def reset_grid(grid):

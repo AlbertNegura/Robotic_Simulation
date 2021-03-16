@@ -159,7 +159,7 @@ def load_config(config):
 config = configparser.ConfigParser()
 config.read('config.ini')
 load_config(config)
-robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH)
+robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH, grid_size=GRID_SIZE)
 
 # MAZE
 WALLS = []

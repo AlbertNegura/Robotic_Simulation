@@ -239,7 +239,7 @@ def user_input(pgkey):
         global current_tick, robot, current_frame
         # reset the robot and simulation
         current_frame = 0
-        robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH)
+        robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH, grid_size=GRID_SIZE)
         wheel = BOTH
         direction = STOP
         current_tick = STOP
@@ -581,12 +581,12 @@ def execute():
             visualization.draw_grid(pygame, screen, grid_1)
 
         if CLEANING_MODE and not KALMAN_MODE:
-            clean_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacon_cells = KALMAN_MODE)
+            clean_cells, _ = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacon_cells = KALMAN_MODE)
             visualization.draw_dirt(pygame, screen, grid_1)
         if KALMAN_MODE:
             if CLEANING_MODE:
-                clean_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacon_cells = False)
-            beacon_cells, robot_grid_x, robot_grid_y = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacon_cells=KALMAN_MODE)
+                clean_cells, _ = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacon_cells = False)
+            beacon_cells, robot.grid_pos = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacon_cells=KALMAN_MODE)
 
             visualization.draw_dirt(pygame, screen, grid_1, CLEANING_MODE, OBSTACLE_GRID, KALMAN_MODE)
 

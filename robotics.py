@@ -32,6 +32,7 @@ class Robot:
     collisions = 0
     frame = 0
     belief_map = []
+    grid_pos = [0,0]
 
     position_history = []
     orientation_history = []
@@ -223,7 +224,7 @@ class Robot:
             self.belief_map[i][j] = prob
 
 
-def create_robot(init_pos=(100, 200), radius=50, acceleration=0.005, num_sensors=12, max_radius=50):
+def create_robot(init_pos=(100, 200), radius=50, acceleration=0.005, num_sensors=12, max_radius=50, grid_size=10):
     """
     Create the robot with the specified parameters.
     :param init_pos: Upper bounds to the initial possition the robot can spawn at.
@@ -244,6 +245,7 @@ def create_robot(init_pos=(100, 200), radius=50, acceleration=0.005, num_sensors
     robot.sensors = []
     robot.position_history = [robot.position]
     robot.orientation_history = [robot.orientation]
+    robot.grid_pos = [int(robot.position[0] / grid_size), int(robot.position[1] / grid_size)]
     robot.max_vel = radius / 2.
     prev_degree = robot.orientation  # starting angle
     for s in range(num_sensors):
