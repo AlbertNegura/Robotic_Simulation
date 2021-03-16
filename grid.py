@@ -95,7 +95,7 @@ def create_grid(square_size, width, height):
     return grid
 
 
-def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_cells):
+def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_cells, beacon_cells):
     """
     Get the dirty and clean cells around the robot.
     :param grid: the current grid as a 2d list
@@ -109,11 +109,20 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
     center_y = int(position[1] / size)
     xs = [center_x + i for i in range(-cleaning_range, cleaning_range + 1)]
     ys = [center_y + i for i in range(-cleaning_range, cleaning_range + 1)]
+    beacon_cells = []
     for x, y in itertools.product(xs, ys):
-        if not grid[y][x].visited:
-            clean_cells += 1
-            grid[y][x].visited = True
-    return clean_cells
+        if not beacon_cells:
+            if not grid[y][x].visited:
+                clean_cells += 1
+                grid[y][x].visited = True
+        else:
+            if grid[y][x].beacon:
+                beacon_cells.append((y,x))
+
+    if not beacon_cells:
+        return clean_cells
+    else:
+        return beacon_cells, center_x, center_y
 
 
 def reset_grid(grid):
