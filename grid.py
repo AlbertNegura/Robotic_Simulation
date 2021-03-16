@@ -154,6 +154,8 @@ def add_grid_obstacles(grid, walls, grid_size, width, height):
                 beacons_temp, beacon_cells_temp = quick_add_grid_beacons_wall(grid, wall, grid_size, width, height)
                 beacons += beacons_temp
                 beacon_cells.extend(beacon_cells_temp)
+            else:
+                break
         if not grid[i][j].obstacle:
             non_obstacle_cells.append((i,j))
     return obstacles, obstacle_cells, non_obstacle_cells, beacons, beacon_cells
