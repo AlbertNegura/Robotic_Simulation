@@ -181,14 +181,19 @@ def draw_grid(pygame, screen, grid_1):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
-def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obstacles=False):
-    for squares in grid:
-        for square in squares:
-            if draw_dirt:
-                if not square.visited:
-                    pygame.gfxdraw.box(screen,
-                                       pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                       (155, 118, 53, 50))
+def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obstacles=False, clean_cells_list = None):
+    if draw_dirt:
+        if clean_cells_list is not None:
+            for x,y in itertools.product(range(len(grid)), range(len(grid[0]))):
+                if (x,y) not in clean_cells_list:
+                    square = grid[x][y]
+                    if not square.visited:
+                        pygame.gfxdraw.box(screen,
+                                           pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                           (155, 118, 53, 50))
+    if draw_obstacles or draw_beacons:
+        for i,j in itertools.product(range(len(grid)), range(len(grid[0]))):
+            square = grid[i][j]
             if draw_obstacles:
                 if square.obstacle:
                     pygame.gfxdraw.box(screen,
