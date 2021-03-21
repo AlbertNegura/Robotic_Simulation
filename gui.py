@@ -581,15 +581,15 @@ def execute():
             visualization.draw_grid(pygame, screen, grid_1)
 
         if CLEANING_MODE and not KALMAN_MODE:
-            clean_cells, clean_cells_list = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacons = KALMAN_MODE)
+            clean_cells, clean_cells_list, _ = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacons = KALMAN_MODE)
             visualization.draw_dirt(pygame, screen, grid_1, clean_cells_list = clean_cells_list)
         if KALMAN_MODE:
             clean_cells_list = []
             if CLEANING_MODE:
-                clean_cells, clean_cells_list = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacons = False)
-            beacon_cells, robot.grid_pos = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacons=KALMAN_MODE)
+                clean_cells, clean_cells_list, _ = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacons = False)
+            beacon_cells, robot.grid_pos, obstacle_cells  = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacons=KALMAN_MODE)
 
-            visualization.draw_dirt(pygame, screen, grid_1, CLEANING_MODE, OBSTACLE_GRID, KALMAN_MODE, clean_cells_list = clean_cells_list, beacon_cells_list = beacon_cells)
+            visualization.draw_dirt(pygame, screen, grid_1, CLEANING_MODE, OBSTACLE_GRID, KALMAN_MODE, clean_cells_list = clean_cells_list, beacon_cells_list = beacon_cells, obstacle_cells_list = obstacle_cells)
 
 
 

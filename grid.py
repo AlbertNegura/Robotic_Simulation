@@ -116,6 +116,7 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
         ys = np.clip(ys,0,len(grid)-1)
 
     beacon_cells = []
+    obstacle_cells = []
     clean_cells_list = []
     for x, y in itertools.product(xs, ys):
         if not beacons:
@@ -126,11 +127,13 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
         else:
             if grid[y][x].beacon:
                 beacon_cells.append((x,y))
+        if grid[y][x].obstacle:
+            obstacle_cells.append(((y,x)))
 
     if not beacons:
-        return clean_cells, clean_cells_list
+        return clean_cells, clean_cells_list, obstacle_cells
     else:
-        return beacon_cells, [center_x, center_y]
+        return beacon_cells, [center_x, center_y], obstacle_cells
 
 
 def reset_grid(grid):

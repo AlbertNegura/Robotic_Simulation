@@ -181,16 +181,9 @@ def draw_grid(pygame, screen, grid_1):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
-def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obstacles=False, clean_cells_list = None, beacon_cells_list = None):
+def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obstacles=False, clean_cells_list = None, beacon_cells_list = None, obstacle_cells_list = None):
     if draw_dirt or draw_obstacles:
         for x,y in itertools.product(range(len(grid)), range(len(grid[0]))):
-            if draw_obstacles:
-                square = grid[x][y]
-                if draw_obstacles:
-                    if square.obstacle:
-                        pygame.gfxdraw.box(screen,
-                                           pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                           (0, 0, 0, 10))
             if draw_dirt and clean_cells_list is not None:
                     if (x,y) not in clean_cells_list:
                         square = grid[x][y]
@@ -206,6 +199,13 @@ def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obs
                                    (17, 30, 108, 100))
                 pygame.gfxdraw.filled_circle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
                                    (17, 30, 108, 100))
+    if draw_obstacles:
+        for i,j in obstacle_cells_list:
+            square = grid[i][j]
+            if square.obstacle:
+                pygame.gfxdraw.box(screen,
+                                   pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                   (0, 0, 0, 10))
 
 def write_text(pygame, screen, text, position = (1300, 300)):
     """
