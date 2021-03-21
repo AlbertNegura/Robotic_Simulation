@@ -181,30 +181,31 @@ def draw_grid(pygame, screen, grid_1):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
-def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obstacles=False, clean_cells_list = None):
-    if draw_dirt:
-        if clean_cells_list is not None:
-            for x,y in itertools.product(range(len(grid)), range(len(grid[0]))):
-                if (x,y) not in clean_cells_list:
-                    square = grid[x][y]
-                    if not square.visited:
+def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obstacles=False, clean_cells_list = None, beacon_cells_list = None):
+    if draw_dirt or draw_obstacles:
+        for x,y in itertools.product(range(len(grid)), range(len(grid[0]))):
+            if draw_obstacles:
+                square = grid[x][y]
+                if draw_obstacles:
+                    if square.obstacle:
                         pygame.gfxdraw.box(screen,
                                            pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                           (155, 118, 53, 50))
-    if draw_obstacles or draw_beacons:
-        for i,j in itertools.product(range(len(grid)), range(len(grid[0]))):
-            square = grid[i][j]
-            if draw_obstacles:
-                if square.obstacle:
-                    pygame.gfxdraw.box(screen,
-                                       pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                       (0, 0, 0, 10))
-            if draw_beacons:
-                if square.beacon:
-                    pygame.gfxdraw.aacircle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
-                                       (17, 30, 108, 100))
-                    pygame.gfxdraw.filled_circle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
-                                       (17, 30, 108, 100))
+                                           (0, 0, 0, 10))
+            if draw_dirt and clean_cells_list is not None:
+                    if (x,y) not in clean_cells_list:
+                        square = grid[x][y]
+                        if not square.visited:
+                            pygame.gfxdraw.box(screen,
+                                               pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                               (155, 118, 53, 50))
+    if draw_beacons:
+        for i,j in beacon_cells_list:
+            square = grid[j][i] # for some reason, it's inverted
+            if square.beacon:
+                pygame.gfxdraw.aacircle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
+                                   (17, 30, 108, 100))
+                pygame.gfxdraw.filled_circle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
+                                   (17, 30, 108, 100))
 
 def write_text(pygame, screen, text, position = (1300, 300)):
     """
@@ -218,6 +219,22 @@ def write_text(pygame, screen, text, position = (1300, 300)):
     font = pygame.font.SysFont(None, 24)
     img = font.render(text, True, (0,0,0))
     screen.blit(img, position)
+
+def write_text_list(pygame, screen, text, position=(1300, 300), WIDTH = 1600, HEIGHT = 900):
+    """
+
+    :param pygame:
+    :param screen:
+    :param text:
+    :param position:
+    :return:
+    """
+    font = pygame.font.SysFont(None, 24)
+    for i in range(len(text)):
+        t = text[i]
+        pos_iterator = [WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)]
+        img = font.render(t, True, (0, 0, 0))
+        screen.blit(img, position + pos_iterator)
 
 def create_button(pygame, screen, text, x, y, width, height):
     """
