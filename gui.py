@@ -489,7 +489,10 @@ def execute():
     current_frame = 0
     clean_cells = 0
 
-    visualization.draw_grid(pygame, screen, grid_1)
+    grid_screen = pygame.Surface((WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)))
+    grid_screen.fill((255,255,255))
+    grid_screen.set_colorkey((255,255,255))
+    visualization.draw_initial_grid(pygame, grid_screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
 
     while not terminate:
@@ -584,10 +587,10 @@ def execute():
         # TODO : check the merge (these 3 next lines seem redundant with l.650+)
         if CLEANING_MODE:
             grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(CLEANING_RANGE), clean_cells, beacons=False)
-            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=CLEANING_MODE, draw_grid=False)
+            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=CLEANING_MODE, draw_grid=DRAW_GRID, screen2=grid_screen)
 
-        if DRAW_GRID:
-            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=False, draw_grid=DRAW_GRID)
+        if DRAW_GRID and not CLEANING_MODE:
+            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=False, draw_grid=DRAW_GRID, screen2=grid_screen)
 
         if KALMAN_MODE:
             beacon_cells, robot.grid_pos, obstacle_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacons=KALMAN_MODE)
