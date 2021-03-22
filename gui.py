@@ -588,6 +588,26 @@ def execute():
 
             visualization.draw_beacons_and_obstacles(pygame, screen, grid_1, OBSTACLE_GRID, KALMAN_MODE, beacon_cells_list = beacon_cells, obstacle_cells_list = obstacle_cells)
 
+            temp_cell = beacon_cells.copy()
+            beacon_dists = []
+            for val in range(len(beacon_cells)):
+                cell = temp_cell[val]
+                grid_mul_x = -2 if robot.position[0] < grid_1[cell[1]][cell[0]].position[0] else 2
+                grid_mul_y = -2 if robot.position[1] < grid_1[cell[1]][cell[0]].position[1] else 2
+                beacon_line = np.array([robot.position, [grid_1[cell[1]][cell[0]].position[0]+GRID_SIZE*grid_mul_x, grid_1[cell[1]][cell[0]].position[1]+GRID_SIZE*grid_mul_y]])
+                for wall in WALLS:
+                    wall_line = np.array([wall[0], wall[1]])
+                    # print("lines", sensor_line, wall_line)
+                    intersec_point = utils.intersection(beacon_line, wall_line)
+                    if intersec_point:
+                        beacon_cells.remove(cell)
+                        break
+            for cell in beacon_cells:
+                x_dist = np.abs(robot.grid_pos[0] - cell[1])
+                y_dist = np.abs(robot.grid_pos[1] - cell[0])
+                beacon_dists.append(x_dist**2+y_dist**2)
+            beacon_cells = [beacon_cells[i] for i in np.argpartition(beacon_dists,0)]
+
             # Init KALMAN_POSE
             if KALMAN_POSE is None:
                 KALMAN_POSE = [robot.grid_pos[0] * GRID_SIZE, robot.grid_pos[1] * GRID_SIZE, math.radians(robot.orientation)]
@@ -638,9 +658,9 @@ def execute():
             _mean, _covariance = kalman.estimate(_mean, _covariance, action, sensor_historic[-1])
             print("Estimated mean: ", _mean)
             print("Estimated covariance: ", _covariance)
-            if not np.any(np.isnan(_mean)):
+            if not np.any(np.isnan(_mean)) and current_frame % 100 == 0:
                 kalman_estimates.append(_mean)
-            if not np.any(np.isnan(_covariance)):
+            if not np.any(np.isnan(_covariance)) and current_frame % 100 == 0:
                 kalman_variances.append(_covariance)
 
 
@@ -655,12 +675,6 @@ def execute():
             visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances)
             KALMAN_POSE = None
 
-            for x,y in beacon_cells:
-                for wall in WALLS:
-                    beacon_line = np.array([robot.position, grid_1[y][x].position])
-                    wall_line = np.array([wall[0], wall[1]])
-                    # print("lines", sensor_line, wall_line)
-                    intersec_point = utils.intersection(beacon_line, wall_line)
 
             visualization.draw_lines_to_sensors(pygame, screen, robot.position, grid_1, beacon_cells)
 
