@@ -174,14 +174,14 @@ def draw_initial_grid(pygame, screen, grid):
                                      (0, 200, 200, 50))
 
 def draw_kalman_estimates(pygame, screen, estimates, variances):
-    for i in range(len(estimates)):
-        estimate = estimates[i]
-        variance = variances[i][:2,:2]
+    values_to_plot = len(estimates) if len(estimates) < 10 else 10
+    for i in range(values_to_plot):
+        estimate = estimates[-i]
+        variance = variances[-i][:2,:2]
         var_x = np.sqrt(variance[0,0])
         var_y = np.sqrt(variance[1,1])
         if not np.isnan(var_x) and not np.isnan(var_y):
-            pygame.gfxdraw.ellipse(screen, np.int(estimate[0]), np.int(estimate[1]), np.int(var_x), np.int(var_y),
-                               (17, 30, 108, 100))
+            pygame.gfxdraw.ellipse(screen, int(estimate[0]), int(estimate[1]), int(var_x), int(var_y), (17, 30, 108, 100))
 
 def draw_grid(pygame, screen, grid, cleaning_mode = False, draw_grid = False, screen2 = None):
     """
