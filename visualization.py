@@ -220,7 +220,7 @@ def write_text(pygame, screen, text, position = (1300, 300)):
     img = font.render(text, True, (0,0,0))
     screen.blit(img, position)
 
-def write_text_list(pygame, screen, text, position=(1300, 300), WIDTH = 1600, HEIGHT = 900):
+def write_text_list(pygame, screen, text, position=(1300, 300), WIDTH = 1600, HEIGHT = 900, font = None):
     """
 
     :param pygame:
@@ -229,12 +229,11 @@ def write_text_list(pygame, screen, text, position=(1300, 300), WIDTH = 1600, HE
     :param position:
     :return:
     """
-    font = pygame.font.SysFont(None, 24)
+    pos_iterator = [0,int(0.05*HEIGHT)]
     for i in range(len(text)):
         t = text[i]
-        pos_iterator = [WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)]
         img = font.render(t, True, (0, 0, 0))
-        screen.blit(img, position + pos_iterator)
+        screen.blit(img, (position[0] + pos_iterator[0]*i, position[1] + pos_iterator[1]*i))
 
 def create_button(pygame, screen, text, x, y, width, height):
     """
