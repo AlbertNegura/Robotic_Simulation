@@ -627,11 +627,11 @@ def execute():
             # todo: pass sensor_kalman output as inputs to kalman.py
 
             # TODO: change this with the kalman.py output instead of sensor_kalman.py
-            variances = np.var(all_estimates, axis=0) * GRID_SIZE * 10
-            if bi_tri_estimate is not None and not np.any(np.isnan(bi_tri_estimate)):
-                if current_frame%100 == 0:
-                    kalman_estimates.append(bi_tri_estimate*np.array([GRID_SIZE,GRID_SIZE,1]))
-                    kalman_variances.append(variances)
+                variances = np.var(all_estimates, axis=0) * GRID_SIZE * 10
+                if bi_tri_estimate is not None and not np.any(np.isnan(bi_tri_estimate)):
+                    if current_frame%100 == 0:
+                        kalman_estimates.append(bi_tri_estimate*np.array([GRID_SIZE,GRID_SIZE,1]))
+                        kalman_variances.append(variances)
 
             visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances)
             KALMAN_POSE = None
