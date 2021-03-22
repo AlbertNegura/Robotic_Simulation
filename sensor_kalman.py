@@ -12,9 +12,11 @@ def feature(pose, feature_coord):
     :param pose: robot pose [x y, theta]
     :return: [distance, bearing, signature, x, y]
     """
-    # ToDo: add noise and signature
-    distance = np.sqrt((feature_coord[0] - pose[0]) ** 2 + (feature_coord[1] - pose[1]) ** 2)  # + np.random.random()
-    bearing = np.arctan2(feature_coord[1] - pose[1], feature_coord[0] - pose[0]) - pose[2]  # + np.random.random()
+    #add noise and signature
+    distance = np.sqrt((feature_coord[0] - pose[0]) ** 2 + (feature_coord[1] - pose[1]) ** 2) + np.random.normal()
+    print("distance ", distance)
+    bearing = np.arctan2(feature_coord[1] - pose[1], feature_coord[0] - pose[0]) - pose[2] + np.random.normal()
+    print("bearing ", bearing)
     signature = 0
     return distance, bearing, signature, feature_coord[0], feature_coord[1]
 
@@ -81,8 +83,11 @@ def estimate(real_pose, f_list):
                 a = np.deg2rad(180) - (np.deg2rad(360) + f[1])
                 orientation = a + angle
 
-    # ToDo: add noise to z_t
-    return np.array([[position[0]], [position[1]], [orientation]])
+    #add noise to z_t
+    ex = np.random.normal(position[0])
+    ey = np.random.normal(position[1])
+    et = np.random.normal(orientation)
+    return np.array([[ex], [ey], [et]])
 
 
 """pose = [1, 1, np.deg2rad(-90)]
