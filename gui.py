@@ -366,7 +366,7 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.Z, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.Z, unused_key_info)
-    if pgkey[pygame.K_9]:
+    if pgkey[pygame.K_LEFTBRACKET]:
         if CURRENT_WALL_CONFIG == 0:
             CURRENT_WALL_CONFIG = len(ALLWALLS)-1
         else:
@@ -386,7 +386,7 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.LEFTBRACKET, unused_key_info)
 
-    if pgkey[pygame.K_0]:
+    if pgkey[pygame.K_RIGHTBRACKET]:
         if CURRENT_WALL_CONFIG == len(ALLWALLS)-1:
             CURRENT_WALL_CONFIG = 0
         else:
@@ -416,22 +416,6 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)
 
 
-    # TODO:
-    # IF EVOLUTION MODE KEY IS PRESSED
-    # display last best generation on training map while all generations train in parallel?
-    # OPTIONAL: LOAD IN OPTIONS HERE
-    # NOTE: OPTIONS INCLUDE CURRENT WALL CONFIGURATION AND ROBOT
-    # EACH EVOLUTION STEP LET ROBOT RUN FOR X TIME STEPS
-    # EACH TIME STEP CALCULATE COLLISIONS / SENSOR DATA / CLEANING DATA AND MOTION (+ LOG THEM)
-    # AFTER CURRENT GENERATION IS DONE WITH X TIME STEPS, CALCULATE FITNESS VALUE BASED ON COLLISIONS / SENSOR DATA / CLEANING DATA
-    # EVOLVE NN WEIGHTS CORRESPONDINGLY
-    # GO TO NEXT EVOLUTION STEP
-    # BONUS: WORK WITH COPIES OF ROBOT TO ALLOW MULTIPLE INDIVIDUALS FOR EACH GENERATION AND SELECT BEST INDIVIDUAL FOR NEW WEIGHTS
-    # evolution.execute(options)
-    # execute() WITH RESULTS
-
-    # TODO: pickle dump nn weights of current best robot if key is pressed
-    # TODO: pickle load nn weights of robot from saved default pickle file from previous todo
 fig = plt.figure(figsize=[3, 3])
 ax = fig.add_subplot(111)
 canvas = agg.FigureCanvasAgg(fig)
@@ -494,6 +478,8 @@ def execute():
     grid_screen.set_colorkey((255,255,255))
     visualization.draw_initial_grid(pygame, grid_screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
+    kalman_estimates = []
+    kalman_variances = []
 
     while not terminate:
         screen.fill((255,255,255))
@@ -584,7 +570,6 @@ def execute():
             right_vel = info_font.render(str(int(round(robot.velocity_right/0.1))), True, (0, 0, 0))
             screen.blit(right_vel, (robot.position[0]+10, robot.position[1]-5))
 
-        # TODO : check the merge (these 3 next lines seem redundant with l.650+)
         if CLEANING_MODE:
             grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(CLEANING_RANGE), clean_cells, beacons=False)
             visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=CLEANING_MODE, draw_grid=DRAW_GRID, screen2=grid_screen)
@@ -597,11 +582,10 @@ def execute():
 
             visualization.draw_beacons_and_obstacles(pygame, screen, grid_1, OBSTACLE_GRID, KALMAN_MODE, beacon_cells_list = beacon_cells, obstacle_cells_list = obstacle_cells)
 
-            # TODO : Check the merge
             # CODE JULIEN START
             # Init with real position
             if KALMAN_POSE is None:
-                KALMAN_POSE = [robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)]
+                KALMAN_POSE = [robot.grid_pos[0], robot.grid_pos[1], math.radians(robot.orientation)]
             velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
             all_estimates = []
 
@@ -625,8 +609,9 @@ def execute():
                 #print("robot bearing : ", robot.orientation)
                 #print("robot x,y : ", robot.position)
                 #print("estimations : ", estimate_x, estimate_y)
-                all_estimates.append((estimate_x, estimate_y, estimate_bearing))
-            estimates = np.average(all_estimates, axis=0)
+                all_estimates.append(np.array([estimate_x, estimate_y, estimate_bearing]))
+            estimates = np.mean(all_estimates, axis=0)
+            variances = np.var(all_estimates, axis=0)*GRID_SIZE*10
             #("beacon cells:", beacon_cells)
 
             # Bi / Tri lateration
@@ -635,9 +620,18 @@ def execute():
                     beacon_cells = beacon_cells[:2]
                 # Kalman
                 bi_tri_estimate = sensor_kalman.estimate([robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)], beacon_cells)
-                print(bi_tri_estimate)
-            print(estimates)
 
+                if bi_tri_estimate is not None and not np.any(np.isnan(bi_tri_estimate)):
+                    if current_frame%100 == 0:
+                        kalman_estimates.append(bi_tri_estimate*np.array([GRID_SIZE,GRID_SIZE,1]))
+                        kalman_variances.append(variances)
+            #     print(bi_tri_estimate)
+            # print(estimates)
+            # print(variances)
+
+
+            visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances)
+            KALMAN_POSE = None
             # CODE JULIEN END
 
         text = []
@@ -668,9 +662,9 @@ def execute():
             screen.blit(surf2, (WIDTH-int(0.2*WIDTH), HEIGHT-int(0.33*HEIGHT)))
             visualization.write_text(pygame,screen,"Area Cleaned",(WIDTH-int(0.125*WIDTH),HEIGHT-int(0.31*HEIGHT)), font=pygame_font)
 
-            # Wall Config
-            fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
-            text.append("- Walls: " + str(WALL_NAMES[CURRENT_WALL_CONFIG]))
+        # Wall Config
+        fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
+        text.append("- Walls: " + str(WALL_NAMES[CURRENT_WALL_CONFIG]))
 
 
         # Blit text to screen

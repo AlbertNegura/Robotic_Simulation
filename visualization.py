@@ -173,6 +173,12 @@ def draw_initial_grid(pygame, screen, grid):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
+def draw_kalman_estimates(pygame, screen, estimates, variances):
+    for i in range(len(estimates)):
+        estimate = estimates[i]
+        variance = variances[i]
+        pygame.gfxdraw.ellipse(screen, int(estimate[0]), int(estimate[1]), int(variance[0]), int(variance[1]),
+                           (17, 30, 108, 100))
 
 def draw_grid(pygame, screen, grid, cleaning_mode = False, draw_grid = False, screen2 = None):
     """
