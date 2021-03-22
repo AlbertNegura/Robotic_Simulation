@@ -69,6 +69,13 @@ TURN_LEFT = None
 NO_TURN = None
 OBSTACLE_GRID = None
 ANTIALIASING = None
+SHOW_SENSOR_CIRCLE = None
+DEAD_RECKONING_PATH = None
+DEAD_RECKONING_GHOST = None
+SENSOR_NOISE = None
+MOTION_NOISE = None
+BEACON_SENSORS = None
+ELLIPSES = None
 
 def load_config(config):
     """
@@ -124,12 +131,18 @@ def load_config(config):
     SENSOR_VALUE = int(terrain_settings['SENSOR_VALUE'])
     SENSOR_EXPONENTIAL = True if str(terrain_settings['SENSOR_EXPONENTIAL']) == "True" else False
 
-    global KALMAN_MODE, OBSTACLE_GRID, TURN_LEFT, TURN_RIGHT, NO_TURN
+    global KALMAN_MODE, OBSTACLE_GRID, TURN_LEFT, TURN_RIGHT, NO_TURN, DEAD_RECKONING_PATH, DEAD_RECKONING_GHOST, SENSOR_NOISE, MOTION_NOISE, ELLIPSES, BEACON_SENSORS
     KALMAN_MODE = True if str(kalman_settings['KALMAN_MODE']) == "True" else False
     OBSTACLE_GRID = True if str(kalman_settings['OBSTACLE_GRID']) == "True" else False
     TURN_LEFT = int(kalman_settings['TURN_LEFT'])
     TURN_RIGHT = int(kalman_settings['TURN_RIGHT'])
     NO_TURN = int(kalman_settings['NO_TURN'])
+    ELLIPSES = True if str(kalman_settings['ELLIPSES']) == "True" else False
+    BEACON_SENSORS = True if str(kalman_settings['BEACON_SENSORS']) == "True" else False
+    DEAD_RECKONING_PATH = True if str(kalman_settings['DEAD_RECKONING_PATH']) == "True" else False
+    DEAD_RECKONING_GHOST = True if str(kalman_settings['DEAD_RECKONING_GHOST']) == "True" else False
+    SENSOR_NOISE = float(kalman_settings['SENSOR_NOISE'])
+    MOTION_NOISE = float(kalman_settings['MOTION_NOISE'])
 
     global KEY_SIZE, TICK_RATE, WALL_WIDTH, ANTIALIASING
     KEY_SIZE = int(visualization_settings['KEY_SIZE'])
@@ -141,9 +154,10 @@ def load_config(config):
     MULTIPROCESSING = True if str(multiprocessing_settings['MULTIPROCESSING']) == "True" else False
     PROCESSES = int(multiprocessing_settings['PROCESSES'])
 
-    global SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, DRAW_GHOSTS, RNN, CLEANING_MODE, AUTONOMOUS_MODE, EVOLVE
+    global SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_CIRCLE, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL, DISAPPEARING_TRAIL, DRAW_GHOSTS, RNN, CLEANING_MODE, AUTONOMOUS_MODE, EVOLVE
     SHOW_VELOCITY_PER_WHEEL = True if str(debug_settings['SHOW_VELOCITY_PER_WHEEL']) == "True" else False
     SHOW_SENSORS = True if str(debug_settings['SHOW_SENSORS']) == "True" else False
+    SHOW_SENSOR_CIRCLE = True if str(debug_settings['SHOW_SENSOR_CIRCLE']) == "True" else False
     SHOW_SENSOR_INFO = True if str(debug_settings['SHOW_SENSOR_INFO']) == "True" else False
     DRAW_GRID = True if str(debug_settings['DRAW_GRID']) == "True" else False
     DRAW_TRAIL = True if str(debug_settings['DRAW_TRAIL']) == "True" else False
@@ -186,5 +200,6 @@ key_size = KEY_SIZE
 # Keys currently being used, needs to be updated with new keys according to keyboardlayour key key values
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
                  kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.DIGIT_7,
+                 kl.Key.DIGIT_8, kl.Key.DIGIT_9, kl.Key.DIGIT_0, kl.Key.MINUS, kl.Key.EQUALS, kl.Key.BACKSPACE,
                  kl.Key.C, kl.Key.A, kl.Key.Q, kl.Key.D, kl.Key.K, kl.Key.Z, kl.Key.LEFTBRACKET,kl.Key.RIGHTBRACKET, kl.Key.B]
 

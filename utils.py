@@ -216,7 +216,7 @@ def read_weights():
     Read the weights saved in best_individuals.txt and load them in.
     :return: a list of weights of all individuals
     """
-    f = open("best_individuals.txt", "r")
+    f = open("allmaps.txt", "r")
     text = f.read()
     text_p = text.split("[")
     individuals = []
@@ -237,7 +237,7 @@ def read_weights_gui():
     Read the weights saved in best_individuals.txt and load them in the gui.
     :return: a list of weights of all individuals
     """
-    f = open("best_individuals.txt", "r")
+    f = open("allmaps.txt", "r")
     text = f.read()
     text_p = text.split("[")
     individuals = []

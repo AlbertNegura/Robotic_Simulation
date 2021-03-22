@@ -178,7 +178,7 @@ def user_input(pgkey):
     """
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE, KALMAN_MODE
-    global CURRENT_WALL_CONFIG, OBSTACLE_GRID
+    global CURRENT_WALL_CONFIG, OBSTACLE_GRID, BEACON_SENSORS, ELLIPSES, DEAD_RECKONING_PATH, DEAD_RECKONING_GHOST, SHOW_SENSOR_CIRCLE
     global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas, turn
     if pgkey[pygame.K_w]:
         accel = True
@@ -315,6 +315,31 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_7, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.DIGIT_7, unused_key_info)
+    if pgkey[pygame.K_8]:
+        BEACON_SENSORS = not BEACON_SENSORS
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_8, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_8, unused_key_info)
+    if pgkey[pygame.K_9]:
+        ELLIPSES = not ELLIPSES
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_9, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_9, unused_key_info)
+    if pgkey[pygame.K_0]:
+        DEAD_RECKONING_PATH = not DEAD_RECKONING_PATH
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_0, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.DIGIT_0, unused_key_info)
+    if pgkey[pygame.K_MINUS]:
+        DEAD_RECKONING_GHOST = not DEAD_RECKONING_GHOST
+        keyboard.update_key(keyboard_layout, kl.Key.MINUS, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.MINUS, unused_key_info)
+    if pgkey[pygame.K_EQUALS]:
+        SHOW_SENSOR_CIRCLE = not SHOW_SENSOR_CIRCLE
+        keyboard.update_key(keyboard_layout, kl.Key.EQUALS, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.EQUALS, unused_key_info)
     if pgkey[pygame.K_m]:
         MAP_MENU = True
         keyboard.update_key(keyboard_layout, kl.Key.M, used_key_info)
@@ -415,6 +440,13 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)
+
+    if pgkey[pygame.K_BACKSPACE]:
+        AUTONOMOUS_MODE = not AUTONOMOUS_MODE
+        nn.update_weights(best_individuals[100])
+        keyboard.update_key(keyboard_layout, kl.Key.BACKSPACE, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.BACKSPACE, unused_key_info)
 
 
 fig = plt.figure(figsize=[3, 3])
@@ -542,6 +574,11 @@ def execute():
                 robot.velocity_right = robot.max_vel*vels[1]
             #if EVOLVE:
                 #evolve = asyncio.run(asyncevol(evolve))
+        if KALMAN_MODE:
+            if AUTONOMOUS_MODE:
+                vels = nn.feedforward(robot.sensor_values())
+                robot.velocity_left = robot.max_vel*vels[0]
+                robot.velocity_right = robot.max_vel*vels[1]
 
 
 
@@ -698,13 +735,19 @@ def execute():
                 dead_reckoning_orientation.append(new_theta)
 
 
-
-            visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances, WIDTH, HEIGHT)
-            visualization.draw_trail_kalman(pygame, screen, dead_reckoning, False)
+            if ELLIPSES:
+                visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances, WIDTH, HEIGHT)
+            if DEAD_RECKONING_PATH:
+                visualization.draw_trail_kalman(pygame, screen, dead_reckoning, False)
+            if DEAD_RECKONING_GHOST:
+                pass
             # KALMAN_POSE = None
 
 
             visualization.draw_lines_to_sensors(pygame, screen, robot.position, grid_1, beacon_cells)
+
+        if SHOW_SENSOR_CIRCLE:
+            pass
 
         text = []
 
