@@ -735,19 +735,40 @@ def execute():
                 dead_reckoning_orientation.append(new_theta)
 
 
-            if ELLIPSES:
-                visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances, WIDTH, HEIGHT)
+            if ELLIPSES: # TODO: optimize
+                indices_est = [i for i in range(len(kalman_estimates)) if i%120 == 0]
+                indices_var = [i for i in range(len(kalman_variances)) if i%120 == 0]
+                drawing_estimates = []
+                drawing_variances = []
+                for index in indices_est:
+                    drawing_estimates.append(kalman_estimates[index])
+                for index in indices_var:
+                    drawing_variances.append(kalman_variances[index])
+                # todo: pass a surface list with all the ellipses already drawn
+                # todo: rotate surface in function (use drawing_estimates[2][2] for angle in degrees)
+                # todo: return new surfaces to append to list
+                visualization.draw_kalman_estimates(pygame, screen, drawing_estimates, drawing_variances, WIDTH, HEIGHT)
+
+
             if DEAD_RECKONING_PATH:
                 visualization.draw_trail_kalman(pygame, screen, dead_reckoning, False)
+
+
             if DEAD_RECKONING_GHOST:
-                pass
+                visualization.draw_ghost(pygame, screen, dead_reckoning[-1], np.rad2deg(dead_reckoning_orientation[-1]), robot.radius)
+                j = len(dead_reckoning_orientation[:])
+                for i in range(int(j/180)): # todo: fix orientation of "sticky" ghosts
+                    k = i * 180 - 1
+                    if k < len(dead_reckoning) and k < len(dead_reckoning_orientation):
+                        visualization.draw_ghost(pygame, screen, dead_reckoning[k], np.rad2deg(dead_reckoning_orientation[k]), robot.radius)
+
             # KALMAN_POSE = None
 
-
-            visualization.draw_lines_to_sensors(pygame, screen, robot.position, grid_1, beacon_cells)
+            if BEACON_SENSORS:
+                visualization.draw_lines_to_sensors(pygame, screen, robot.position, grid_1, beacon_cells)
 
         if SHOW_SENSOR_CIRCLE:
-            pass
+            visualization.draw_sensor_circle(pygame, screen, robot.position, SENSOR_LENGTH)
 
         text = []
 

@@ -49,17 +49,28 @@ def draw_robot(pygame, screen, robot, width = 2, antialiasing = False):
         pygame.draw.circle(screen, robot.colour2, robot.position, robot.radius - 0.1, 1)
         pygame.draw.line(screen, robot.colour2, robot.position, robot.facing_position, 2)
 
-def draw_ghost(pygame, screen, robot):
+def draw_ghost(pygame, screen, position, orientation, radius):
     """
     :param pygame:
     :param screen:
     :param robot:
     :return:
     """
-    pygame.gfxdraw.circle(screen, robot.position[0], robot.position[1], robot.radius - 0.6, (200,200,200,0.5))
-    pygame.gfxdraw.circle(screen, robot.position[0], robot.position[1], robot.radius - 0.1, (0,0,0,0.5))
-    pygame.gfxdraw.line(screen, robot.position[0], robot.position[1], robot.facing_position[0], robot.facing_position[1], (0,0,0,0.5))
+    position = [int(position[0]), int(position[1])]
+    facing_position = utils.rotate_line(position, radius, orientation)
+    pygame.gfxdraw.circle(screen, position[0], position[1], int(radius - 0.6), (200,200,200,100))
+    pygame.gfxdraw.circle(screen, position[0], position[1], int(radius - 0.1), (0,0,0,100))
+    pygame.gfxdraw.line(screen, position[0], position[1], int(facing_position[0]), int(facing_position[1]), (0,0,0,100))
 
+def draw_sensor_circle(pygame, screen, position, radius):
+    """
+    :param pygame:
+    :param screen:
+    :param robot:
+    :return:
+    """
+    position = [int(position[0]), int(position[1])]
+    pygame.draw.circle(screen, (255,211,0,100), position, int(radius), 4)
 
 def draw_trail(pygame, screen, robot, disappearing):
     """
