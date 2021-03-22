@@ -23,7 +23,7 @@ def estimate(prev_mean, prev_covariance, action, sensor):
 
     pose_noise = np.random.multivariate_normal(prev_mean.T[0], R)
     sensor_noise = np.random.multivariate_normal(sensor.T[0], Q)
-
+    sensor_noise = [1, 1, 1]
     B = np.array([[sensor_noise[0]*np.cos(prev_mean[2][0]), 0],
                   [sensor_noise[1]*np.sin(prev_mean[2][0]), 0],
                   [0, sensor_noise[2]]])

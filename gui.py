@@ -606,7 +606,7 @@ def execute():
                 x_dist = np.abs(robot.grid_pos[0] - cell[1])
                 y_dist = np.abs(robot.grid_pos[1] - cell[0])
                 beacon_dists.append(x_dist**2+y_dist**2)
-            beacon_cells = [beacon_cells[i] for i in np.argpartition(beacon_dists,0)]
+            beacon_cells = [beacon_cells[i] for i in np.argsort(beacon_dists)]
 
             # Init KALMAN_POSE
             if KALMAN_POSE is None:
@@ -663,9 +663,9 @@ def execute():
 
             # Estimate with Kalman
             _mean, _covariance = kalman.estimate(np.round(_mean, decimals=10), np.round(_covariance, decimals=10), action, sensor_historic[-1])
-            """print("Previous mean: ", _mean)
-            print("Previous covariance: ", _covariance)"""
-            _mean, _covariance = kalman.estimate(_mean, _covariance, action, sensor_historic[-1])
+            print("Previous mean: ", _mean)
+            print("Previous covariance: ", _covariance)
+            # _mean, _covariance = kalman.estimate(_mean, _covariance, action, sensor_historic[-1])
             print("Estimated mean: ", _mean)
             print("Estimated covariance: ", _covariance)
             if not np.any(np.isnan(_mean)) and current_frame % 100 == 0:
