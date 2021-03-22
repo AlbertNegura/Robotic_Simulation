@@ -207,7 +207,7 @@ def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obs
                                    pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                    (0, 0, 0, 10))
 
-def write_text(pygame, screen, text, position = (1300, 300)):
+def write_text(pygame, screen, text, position = (1300, 300), font = None):
     """
 
     :param pygame:
@@ -216,7 +216,6 @@ def write_text(pygame, screen, text, position = (1300, 300)):
     :param position:
     :return:
     """
-    font = pygame.font.SysFont(None, 24)
     img = font.render(text, True, (0,0,0))
     screen.blit(img, position)
 
