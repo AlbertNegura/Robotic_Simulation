@@ -167,7 +167,7 @@ def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0, 70), antial
         pygame.draw.line(screen, color, origin, end, width)
 
 
-def draw_grid(pygame, screen, grid_1):
+def draw_grid(pygame, screen, grid, cleaning_mode = False, draw_grid = False):
     """
 
     :param pygame:
@@ -175,33 +175,36 @@ def draw_grid(pygame, screen, grid_1):
     :param grid:
     :return:
     """
-    for squares in grid_1:
-        for square in squares:
-            pygame.gfxdraw.rectangle(screen,
-                                     pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                     (0, 200, 200, 50))
-
-def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obstacles=False):
     for squares in grid:
         for square in squares:
-            if draw_dirt:
+            if draw_grid:
+                pygame.gfxdraw.rectangle(screen,
+                                         pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                         (0, 200, 200, 50))
+            if cleaning_mode:
                 if not square.visited:
                     pygame.gfxdraw.box(screen,
                                        pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                        (155, 118, 53, 50))
-            if draw_obstacles:
-                if square.obstacle:
-                    pygame.gfxdraw.box(screen,
-                                       pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                       (0, 0, 0, 10))
-            if draw_beacons:
-                if square.beacon:
-                    pygame.gfxdraw.aacircle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
-                                       (17, 30, 108, 100))
-                    pygame.gfxdraw.filled_circle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
-                                       (17, 30, 108, 100))
 
-def write_text(pygame, screen, text, position = (1300, 300)):
+def draw_beacons_and_obstacles(pygame, screen, grid, draw_beacons=False, draw_obstacles=False, beacon_cells_list = None, obstacle_cells_list = None):
+    if draw_beacons:
+        for i,j in beacon_cells_list:
+            square = grid[j][i] # for some reason, it's inverted
+            if square.beacon:
+                pygame.gfxdraw.aacircle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
+                                   (17, 30, 108, 100))
+                pygame.gfxdraw.filled_circle(screen, square.position[0]+int(square.size/2), square.position[1]+int(square.size/2), int(square.size/2),
+                                   (17, 30, 108, 100))
+    if draw_obstacles:
+        for i,j in obstacle_cells_list:
+            square = grid[i][j]
+            if square.obstacle:
+                pygame.gfxdraw.box(screen,
+                                   pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                   (0, 0, 0, 10))
+
+def write_text(pygame, screen, text, position = (1300, 300), font = None):
     """
 
     :param pygame:
@@ -210,9 +213,23 @@ def write_text(pygame, screen, text, position = (1300, 300)):
     :param position:
     :return:
     """
-    font = pygame.font.SysFont(None, 24)
     img = font.render(text, True, (0,0,0))
     screen.blit(img, position)
+
+def write_text_list(pygame, screen, text, position=(1300, 300), WIDTH = 1600, HEIGHT = 900, font = None):
+    """
+
+    :param pygame:
+    :param screen:
+    :param text:
+    :param position:
+    :return:
+    """
+    pos_iterator = [0,int(0.05*HEIGHT)]
+    for i in range(len(text)):
+        t = text[i]
+        img = font.render(t, True, (0, 0, 0))
+        screen.blit(img, (position[0] + pos_iterator[0]*i, position[1] + pos_iterator[1]*i))
 
 def create_button(pygame, screen, text, x, y, width, height):
     """

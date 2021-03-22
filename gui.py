@@ -480,8 +480,9 @@ def execute():
     # screen = pygame.display.set_mode((WIDTH, HEIGHT))
     # clock = pygame.time.Clock()
 
-    info_font = pygame.font.SysFont("Arial",11)
-    mini_info_font = pygame.font.SysFont("Arial",8)
+    info_font = pygame.font.SysFont(None,11)
+    mini_info_font = pygame.font.SysFont(None,8)
+    pygame_font = pygame.font.SysFont(None, 24)
     pygame.display.set_caption("Robot Visualization")
 
     terminate = False
@@ -490,7 +491,6 @@ def execute():
 
     visualization.draw_grid(pygame, screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
-
 
     while not terminate:
         screen.fill((255,255,255))
@@ -581,16 +581,21 @@ def execute():
             right_vel = info_font.render(str(int(round(robot.velocity_right/0.1))), True, (0, 0, 0))
             screen.blit(right_vel, (robot.position[0]+10, robot.position[1]-5))
 
-        if DRAW_GRID:
-            visualization.draw_grid(pygame, screen, grid_1)
+        # TODO : check the merge (these 3 next lines seem redundant with l.650+)
+        if CLEANING_MODE:
+            grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(CLEANING_RANGE), clean_cells, beacons=False)
+            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=CLEANING_MODE, draw_grid=False)
 
-        if CLEANING_MODE and not KALMAN_MODE:
-            clean_cells, _ = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacons = KALMAN_MODE)
-            visualization.draw_dirt(pygame, screen, grid_1)
+        if DRAW_GRID:
+            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=False, draw_grid=DRAW_GRID)
+
         if KALMAN_MODE:
-            if CLEANING_MODE:
-                clean_cells, _ = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacons = False)
-            beacon_cells, robot.grid_pos = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacons=KALMAN_MODE)
+            beacon_cells, robot.grid_pos, obstacle_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacons=KALMAN_MODE)
+
+            visualization.draw_beacons_and_obstacles(pygame, screen, grid_1, OBSTACLE_GRID, KALMAN_MODE, beacon_cells_list = beacon_cells, obstacle_cells_list = obstacle_cells)
+
+            # TODO : Check the merge
+            # CODE JULIEN START
             # Init with real position
             if KALMAN_POSE is None:
                 KALMAN_POSE = [robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)]
@@ -619,7 +624,7 @@ def execute():
                 #print("estimations : ", estimate_x, estimate_y)
                 all_estimates.append((estimate_x, estimate_y, estimate_bearing))
             estimates = np.average(all_estimates, axis=0)
-            #print("beacon cells:", beacon_cells)
+            #("beacon cells:", beacon_cells)
 
             # Bi / Tri lateration
             if len(beacon_cells) >= 2:
@@ -627,54 +632,47 @@ def execute():
                     beacon_cells = beacon_cells[:2]
                 # Kalman
                 bi_tri_estimate = sensor_kalman.estimate([robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)], beacon_cells)
-                #print(bi_tri_estimate)
-            #print(estimates)
+                print(bi_tri_estimate)
+            print(estimates)
 
+            # CODE JULIEN END
 
-            visualization.draw_dirt(pygame, screen, grid_1, CLEANING_MODE, OBSTACLE_GRID, KALMAN_MODE)
+        text = []
 
-        # Position text
-        visualization.write_text(pygame,screen,"- Frame/FPS: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)))
-        visualization.write_text(pygame,screen,"{:.0f}/{:.2f}".format(current_frame,clock.get_fps()),(WIDTH-int(0.10625*WIDTH),HEIGHT-int(0.9*HEIGHT)))
-        # Position text
-        visualization.write_text(pygame,screen,"- Position: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.85*HEIGHT)))
-        circle_pos = [int(robot.position[0]),int(robot.position[1])]
-        visualization.write_text(pygame,screen,str(circle_pos),(WIDTH-int(0.11875*WIDTH),HEIGHT-int(0.85*HEIGHT)))
-        # Vr, Vl
-        visualization.write_text(pygame,screen,"- Vl, Vr: ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.8*HEIGHT)))
-        visualization.write_text(pygame,screen,str(round(robot.velocity_left,3)),(WIDTH-int(0.11875*WIDTH),HEIGHT-int(0.8*HEIGHT)))
-        visualization.write_text(pygame,screen,str(round(robot.velocity_right,3)),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.8*HEIGHT)))
-        # Cells cleaned
-        areas.append(round(clean_cells/size_of_grid*100,3))
-        visualization.write_text(pygame,screen,"- Cells Cleaned ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.75*HEIGHT)))
-        visualization.write_text(pygame,screen,str(clean_cells)+" / "+str(round(clean_cells/size_of_grid*100,3))+"%",(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.75*HEIGHT)))
-        # Collisions
-        visualization.write_text(pygame,screen,"- Collisions ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.7*HEIGHT)))
-        visualization.write_text(pygame,screen,str(robot.collisions),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.7*HEIGHT)))
-        # Current generation
-        visualization.write_text(pygame,screen,"- Generation ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.65*HEIGHT)))
-        visualization.write_text(pygame,screen,str(current_generation+1),(WIDTH-int(0.0875*WIDTH),HEIGHT-int(0.65*HEIGHT)))
-        # Current generation
-        visualization.write_text(pygame,screen,"- Autonomous ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.60*HEIGHT)))
-        visualization.write_text(pygame,screen,str(AUTONOMOUS_MODE),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.60*HEIGHT)))
-        # Current fitness
-        fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
-        visualization.write_text(pygame,screen,"- Fitness ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.55*HEIGHT)))
-        visualization.write_text(pygame,screen,str(fitnesses[-1]),(WIDTH-int(0.09*WIDTH),HEIGHT-int(0.55*HEIGHT)))
-        # Fitness plot
+        text.append("- Frame/FPS: "+ "{:.0f}/{:.2f}".format(current_frame,clock.get_fps()))
+        text.append("- Position: " + str([int(robot.position[0]),int(robot.position[1])]))
+        text.append("- Vl, Vr: " + str([round(robot.velocity_left,3),round(robot.velocity_right,3)]))
+        text.append("- Collisions: " + str(robot.collisions))
+
+        if CLEANING_MODE:
+            text.append("- Cells Cleaned: " + str(clean_cells)+" / "+str(round(clean_cells/size_of_grid*100,3))+"%")
+
+        if not KALMAN_MODE:
+            text.append("- Generation: " + str(current_generation+1))
+            text.append("- Autonomous: " + str(AUTONOMOUS_MODE))
+            fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
+            text.append("- Fitness: " + str(fitnesses[-1]))
+
+        elif KALMAN_MODE:
+            text.append("- Kalman Mode: " + str("Activated" if KALMAN_MODE else "Deactivated"))
+
         if AUTONOMOUS_MODE:
             if current_frame%TICK_RATE==0:
                 surf=plot(fitnesses)
                 surf2=plot(areas)
             screen.blit(surf, (WIDTH-int(0.4*WIDTH), HEIGHT-int(0.33*HEIGHT)))
-            visualization.write_text(pygame,screen,"Fitness",(WIDTH-int(0.325*WIDTH),HEIGHT-int(0.31*HEIGHT)))
+            visualization.write_text(pygame,screen,"Fitness",(WIDTH-int(0.325*WIDTH),HEIGHT-int(0.31*HEIGHT)), font=pygame_font)
             screen.blit(surf2, (WIDTH-int(0.2*WIDTH), HEIGHT-int(0.33*HEIGHT)))
-            visualization.write_text(pygame,screen,"Area Cleaned",(WIDTH-int(0.125*WIDTH),HEIGHT-int(0.31*HEIGHT)))
+            visualization.write_text(pygame,screen,"Area Cleaned",(WIDTH-int(0.125*WIDTH),HEIGHT-int(0.31*HEIGHT)), font=pygame_font)
 
             # Wall Config
             fitnesses.append(round(fitness.fitness(round(clean_cells/size_of_grid*100,3),robot.collisions, np.sum(robot.sensor_values())),3))
-            visualization.write_text(pygame,screen,"- Walls ",(WIDTH-int(0.175*WIDTH),HEIGHT-int(0.50*HEIGHT)))
-            visualization.write_text(pygame,screen,str(WALL_NAMES[CURRENT_WALL_CONFIG]),(WIDTH-int(0.12*WIDTH),HEIGHT-int(0.50*HEIGHT)))
+            text.append("- Walls: " + str(WALL_NAMES[CURRENT_WALL_CONFIG]))
+
+
+        # Blit text to screen
+        visualization.write_text_list(pygame, screen, text, (WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)), font=pygame_font)
+
 
         pygame.display.update()
         clock.tick(TICK_RATE)
