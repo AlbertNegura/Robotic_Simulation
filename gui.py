@@ -585,7 +585,7 @@ def execute():
             # CODE JULIEN START
             # Init with real position
             if KALMAN_POSE is None:
-                KALMAN_POSE = [robot.grid_pos[0], robot.grid_pos[1], math.radians(robot.orientation)]
+                KALMAN_POSE = [robot.grid_pos[0] * GRID_SIZE, robot.grid_pos[1] * GRID_SIZE, math.radians(robot.orientation)]
             velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
             all_estimates = []
 
@@ -611,7 +611,6 @@ def execute():
                 #print("estimations : ", estimate_x, estimate_y)
                 all_estimates.append(np.array([estimate_x, estimate_y, estimate_bearing]))
             estimates = np.mean(all_estimates, axis=0)
-            variances = np.var(all_estimates, axis=0)*GRID_SIZE*10
             #("beacon cells:", beacon_cells)
 
             # Bi / Tri lateration
@@ -621,14 +620,18 @@ def execute():
                 # Kalman
                 bi_tri_estimate = sensor_kalman.estimate([robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)], beacon_cells)
 
-                if bi_tri_estimate is not None and not np.any(np.isnan(bi_tri_estimate)):
-                    if current_frame%100 == 0:
-                        kalman_estimates.append(bi_tri_estimate*np.array([GRID_SIZE,GRID_SIZE,1]))
-                        kalman_variances.append(variances)
             #     print(bi_tri_estimate)
             # print(estimates)
             # print(variances)
 
+            # todo: pass sensor_kalman output as inputs to kalman.py
+
+            # TODO: change this with the kalman.py output instead of sensor_kalman.py
+            variances = np.var(all_estimates, axis=0) * GRID_SIZE * 10
+            if bi_tri_estimate is not None and not np.any(np.isnan(bi_tri_estimate)):
+                if current_frame%100 == 0:
+                    kalman_estimates.append(bi_tri_estimate*np.array([GRID_SIZE,GRID_SIZE,1]))
+                    kalman_variances.append(variances)
 
             visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances)
             KALMAN_POSE = None
