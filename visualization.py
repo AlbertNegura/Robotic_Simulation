@@ -176,9 +176,14 @@ def draw_initial_grid(pygame, screen, grid):
 def draw_kalman_estimates(pygame, screen, estimates, variances):
     for i in range(len(estimates)):
         estimate = estimates[i]
-        variance = variances[i]
-        pygame.gfxdraw.ellipse(screen, int(estimate[1]), int(estimate[0]), int(variance[0]), int(variance[1]),
-                           (17, 30, 108, 100))
+        variance = variances[i][:2,:2]
+        covar = variance
+        var = covar[0,1]/np.sqrt(covar[0, 0] * covar[1, 1])
+        var_x = np.sqrt(1+var)*10
+        var_y = np.sqrt(1-var)*10
+        if not np.isnan(var_x) and not np.isnan(var_y):
+            pygame.gfxdraw.ellipse(screen, np.int(estimate[0]), np.int(estimate[1]), np.int(var_x), np.int(var_y),
+                               (17, 30, 108, 100))
 
 def draw_grid(pygame, screen, grid, cleaning_mode = False, draw_grid = False, screen2 = None):
     """
@@ -264,3 +269,10 @@ def create_button(pygame, screen, text, x, y, width, height):
     pygame.draw.rect(screen, (0, 0, 0), button)
     screen.blit(txt, (x + (width / 2) - 80, y + (height / 2) - 10))
     return button
+
+
+def draw_lines_to_sensors(pygame, screen, position, grid, beacon_cells):
+    for x,y in beacon_cells:
+        square = grid[y][x]
+        end_pos = (square.position[0],square.position[1])
+        pygame.draw.line(screen, (150,0,0), position, end_pos, 1)

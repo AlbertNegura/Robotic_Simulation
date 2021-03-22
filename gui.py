@@ -367,7 +367,7 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.Z, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.Z, unused_key_info)
-    if pgkey[pygame.K_i]:
+    if pgkey[pygame.K_LEFTBRACKET]:
         if CURRENT_WALL_CONFIG == 0:
             CURRENT_WALL_CONFIG = len(ALLWALLS)-1
         else:
@@ -387,7 +387,7 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.LEFTBRACKET, unused_key_info)
 
-    if pgkey[pygame.K_p]:
+    if pgkey[pygame.K_RIGHTBRACKET]:
         if CURRENT_WALL_CONFIG == len(ALLWALLS)-1:
             CURRENT_WALL_CONFIG = 0
         else:
@@ -618,7 +618,7 @@ def execute():
             #region Bi Trilateration
             if len(beacon_cells) >= 2:
                 if len(beacon_cells) > 3:
-                    beacon_cells = beacon_cells[:2]
+                    beacon_cells = beacon_cells[:3]
                 # Kalman
                 bi_tri_estimate = sensor_kalman.estimate([robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)], beacon_cells)
             #endregion
@@ -626,7 +626,7 @@ def execute():
             # Action vector
             velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
             #ToDo: Aproper angular velocity calculation
-            angular_velocity = 0
+            angular_velocity = np.abs((robot.velocity_right - robot.velocity_left)/robot.radius/2)
             action = np.array([[velocity], [angular_velocity]])
 
             # Calculate z_t
@@ -638,8 +638,10 @@ def execute():
             _mean, _covariance = kalman.estimate(_mean, _covariance, action, sensor_historic[-1])
             print("Estimated mean: ", _mean)
             print("Estimated covariance: ", _covariance)
-            kalman_estimates.append(_mean)
-            kalman_variances.append(_covariance)
+            if not np.any(np.isnan(_mean)):
+                kalman_estimates.append(_mean)
+            if not np.any(np.isnan(_covariance)):
+                kalman_variances.append(_covariance)
 
 
 
@@ -652,6 +654,15 @@ def execute():
 
             visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances)
             KALMAN_POSE = None
+
+            for x,y in beacon_cells:
+                for wall in WALLS:
+                    beacon_line = np.array([robot.position, grid_1[y][x].position])
+                    wall_line = np.array([wall[0], wall[1]])
+                    # print("lines", sensor_line, wall_line)
+                    intersec_point = utils.intersection(beacon_line, wall_line)
+
+            visualization.draw_lines_to_sensors(pygame, screen, robot.position, grid_1, beacon_cells)
 
         text = []
 
