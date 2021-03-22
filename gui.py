@@ -655,7 +655,7 @@ def execute():
             print("z_t: ", sensor_historic[-1], "real_pose: ", real_pose, "beacon_cells: ", beacon_cells)
 
             # Estimate with Kalman
-            _mean, _covariance = kalman.estimate(_mean, _covariance, action, sensor_historic[-1])
+            _mean, _covariance = kalman.estimate(np.round(_mean,decimals=10), np.round(_covariance,decimals=10), action, sensor_historic[-1])
             print("Estimated mean: ", _mean)
             print("Estimated covariance: ", _covariance)
             if not np.any(np.isnan(_mean)) and current_frame % 100 == 0:

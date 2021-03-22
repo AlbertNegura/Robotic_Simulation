@@ -264,8 +264,12 @@ def trilateration(x1, y1, r1, x2, y2, r2, x3, y3, r3):
     d = 2 * x3 - 2 * x2
     e = 2 * y3 - 2 * y2
     f = r2 ** 2 - r3 ** 2 - x2 ** 2 + x3 ** 2 - y2 ** 2 + y3 ** 2
-    x = (c * e - f * b) / (e * a - b * d)
-    y = (c * d - a * f) / (b * d - a * e)
+    den = (e * a - b * d)
+    den = 0.001 if den==0 else den
+    den2 = (b * d - a * e)
+    den2 = 0.001 if den2==0 else den2
+    x = (c * e - f * b) / den
+    y = (c * d - a * f) / den2
     return x, y
 
 
