@@ -579,9 +579,9 @@ def execute():
 
         if CLEANING_MODE:
             grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(CLEANING_RANGE), clean_cells, beacons=False)
-            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=CLEANING_MODE, draw_grid=False)
+            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=CLEANING_MODE, draw_grid=DRAW_GRID)
 
-        if DRAW_GRID:
+        if DRAW_GRID and not CLEANING_MODE:
             visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=False, draw_grid=DRAW_GRID)
 
         if KALMAN_MODE:
