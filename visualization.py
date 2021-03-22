@@ -167,7 +167,7 @@ def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0, 70), antial
         pygame.draw.line(screen, color, origin, end, width)
 
 
-def draw_grid(pygame, screen, grid_1):
+def draw_grid(pygame, screen, grid, cleaning_mode = False, draw_grid = False):
     """
 
     :param pygame:
@@ -175,22 +175,19 @@ def draw_grid(pygame, screen, grid_1):
     :param grid:
     :return:
     """
-    for squares in grid_1:
+    for squares in grid:
         for square in squares:
-            pygame.gfxdraw.rectangle(screen,
-                                     pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                     (0, 200, 200, 50))
+            if draw_grid:
+                pygame.gfxdraw.rectangle(screen,
+                                         pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                         (0, 200, 200, 50))
+            if cleaning_mode:
+                if not square.visited:
+                    pygame.gfxdraw.box(screen,
+                                       pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                       (155, 118, 53, 50))
 
-def draw_dirt(pygame, screen, grid, draw_dirt=True, draw_beacons=False, draw_obstacles=False, clean_cells_list = None, beacon_cells_list = None, obstacle_cells_list = None):
-    if draw_dirt or draw_obstacles:
-        for x,y in itertools.product(range(len(grid)), range(len(grid[0]))):
-            if draw_dirt and clean_cells_list is not None:
-                    if (x,y) not in clean_cells_list:
-                        square = grid[x][y]
-                        if not square.visited:
-                            pygame.gfxdraw.box(screen,
-                                               pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                               (155, 118, 53, 50))
+def draw_beacons_and_obstacles(pygame, screen, grid, draw_beacons=False, draw_obstacles=False, beacon_cells_list = None, obstacle_cells_list = None):
     if draw_beacons:
         for i,j in beacon_cells_list:
             square = grid[j][i] # for some reason, it's inverted

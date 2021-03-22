@@ -117,12 +117,11 @@ def get_cells_at_position_in_radius(grid, position, size, cleaning_range, clean_
 
     beacon_cells = []
     obstacle_cells = []
-    clean_cells_list = []
+    clean_cells_list = [] # unused currently
     for x, y in itertools.product(xs, ys):
         if not beacons:
             if not grid[y][x].visited:
                 clean_cells += 1
-                clean_cells_list.append((y,x))
                 grid[y][x].visited = True
         else:
             if grid[y][x].beacon:

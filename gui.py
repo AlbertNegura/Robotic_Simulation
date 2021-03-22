@@ -476,8 +476,8 @@ def execute():
     # screen = pygame.display.set_mode((WIDTH, HEIGHT))
     # clock = pygame.time.Clock()
 
-    info_font = pygame.font.SysFont("Arial",11)
-    mini_info_font = pygame.font.SysFont("Arial",8)
+    info_font = pygame.font.SysFont(None,11)
+    mini_info_font = pygame.font.SysFont(None,8)
     pygame_font = pygame.font.SysFont(None, 24)
     pygame.display.set_caption("Robot Visualization")
 
@@ -487,7 +487,6 @@ def execute():
 
     visualization.draw_grid(pygame, screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
-
 
     while not terminate:
         screen.fill((255,255,255))
@@ -578,19 +577,18 @@ def execute():
             right_vel = info_font.render(str(int(round(robot.velocity_right/0.1))), True, (0, 0, 0))
             screen.blit(right_vel, (robot.position[0]+10, robot.position[1]-5))
 
+        if CLEANING_MODE:
+            grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(CLEANING_RANGE), clean_cells, beacons=False)
+            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=CLEANING_MODE, draw_grid=False)
+
         if DRAW_GRID:
-            visualization.draw_grid(pygame, screen, grid_1)
+            visualization.draw_grid(pygame, screen, grid_1, cleaning_mode=False, draw_grid=DRAW_GRID)
 
-        if CLEANING_MODE and not KALMAN_MODE:
-            clean_cells, clean_cells_list, _ = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacons = KALMAN_MODE)
-            visualization.draw_dirt(pygame, screen, grid_1, clean_cells_list = clean_cells_list)
         if KALMAN_MODE:
-            clean_cells_list = []
-            if CLEANING_MODE:
-                clean_cells, clean_cells_list, _ = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacons = False)
-            beacon_cells, robot.grid_pos, obstacle_cells  = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacons=KALMAN_MODE)
 
-            visualization.draw_dirt(pygame, screen, grid_1, CLEANING_MODE, OBSTACLE_GRID, KALMAN_MODE, clean_cells_list = clean_cells_list, beacon_cells_list = beacon_cells, obstacle_cells_list = obstacle_cells)
+            beacon_cells, robot.grid_pos, obstacle_cells = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacons=KALMAN_MODE)
+
+            visualization.draw_beacons_and_obstacles(pygame, screen, grid_1, OBSTACLE_GRID, KALMAN_MODE, beacon_cells_list = beacon_cells, obstacle_cells_list = obstacle_cells)
 
 
         text = []
