@@ -21,12 +21,12 @@ def estimate(prev_mean, prev_covariance, action, sensor):
                   [0, np.random.normal(sensor[1][0]), 0],
                   [0, 0, np.random.normal(sensor[2][0])]])
 
-    pose_noise = np.random.multivariate_normal(prev_mean.T[0], R)
-    sensor_noise = np.random.multivariate_normal(sensor.T[0], Q)
-    sensor_noise = [1, 1, 1]
-    B = np.array([[sensor_noise[0]*np.cos(prev_mean[2][0]), 0],
-                  [sensor_noise[1]*np.sin(prev_mean[2][0]), 0],
-                  [0, sensor_noise[2]]])
+    # pose_noise = np.random.multivariate_normal(prev_mean.T[0], R)
+    # sensor_noise = np.random.multivariate_normal(sensor.T[0], Q)
+
+    B = np.array([[np.cos(prev_mean[2][0]), 0],
+                  [np.sin(prev_mean[2][0]), 0],
+                  [0, 1]])
 
     # prediction
     mean_pred = motion_prediction(np.identity(3), prev_mean, B, action)
