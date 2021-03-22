@@ -17,7 +17,7 @@ def feature(pose, feature_coord):
     
     bearing = np.arctan2(feature_coord[1] - pose[1], feature_coord[0] - pose[0]) - pose[2] + np.random.normal()
 
-    signature = 0
+    signature = np.random.normal()
     return distance, bearing, signature, feature_coord[0], feature_coord[1]
 
 
@@ -90,11 +90,11 @@ def estimate(real_pose, f_list):
     return np.array([[ex], [ey], [et]])
 
 
-"""pose = [1, 1, np.deg2rad(-90)]
+"""pose = [606.5746233045063, 465.5707066766519, 38.33999999999567]
 p1 = [-1, 2]
 p2 = [9, -52]
 p3 = [1, 2]
 p4 = [-20, -5]
 p5 = [8, 2]
-print(estimate(pose, [p4, p5, p3]))
-print(estimate(pose, [p1, p2]))"""
+p = [(650, 590), (650, 470), (650, 420)]
+print(estimate(pose, p))"""
