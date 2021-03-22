@@ -177,10 +177,8 @@ def draw_kalman_estimates(pygame, screen, estimates, variances):
     for i in range(len(estimates)):
         estimate = estimates[i]
         variance = variances[i][:2,:2]
-        covar = variance
-        var = covar[0,1]/np.sqrt(covar[0, 0] * covar[1, 1])
-        var_x = np.sqrt(1+var)*10
-        var_y = np.sqrt(1-var)*10
+        var_x = np.sqrt(variance[0,0])
+        var_y = np.sqrt(variance[1,1])
         if not np.isnan(var_x) and not np.isnan(var_y):
             pygame.gfxdraw.ellipse(screen, np.int(estimate[0]), np.int(estimate[1]), np.int(var_x), np.int(var_y),
                                (17, 30, 108, 100))
