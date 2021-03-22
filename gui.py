@@ -5,6 +5,7 @@ Kamil Inglot
 Albert Negura
 Sergi Nogues Farres
 """
+import sensor_kalman
 import visualization
 from config import *
 import time
@@ -33,6 +34,8 @@ clean_cells = 0
 
 CURRENT_WALL_CONFIG = 0
 
+# Last estimated pose
+KALMAN_POSE = None
 
 ALLWALLS = [
            [[[0,5],[WIDTH-int(HEIGHT/3),5]],[[0,HEIGHT-int(HEIGHT/3)-5],[WIDTH-int(HEIGHT/3),HEIGHT-int(HEIGHT/3)-5]],[[5,0],[5,HEIGHT-int(HEIGHT/3)]],[[WIDTH-int(HEIGHT/3)-5,0],[WIDTH-int(HEIGHT/3)-5,HEIGHT-int(HEIGHT/3)]]],
@@ -363,7 +366,7 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.Z, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.Z, unused_key_info)
-    if pgkey[pygame.K_LEFTBRACKET]:
+    if pgkey[pygame.K_9]:
         if CURRENT_WALL_CONFIG == 0:
             CURRENT_WALL_CONFIG = len(ALLWALLS)-1
         else:
@@ -383,7 +386,7 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.LEFTBRACKET, unused_key_info)
 
-    if pgkey[pygame.K_RIGHTBRACKET]:
+    if pgkey[pygame.K_0]:
         if CURRENT_WALL_CONFIG == len(ALLWALLS)-1:
             CURRENT_WALL_CONFIG = 0
         else:
@@ -468,6 +471,7 @@ def execute():
     global POSITION_HISTORY
     global ORIENTATION_HISTORY
     global fitnesses
+    global KALMAN_POSE
 
     DRAWING = False
     origin = None
@@ -587,6 +591,45 @@ def execute():
             if CLEANING_MODE:
                 clean_cells, _ = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, CLEANING_RANGE, clean_cells, beacons = False)
             beacon_cells, robot.grid_pos = grid.get_cells_at_position_in_radius(grid_1, robot.position, GRID_SIZE, int(SENSOR_LENGTH/GRID_SIZE), clean_cells, beacons=KALMAN_MODE)
+            # Init with real position
+            if KALMAN_POSE is None:
+                KALMAN_POSE = [robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)]
+            velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
+            all_estimates = []
+
+            # Unilateration
+            for beacon in beacon_cells:
+                pose = [robot.grid_pos[0], robot.grid_pos[1], math.radians(robot.orientation)]
+                distance, bearing, signature, _, _ = sensor_kalman.feature(pose, beacon)
+                noise = 0
+                # without previous coordinates
+                # FIXME: Doesn't work as soon as the robot starts turning ?
+                #estimate_x = beacon[0] + np.cos(np.pi - bearing - noise) * distance
+                #estimate_y = beacon[1] - np.sin(np.pi - bearing - noise) * distance
+                #estimate_bearing = np.arctan2(beacon[1] - estimate_y, beacon[0] - estimate_x) - bearing
+                # with previous coordinates
+                # FIXME: The coordinates don't change although the robot is moving ?
+                estimate_x = KALMAN_POSE[0] + (np.cos(bearing) * velocity)
+                estimate_y = KALMAN_POSE[1] + (np.sin(bearing) * velocity)
+                estimate_bearing = (KALMAN_POSE[2] + (KALMAN_POSE[2] - bearing)) # * (delta_T = 1) since we do it every tick?
+                #print(beacon)
+                #print("estimate bearing : ", estimate_bearing)
+                #print("robot bearing : ", robot.orientation)
+                #print("robot x,y : ", robot.position)
+                #print("estimations : ", estimate_x, estimate_y)
+                all_estimates.append((estimate_x, estimate_y, estimate_bearing))
+            estimates = np.average(all_estimates, axis=0)
+            #print("beacon cells:", beacon_cells)
+
+            # Bi / Tri lateration
+            if len(beacon_cells) >= 2:
+                if len(beacon_cells) > 3:
+                    beacon_cells = beacon_cells[:2]
+                # Kalman
+                bi_tri_estimate = sensor_kalman.estimate([robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)], beacon_cells)
+                #print(bi_tri_estimate)
+            #print(estimates)
+
 
             visualization.draw_dirt(pygame, screen, grid_1, CLEANING_MODE, OBSTACLE_GRID, KALMAN_MODE)
 
