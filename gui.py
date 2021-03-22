@@ -651,11 +651,21 @@ def execute():
 
             # Calculate z_t
             real_pose = [robot.position[0], robot.position[1], robot.orientation]
-            sensor_historic.append(sensor_kalman.estimate(real_pose, beacon_cells))
-            print("z_t: ", sensor_historic[-1], "real_pose: ", real_pose, "beacon_cells: ", beacon_cells)
+            features = []
+            for b in beacon_cells:
+                features.append((b[0]*GRID_SIZE, b[1]*GRID_SIZE))
+
+            print("beacons: ", features)
+            print("real pose: ", robot.position, robot.orientation)
+            sensor_historic.append(sensor_kalman.estimate(real_pose, features))
+            print("z_t: ", sensor_historic[-1])
+            # print("action: ", action)
 
             # Estimate with Kalman
-            _mean, _covariance = kalman.estimate(np.round(_mean,decimals=10), np.round(_covariance,decimals=10), action, sensor_historic[-1])
+            _mean, _covariance = kalman.estimate(np.round(_mean, decimals=10), np.round(_covariance, decimals=10), action, sensor_historic[-1])
+            """print("Previous mean: ", _mean)
+            print("Previous covariance: ", _covariance)"""
+            _mean, _covariance = kalman.estimate(_mean, _covariance, action, sensor_historic[-1])
             print("Estimated mean: ", _mean)
             print("Estimated covariance: ", _covariance)
             if not np.any(np.isnan(_mean)) and current_frame % 100 == 0:
