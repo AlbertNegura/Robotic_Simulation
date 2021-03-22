@@ -166,8 +166,15 @@ def draw_wall(pygame, screen, origin, end, width=10, color=(0, 0, 0, 70), antial
     else:
         pygame.draw.line(screen, color, origin, end, width)
 
+def draw_initial_grid(pygame, screen, grid):
+    for squares in grid:
+        for square in squares:
+            pygame.gfxdraw.rectangle(screen,
+                                     pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                                     (0, 200, 200, 50))
 
-def draw_grid(pygame, screen, grid, cleaning_mode = False, draw_grid = False):
+
+def draw_grid(pygame, screen, grid, cleaning_mode = False, draw_grid = False, screen2 = None):
     """
 
     :param pygame:
@@ -175,12 +182,14 @@ def draw_grid(pygame, screen, grid, cleaning_mode = False, draw_grid = False):
     :param grid:
     :return:
     """
+    if draw_grid:
+        if screen2 is not None:
+            screen.blit(screen2,(0,0))
     for squares in grid:
         for square in squares:
-            if draw_grid:
-                pygame.gfxdraw.rectangle(screen,
-                                         pygame.Rect(square.position[0], square.position[1], square.size, square.size),
-                                         (0, 200, 200, 50))
+                # pygame.gfxdraw.rectangle(screen,
+                #                          pygame.Rect(square.position[0], square.position[1], square.size, square.size),
+                #                          (0, 200, 200, 50))
             if cleaning_mode:
                 if not square.visited:
                     pygame.gfxdraw.box(screen,
