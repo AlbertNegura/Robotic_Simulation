@@ -89,6 +89,21 @@ def draw_trail(pygame, screen, robot, disappearing):
                 new_pos = robot.position_history[i+1]
             pygame.draw.line(screen, (0,100,0), old_pos, new_pos, 2)
 
+def draw_trail_kalman(pygame, screen, trail, disappearing):
+    """
+
+    :param pygame:
+    :param screen:
+    :param robot:
+    :return:
+    """
+    for i in range(len(trail)):
+        old_pos = trail[i]
+        if i+1 >= len(trail):
+            new_pos = trail[i]
+        else:
+            new_pos = trail[i+1]
+        pygame.draw.line(screen, (25,150,25), old_pos, new_pos, 2)
 
 def draw_sensors(pygame, screen, robot, width=5, antialiasing = False):
     """
@@ -173,10 +188,12 @@ def draw_initial_grid(pygame, screen, grid):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
-def draw_kalman_estimates(pygame, screen, estimates, variances):
+def draw_kalman_estimates(pygame, screen, estimates, variances, width, height):
     values_to_plot = len(estimates) if len(estimates) < 10 else 10
     for i in range(values_to_plot):
         estimate = estimates[-i]
+        estimate[0] = np.clip(estimate[0],0, width - int(height/3))
+        estimate[1] = np.clip(estimate[1],0, width - int(height/3))
         variance = variances[-i][:2,:2]
         var_x = np.sqrt(variance[0,0])
         var_y = np.sqrt(variance[1,1])

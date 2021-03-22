@@ -484,7 +484,8 @@ def execute():
     kalman_variances = []
     kalman_estimates = []
     sensor_historic = []
-    dead_reckoning = []
+    dead_reckoning = [[robot.position[0], robot.position[1]]]
+    dead_reckoning_orientation = [robot.orientation]
     _mean = np.array([[robot.position[0]], [robot.position[1]], [robot.orientation]])
     _covariance = np.array([[0,0,0], [0,0,0], [0,0,0]])
 
@@ -647,7 +648,7 @@ def execute():
             # Action vector
             velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
             #ToDo: Aproper angular velocity calculation
-            angular_velocity = (robot.velocity_right - robot.velocity_left)/robot.radius/2
+            angular_velocity = (robot.velocity_right - robot.velocity_left)/robot.radius*3
             action = np.array([[velocity], [angular_velocity]])
 
             # Calculate z_t
@@ -670,8 +671,14 @@ def execute():
             print("Estimated covariance: ", _covariance)
             if not np.any(np.isnan(_mean)) and current_frame % 1 == 0:
                 kalman_estimates.append(_mean)
+            elif np.any(np.isnan(_mean)):
+                _mean = kalman_estimates[-1]
+                kalman_estimates.append(_mean)
             if not np.any(np.isnan(_covariance)) and current_frame % 1 == 0:
                 kalman_variances.append(_covariance)
+            elif np.any(np.isnan(_covariance)):
+                _covariance = kalman_estimates[-1]
+                kalman_estimates.append(_covariance)
 
 
 
@@ -681,8 +688,19 @@ def execute():
                 if current_frame%100 == 0:
                     kalman_estimates.append(bi_tri_estimate*np.array([GRID_SIZE,GRID_SIZE,1]))
                     kalman_variances.append(variances)"""
+            if current_frame > 0:
+                theta = dead_reckoning_orientation[-1]
+                new_pos = dead_reckoning[-1]
+                new_pos = [new_pos[0]+velocity*np.cos(np.rad2deg(theta)),new_pos[1]+velocity*np.sin(np.rad2deg(theta))]
+                dead_reckoning.append(new_pos)
+                new_theta = theta + np.deg2rad(angular_velocity) # should be rad/s
+                dead_reckoning.append(new_pos)
+                dead_reckoning_orientation.append(new_theta)
 
-            visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances)
+
+
+            visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances, WIDTH, HEIGHT)
+            visualization.draw_trail_kalman(pygame, screen, dead_reckoning, False)
             # KALMAN_POSE = None
 
 
