@@ -14,9 +14,9 @@ def feature(pose, feature_coord):
     """
     #add noise and signature
     distance = np.sqrt((feature_coord[0] - pose[0]) ** 2 + (feature_coord[1] - pose[1]) ** 2) + np.random.normal()
-    print("distance ", distance)
+    
     bearing = np.arctan2(feature_coord[1] - pose[1], feature_coord[0] - pose[0]) - pose[2] + np.random.normal()
-    print("bearing ", bearing)
+
     signature = 0
     return distance, bearing, signature, feature_coord[0], feature_coord[1]
 
