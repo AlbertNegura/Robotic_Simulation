@@ -484,8 +484,9 @@ def execute():
     kalman_variances = []
     kalman_estimates = []
     sensor_historic = []
-    _mean = np.array([[300], [56], [np.deg2rad(50)]])
-    _covariance = np.array([[3,0,0], [0,2,0], [0,0,9]])
+    dead_reckoning = []
+    _mean = np.array([[robot.position[0]], [robot.position[1]], [robot.orientation]])
+    _covariance = np.array([[0,0,0], [0,0,0], [0,0,0]])
 
     while not terminate:
         screen.fill((255,255,255))
@@ -609,14 +610,14 @@ def execute():
             beacon_cells = [beacon_cells[i] for i in np.argsort(beacon_dists)]
 
             # Init KALMAN_POSE
-            if KALMAN_POSE is None:
-                KALMAN_POSE = [robot.grid_pos[0] * GRID_SIZE, robot.grid_pos[1] * GRID_SIZE, math.radians(robot.orientation)]
+            # if KALMAN_POSE is None:
+            #     KALMAN_POSE = [robot.grid_pos[0] * GRID_SIZE, robot.grid_pos[1] * GRID_SIZE, math.radians(robot.orientation)]
 
             #region Unilateration
-            for beacon in beacon_cells:
-                pose = [robot.grid_pos[0], robot.grid_pos[1], math.radians(robot.orientation)]
-                distance, bearing, signature, _, _ = sensor_kalman.feature(pose, beacon)
-                noise = 0
+            # for beacon in beacon_cells:
+            #     pose = [robot.grid_pos[0], robot.grid_pos[1], math.radians(robot.orientation)]
+            #     distance, bearing, signature, _, _ = sensor_kalman.feature(pose, beacon)
+                # noise = 0
                 # without previous coordinates
                 # FIXME: Doesn't work as soon as the robot starts turning ?
                 #estimate_x = beacon[0] + np.cos(np.pi - bearing - noise) * distance
@@ -624,15 +625,15 @@ def execute():
                 #estimate_bearing = np.arctan2(beacon[1] - estimate_y, beacon[0] - estimate_x) - bearing
                 # with previous coordinates
                 # FIXME: The coordinates don't change although the robot is moving ?
-                estimate_x = KALMAN_POSE[0] + (np.cos(bearing) * velocity)
-                estimate_y = KALMAN_POSE[1] + (np.sin(bearing) * velocity)
-                estimate_bearing = (KALMAN_POSE[2] + (KALMAN_POSE[2] - bearing)) # * (delta_T = 1) since we do it every tick?
+                # estimate_x = KALMAN_POSE[0] + (np.cos(bearing) * velocity)
+                # estimate_y = KALMAN_POSE[1] + (np.sin(bearing) * velocity)
+                # estimate_bearing = (KALMAN_POSE[2] + (KALMAN_POSE[2] - bearing)) # * (delta_T = 1) since we do it every tick?
                 #print(beacon)
                 #print("estimate bearing : ", estimate_bearing)
                 #print("robot bearing : ", robot.orientation)
                 #print("robot x,y : ", robot.position)
                 #print("estimations : ", estimate_x, estimate_y)
-                sensor_historic.append(np.array([estimate_x, estimate_y, estimate_bearing]))
+                # sensor_historic.append(np.array([estimate_x, estimate_y, estimate_bearing]))
             #endregion
 
             #region Bi Trilateration
@@ -640,13 +641,13 @@ def execute():
                 if len(beacon_cells) > 3:
                     beacon_cells = beacon_cells[:3]
                 # Kalman
-                bi_tri_estimate = sensor_kalman.estimate([robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)], beacon_cells)
+                # bi_tri_estimate = sensor_kalman.estimate([robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)], beacon_cells)
             #endregion
 
             # Action vector
             velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
             #ToDo: Aproper angular velocity calculation
-            angular_velocity = np.abs((robot.velocity_right - robot.velocity_left)/robot.radius/2)
+            angular_velocity = (robot.velocity_right - robot.velocity_left)/robot.radius/2
             action = np.array([[velocity], [angular_velocity]])
 
             # Calculate z_t
@@ -662,15 +663,14 @@ def execute():
             # print("action: ", action)
 
             # Estimate with Kalman
-            _mean, _covariance = kalman.estimate(np.round(_mean, decimals=10), np.round(_covariance, decimals=10), action, sensor_historic[-1])
-            print("Previous mean: ", _mean)
-            print("Previous covariance: ", _covariance)
-            # _mean, _covariance = kalman.estimate(_mean, _covariance, action, sensor_historic[-1])
+            _mean, _covariance = kalman.estimate(np.round(_mean, decimals=7), np.round(_covariance, decimals=7), action, sensor_historic[-1])
+            """print("Previous mean: ", _mean)
+            print("Previous covariance: ", _covariance)"""
             print("Estimated mean: ", _mean)
             print("Estimated covariance: ", _covariance)
-            if not np.any(np.isnan(_mean)) and current_frame % 100 == 0:
+            if not np.any(np.isnan(_mean)) and current_frame % 1 == 0:
                 kalman_estimates.append(_mean)
-            if not np.any(np.isnan(_covariance)) and current_frame % 100 == 0:
+            if not np.any(np.isnan(_covariance)) and current_frame % 1 == 0:
                 kalman_variances.append(_covariance)
 
 
@@ -683,7 +683,7 @@ def execute():
                     kalman_variances.append(variances)"""
 
             visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances)
-            KALMAN_POSE = None
+            # KALMAN_POSE = None
 
 
             visualization.draw_lines_to_sensors(pygame, screen, robot.position, grid_1, beacon_cells)
@@ -723,7 +723,6 @@ def execute():
 
         # Blit text to screen
         visualization.write_text_list(pygame, screen, text, (WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)), font=pygame_font)
-
 
         pygame.display.update()
         clock.tick(TICK_RATE)
