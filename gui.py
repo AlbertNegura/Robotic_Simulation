@@ -6,6 +6,7 @@ Albert Negura
 Sergi Nogues Farres
 """
 import sensor_kalman
+import kalman
 import visualization
 from config import *
 import time
@@ -366,7 +367,7 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.Z, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.Z, unused_key_info)
-    if pgkey[pygame.K_LEFTBRACKET]:
+    if pgkey[pygame.K_i]:
         if CURRENT_WALL_CONFIG == 0:
             CURRENT_WALL_CONFIG = len(ALLWALLS)-1
         else:
@@ -386,7 +387,7 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.LEFTBRACKET, unused_key_info)
 
-    if pgkey[pygame.K_RIGHTBRACKET]:
+    if pgkey[pygame.K_p]:
         if CURRENT_WALL_CONFIG == len(ALLWALLS)-1:
             CURRENT_WALL_CONFIG = 0
         else:
@@ -478,8 +479,13 @@ def execute():
     grid_screen.set_colorkey((255,255,255))
     visualization.draw_initial_grid(pygame, grid_screen, grid_1)
     size_of_grid = len(grid_1)*len(grid_1[0])
-    kalman_estimates = []
+
+    # Init KALMAN
     kalman_variances = []
+    kalman_estimates = []
+    sensor_historic = []
+    _mean = np.array([[300], [56], [np.deg2rad(50)]])
+    _covariance = np.array([[3,0,0], [0,2,0], [0,0,9]])
 
     while not terminate:
         screen.fill((255,255,255))
@@ -583,13 +589,11 @@ def execute():
             visualization.draw_beacons_and_obstacles(pygame, screen, grid_1, OBSTACLE_GRID, KALMAN_MODE, beacon_cells_list = beacon_cells, obstacle_cells_list = obstacle_cells)
 
             # CODE JULIEN START
-            # Init with real position
+            # Init KALMAN_POSE
             if KALMAN_POSE is None:
                 KALMAN_POSE = [robot.grid_pos[0] * GRID_SIZE, robot.grid_pos[1] * GRID_SIZE, math.radians(robot.orientation)]
-            velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
-            all_estimates = []
 
-            # Unilateration
+            #region Unilateration
             for beacon in beacon_cells:
                 pose = [robot.grid_pos[0], robot.grid_pos[1], math.radians(robot.orientation)]
                 distance, bearing, signature, _, _ = sensor_kalman.feature(pose, beacon)
@@ -609,29 +613,42 @@ def execute():
                 #print("robot bearing : ", robot.orientation)
                 #print("robot x,y : ", robot.position)
                 #print("estimations : ", estimate_x, estimate_y)
-                all_estimates.append(np.array([estimate_x, estimate_y, estimate_bearing]))
-            estimates = np.mean(all_estimates, axis=0)
-            #("beacon cells:", beacon_cells)
+                sensor_historic.append(np.array([estimate_x, estimate_y, estimate_bearing]))
+            #endregion
 
-            # Bi / Tri lateration
+            #region Bi Trilateration
             if len(beacon_cells) >= 2:
                 if len(beacon_cells) > 3:
                     beacon_cells = beacon_cells[:2]
                 # Kalman
                 bi_tri_estimate = sensor_kalman.estimate([robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)], beacon_cells)
+            #endregion
 
-            #     print(bi_tri_estimate)
-            # print(estimates)
-            # print(variances)
+            # Action vector
+            velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
+            angular_velocity = 0
+            action = np.array([[velocity], [angular_velocity]])
 
-            # todo: pass sensor_kalman output as inputs to kalman.py
+            # Calculate z_t
+            real_pose = [robot.position[0], robot.position[1], robot.orientation]
+            sensor_historic.append(sensor_kalman.estimate(real_pose, beacon_cells))
+            print("z_t: ", sensor_historic[-1], "real_pose: ", real_pose, "beacon_cells: ", beacon_cells)
 
-            # TODO: change this with the kalman.py output instead of sensor_kalman.py
-                variances = np.var(all_estimates, axis=0) * GRID_SIZE * 10
-                if bi_tri_estimate is not None and not np.any(np.isnan(bi_tri_estimate)):
-                    if current_frame%100 == 0:
-                        kalman_estimates.append(bi_tri_estimate*np.array([GRID_SIZE,GRID_SIZE,1]))
-                        kalman_variances.append(variances)
+            # Estimate with Kalman
+            _mean, _covariance = kalman.estimate(_mean, _covariance, action, sensor_historic[-1])
+            print("Estimated mean: ", _mean)
+            print("Estimated covariance: ", _covariance)
+            kalman_estimates.append(_mean)
+            kalman_variances.append(_covariance)
+
+
+
+            """estimates = np.mean(sensor_historic, axis=0)
+            variances = np.var(sensor_historic, axis=0) * GRID_SIZE * 10
+            if bi_tri_estimate is not None and not np.any(np.isnan(bi_tri_estimate)):
+                if current_frame%100 == 0:
+                    kalman_estimates.append(bi_tri_estimate*np.array([GRID_SIZE,GRID_SIZE,1]))
+                    kalman_variances.append(variances)"""
 
             visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances)
             KALMAN_POSE = None

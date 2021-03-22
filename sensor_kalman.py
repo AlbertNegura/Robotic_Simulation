@@ -29,7 +29,7 @@ def estimate(real_pose, f_list):
     for f in f_list:
         landmarks.append(feature(real_pose, f))
 
-    position = []
+    position = [0, 0]
     if len(landmarks) == 3:
         x1 = landmarks[0][3]
         y1 = landmarks[0][4]
@@ -82,7 +82,7 @@ def estimate(real_pose, f_list):
                 orientation = a + angle
 
     # ToDo: add noise to z_t
-    return [position[0], position[1], orientation]
+    return np.array([[position[0]], [position[1]], [orientation]])
 
 
 """pose = [1, 1, np.deg2rad(-90)]
