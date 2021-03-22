@@ -588,7 +588,6 @@ def execute():
 
             visualization.draw_beacons_and_obstacles(pygame, screen, grid_1, OBSTACLE_GRID, KALMAN_MODE, beacon_cells_list = beacon_cells, obstacle_cells_list = obstacle_cells)
 
-            # CODE JULIEN START
             # Init KALMAN_POSE
             if KALMAN_POSE is None:
                 KALMAN_POSE = [robot.grid_pos[0] * GRID_SIZE, robot.grid_pos[1] * GRID_SIZE, math.radians(robot.orientation)]
@@ -626,6 +625,7 @@ def execute():
 
             # Action vector
             velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
+            #ToDo: Aproper angular velocity calculation
             angular_velocity = 0
             action = np.array([[velocity], [angular_velocity]])
 
@@ -652,7 +652,6 @@ def execute():
 
             visualization.draw_kalman_estimates(pygame, screen, kalman_estimates, kalman_variances)
             KALMAN_POSE = None
-            # CODE JULIEN END
 
         text = []
 
