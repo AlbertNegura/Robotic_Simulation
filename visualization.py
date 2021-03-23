@@ -212,15 +212,22 @@ def draw_kalman_estimates(pygame, screen, estimates, variances, pos_ests, pos_es
             estimate[1] = np.clip(estimate[1],0, height - int(height/3))
 
             orientation = estimate[2]
-            print(orientation)
+
 
             variance = variances[-i][:2,:2]
             if np.any(np.isnan(variance)) or len(variance) < 2 or len(variance[0]) < 2:
                 return
-            var_x = np.sqrt(variance[0,0])*100
-            var_y = np.sqrt(variance[1,1])*100
+            var_x = np.sqrt(variance[0,0])*200
+            var_y = np.sqrt(variance[1,1])*200
+
             if not np.isnan(var_x) and not np.isnan(var_y):
-                pygame.gfxdraw.ellipse(screen, int(estimate[0]), int(estimate[1]), int(var_x), int(var_y), (17, 30, 108, 100))
+                rect = pygame.Rect((int(estimate[0]-int(var_x/2)), int(estimate[1]-int(var_y/2))), (int(var_x), int(var_y)))
+                shape_surf = pygame.Surface((int(var_x), int(var_y)))
+                shape_surf.set_colorkey((0,0,0))
+                pygame.draw.ellipse(shape_surf, (17,30,108,100), (0,0,*rect.size), 2)
+                rotated_surf = pygame.transform.rotate(shape_surf, orientation)
+                screen.blit(rotated_surf, rotated_surf.get_rect(center=rect.center))
+                # pygame.gfxdraw.ellipse(screen, int(estimate[0]), int(estimate[1]), int(var_x), int(var_y), (17, 30, 108, 100))
     if lines_to_draw == 0:
         return
     for i in range(5, len(pos_ests)):
