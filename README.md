@@ -59,30 +59,46 @@ A config.ini file is used to edit all the constants of the simulation. Currently
 - COLLISION_VALUE = -2000 - the weight of each collision in the fitness function
 - SENSOR_VALUE = -10 - the weight of the sum of sensor values in the fitness function
 - SENSOR_EXPONENTIAL = False - whether to utilize an exponential form of the fitness function for the sensor values
-5. VISUALIZATION
+5. KALMAN
+- KALMAN_MODE = True - Whether the simulation should start in Kalman mode
+- OBSTACLE_GRID = True - Whether to draw the obstacle cells on the grid
+- ELLIPSES = True - Whether to draw covariance ellipses
+- BEACON_SENSORS = True - Whether to draw the beacon sensors 
+- DRAW_BEACON_CIRCLES = True - Whether to draw circles from the beacons in range of the robot to the robot
+- MEAN_PATH = 2 - Which path to draw (2 = predicted Kalman path)
+- DEAD_RECKONING_PATH = True - Whether to draw the dead reckoning path
+- DEAD_RECKONING_GHOST = True - Whether to draw dead reckoning ghost shapes
+- TURN_RIGHT = 1 - Value for turning right
+- TURN_LEFT = -1 - Value for turning left
+- NO_TURN = 0 - Value for not turning
+- SENSOR_NOISE = 0.01 - Amount of initial sensor noise
+- MOTION_NOISE = 0.01 - Amount of initial motion noise
+7. VISUALIZATION
 - WALL_WIDTH = 5 - the width of the drawn walls
 - TICK_RATE = 60 - the tick rate of the visualization of the simulation, not related to robot tick rate
 - KEY_SIZE = 60 - the size of the keyboard keys - generally leave untouched
-6. MULTIPROCESSING
+- ANTIALIASING = True - whether to use antialiasing when drawing beacons, walls and the robot itself
+8. MULTIPROCESSING
 - MULTIPROCESSING = False - whether to use multiprocessing for the evolution
 - PROCESSES = 20 - the number of processes - set to population value for best results
-7. DEBUG
-- SHOW_ALL = True - start the simulation with all debug options on 
-- SHOW_VELOCITY_PER_WHEEL = True - show the velocity of both wheels on top of the robot
-- SHOW_SENSORS = True - show the sensor lines
-- SHOW_SENSOR_INFO = True - show the sensor distance to collision or SENSOR_LENGTH, whichever one comes first
-- DRAW_GRID = True - draw a grid to reduce eyestrain of visualization
-- DRAW_TRAIL = True - draw the trail the robot took since the beginning of the simulation
-- DISAPPEARING_TRAIL = True - draw a gradually disappearing trail of the robot's movement in the past 100 frames, overrides DRAW_TRAIL
+9. DEBUG
+- SHOW_ALL = False - start the simulation with all debug options on 
+- SHOW_VELOCITY_PER_WHEEL = False - show the velocity of both wheels on top of the robot
+- SHOW_SENSORS = False - show the sensor lines
+- SHOW_SENSOR_CIRCLE = True - Show a circle with a radius equal to the robot's sensor range.
+- SHOW_SENSOR_INFO = False - show the sensor distance to collision or SENSOR_LENGTH, whichever one comes first
+- DRAW_GRID = False - draw a grid to reduce eyestrain of visualization
+- DRAW_TRAIL = False - draw the trail the robot took since the beginning of the simulation
+- DISAPPEARING_TRAIL = False - draw a gradually disappearing trail of the robot's movement in the past 100 frames, overrides DRAW_TRAIL
 - DRAW_GHOSTS = False - show all individuals of a generation in the gui (unused)
-- CLEANING_MODE = True - whether the clean cells are drawn or not
+- CLEANING_MODE = False - whether the clean cells are drawn or not
 - AUTONOMOUS_MODE = False - whether the robot starts in autonomous mode (controlled by the corresponding neural network with the corresponding weights)
 - RNN = True - whether the network used is a single-hidden-layer RNN or ANN network
 - EVOLVE = False - whether to evolve the robot during the gui simulation (unused)
 
-### Controls
+### Controls - Non-Kalman
 
-Currently, the following controls are supported:
+Currently, the following controls are supported in non-Kalman mode. Kalman mode can be toggled by pressing K.
 
 - W - accelerate left wheel forward
 - S - accelerate left wheel backward
@@ -107,6 +123,44 @@ Currently, the following controls are supported:
 - 4 - Toggle DRAW_GRID constant
 - 5 - Toggle DRAW_TRAIL constant
 - 6 - Toggle DISAPPEARING_TRAIL constant
+- K - Toggle Kalman Mode.
+
+
+### Controls - Kalman
+In Kalman mode, the following controls are supported:
+
+- W - accelerate forward
+- S - accelerate backward
+- A - accelerate angularly leftward
+- D - accelerate angularly rightward
+- X - stop the robot's velocity
+- V - reset the simulation
+- E - edit mode (toggle key) - click, drag and release mouse to draw a straight line (wall) from the position the wall was place to when the mouse was released
+- C - cleaning mode (toggle key) - whether the robot cleans
+- Backspace - autonomous mode (toggle key) - whether the robot is controlled by the corresponding weight vector
+- Q - next generation of weights from the best_individuals.txt file
+- Z - previous generation of weights from the best_individuals.txt file
+- \[ - previous map from preprogrammed maps
+- \] - next map from preprogrammed maps
+- N - remove all walls
+- B - recalculate beacons on all walls
+- M - menu mode - opens the map configuration menu which allows users to save the current wall configuartion or load existing configurations - can press ESC or the Go Back button to go back.
+- 1 - Toggle SHOW_VELOCITY_PER_WHEEL constant
+- 2 - Toggle SHOW_SENSORS constant
+- 3 - Toggle SHOW_SENSOR_INFO constant
+- 4 - Toggle DRAW_GRID constant
+- 5 - Toggle DRAW_TRAIL constant
+- 6 - Toggle DISAPPEARING_TRAIL constant
+- 7 - Toggle Beacon display
+- 8 - Toggle line to beacon display
+- 9 - Toggle covariance ellipses
+- 0 - Toggle dead-reckoning trail
+- \- - Toggle dead-reckoning ghost
+- = - Toggle beam sensor range visualization
+- U - Toggle circle between beacon and robot for bilateration / triangulation
+- I - Reset all Kalman-related values
+- P - 4 Modes - Toggle between showing nothing, showing the corrected kalman position trail, the predicted kalman position trail or both.
+- K - Switch off Kalman mode.
     
 ### Disclaimer:
 
