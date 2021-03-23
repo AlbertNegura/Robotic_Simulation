@@ -244,7 +244,10 @@ def user_input(pgkey):
         global current_tick, robot, current_frame
         # reset the robot and simulation
         current_frame = 0
-        robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH, grid_size=GRID_SIZE)
+        if KALMAN_MODE:
+            robot = robotics.create_robot(init_pos=(150,150), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH, grid_size=GRID_SIZE)
+        else:
+            robot = robotics.create_robot(init_pos=(WIDTH - int(HEIGHT / 3), HEIGHT - int(HEIGHT / 3)), radius=RADIUS, acceleration=ACCELERATION, num_sensors=SENSORS, max_radius=SENSOR_LENGTH, grid_size=GRID_SIZE)
         wheel = BOTH
         direction = STOP
         current_tick = STOP
@@ -444,10 +447,10 @@ def user_input(pgkey):
 
     global kalman_variances, kalman_estimates, kalman_pred_estimates, sensor_historic, dead_reckoning, dead_reckoning_orientation, _mean, _covariance, random_vector
     if pgkey[pygame.K_i]:
-        kalman_variances = []
-        kalman_estimates = []
-        kalman_pred_estimates = []
-        sensor_historic = []
+        kalman_variances = [kalman_variances[-1]]
+        kalman_estimates = [kalman_estimates[-1]]
+        kalman_pred_estimates = [kalman_pred_estimates[-1]]
+        sensor_historic = [sensor_historic[-1]]
         dead_reckoning = [[robot.position[0], robot.position[1]]]
         dead_reckoning_orientation = [robot.orientation]
         random_vector = dead_reckoning_orientation

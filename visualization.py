@@ -209,7 +209,7 @@ def draw_kalman_estimates(pygame, screen, estimates, variances, pos_ests, pos_es
         for i in range(values_to_plot):
             estimate = estimates[-i]
             estimate[0] = np.clip(estimate[0],0, width - int(height/3))
-            estimate[1] = np.clip(estimate[1],0, width - int(height/3))
+            estimate[1] = np.clip(estimate[1],0, height - int(height/3))
             variance = variances[-i][:2,:2]
             if np.any(np.isnan(variance)) or len(variance) < 2 or len(variance[0]) < 2:
                 return
