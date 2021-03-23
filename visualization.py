@@ -211,14 +211,15 @@ def draw_kalman_estimates(pygame, screen, estimates, variances, pos_ests, pos_es
             estimate[0] = np.clip(estimate[0],0, width - int(height/3))
             estimate[1] = np.clip(estimate[1],0, height - int(height/3))
 
-            orientation = estimate[2]
+            orientation = estimate[2]+90
 
 
             variance = variances[-i][:2,:2]
             if np.any(np.isnan(variance)) or len(variance) < 2 or len(variance[0]) < 2:
                 return
-            var_x = np.sqrt(variance[0,0])*200
-            var_y = np.sqrt(variance[1,1])*200
+            eigs = np.linalg.eigvalsh(variance)
+            var_x = np.sqrt(eigs[0])*estimate[0]
+            var_y = np.sqrt(eigs[1])*estimate[1]
 
             if not np.isnan(var_x) and not np.isnan(var_y):
                 rect = pygame.Rect((int(estimate[0]-int(var_x/2)), int(estimate[1]-int(var_y/2))), (int(var_x), int(var_y)))
@@ -365,3 +366,16 @@ def draw_beacon_circle(pygame, screen, position2, grid, beacon_cells):
         position = (square.position[0],square.position[1])
         radius = np.abs(np.linalg.norm(np.subtract(position,position2)))
         pygame.draw.circle(screen, (0, 211, 255, 100), position, int(radius), 4)
+
+
+
+        '''[]
+
+If we attach an automatic controller to the robot, such as the one we have evolved for the previous assignment, we can see that despite the movements being quite accurately predicted, the dead reckoning path is completely displaced due to the collisions. Furthermore, possibly due to the velocity of the robot, the kalman estimated and predicted paths are slightly displaced from the actual positions of the robot, but are not too far behind in cases where either bilateration or triangulation can be applied. Furthermore, due to the high velocity, the separation between the estimated and predicted poses is significantly more distinguishable.
+
+
+
+[] 
+
+We hope you enjoyed our video presentation on self-localization using a regular Kalman filter. We intend to continue working on this project and add additional features and visualization methods while optimizing existing ones. Thank you for listening!'''
+        
