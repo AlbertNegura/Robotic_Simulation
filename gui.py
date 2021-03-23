@@ -180,7 +180,19 @@ def user_input(pgkey):
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE, KALMAN_MODE
     global CURRENT_WALL_CONFIG, OBSTACLE_GRID, BEACON_SENSORS, ELLIPSES, DEAD_RECKONING_PATH, DEAD_RECKONING_GHOST, SHOW_SENSOR_CIRCLE
     global MEAN_PATH
-    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas, turn
+    global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas, turn, SENSOR_NOISE, MOTION_NOISE
+    if pgkey[pygame.K_UP]:
+        SENSOR_NOISE += 0.10
+        print("Sensor Noise: ", SENSOR_NOISE)
+    if pgkey[pygame.K_DOWN]:
+        SENSOR_NOISE -= 0.10
+        print("Sensor Noise: ", SENSOR_NOISE)
+    if pgkey[pygame.K_RIGHT]:
+        MOTION_NOISE += 0.10
+        print("Motion Noise: ", MOTION_NOISE)
+    if pgkey[pygame.K_LEFT]:
+        MOTION_NOISE -= 0.10
+        print("Motion Noise: ", MOTION_NOISE)
     if pgkey[pygame.K_w]:
         accel = True
         if not KALMAN_MODE:
@@ -521,7 +533,7 @@ def execute():
     global ORIENTATION_HISTORY
     global fitnesses
     global KALMAN_POSE
-    global kalman_variances, kalman_estimates, kalman_pred_estimates, sensor_historic, dead_reckoning, dead_reckoning_orientation, _mean, _covariance, random_vector
+    global kalman_variances, kalman_estimates, kalman_pred_estimates, sensor_historic, dead_reckoning, dead_reckoning_orientation, _mean, _covariance, random_vector, SENSOR_NOISE, MOTION_NOISE
 
     DRAWING = False
     origin = None
@@ -735,7 +747,7 @@ def execute():
             sensor_historic.append(sensor_kalman.estimate(real_pose, features))
 
             # Estimate with Kalman
-            _mean, _covariance, pred_mean = kalman.estimate(np.round(_mean, decimals=7), np.round(_covariance, decimals=7), action, sensor_historic[-1])
+            _mean, _covariance, pred_mean = kalman.estimate(np.round(_mean, decimals=7), np.round(_covariance, decimals=7), action, sensor_historic[-1], MOTION_NOISE, SENSOR_NOISE)
 
             if not np.any(np.isnan(_mean)) and current_frame % 1 == 0:
                 kalman_estimates.append(_mean)

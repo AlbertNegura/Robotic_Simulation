@@ -5,7 +5,7 @@ Sergi Nogues Farres
 import numpy as np
 
 
-def estimate(prev_mean, prev_covariance, action, sensor, motion_noise = 0.2, sensor_noise = 0.15):
+def estimate(prev_mean, prev_covariance, action, sensor, motion_noise = 0.01, sensor_noise = 0.01):
     """
     :param prev_mean: column np.array([[x], [y], [theta]]) from previous step
     :param prev_covariance: covariance matrix np.array([[a,0,0], [0,b,0], [0,0,c]]) from previous step
