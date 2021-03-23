@@ -5,7 +5,7 @@ Sergi Nogues Farres
 import numpy as np
 
 
-def estimate(prev_mean, prev_covariance, action, sensor):
+def estimate(prev_mean, prev_covariance, action, sensor, motion_noise = 0.2, sensor_noise = 0.15):
     """
     :param prev_mean: column np.array([[x], [y], [theta]]) from previous step
     :param prev_covariance: covariance matrix np.array([[a,0,0], [0,b,0], [0,0,c]]) from previous step
@@ -14,15 +14,12 @@ def estimate(prev_mean, prev_covariance, action, sensor):
     :return: estimated mean and covariance
     """
     # noise
-    R = np.array([[np.random.normal(prev_mean[0][0]), 0, 0],
-                  [0, np.random.normal(prev_mean[1][0]), 0],
-                  [0, 0, np.random.normal(prev_mean[2][0])]])
-    Q = np.array([[np.random.normal(sensor[0][0]), 0, 0],
-                  [0, np.random.normal(sensor[1][0]), 0],
-                  [0, 0, np.random.normal(sensor[2][0])]])
-
-    # pose_noise = np.random.multivariate_normal(prev_mean.T[0], R)
-    # sensor_noise = np.random.multivariate_normal(sensor.T[0], Q)
+    R = np.array([[np.random.uniform(0,motion_noise), 0, 0],
+                  [0, np.random.uniform(0,motion_noise), 0],
+                  [0, 0, np.random.uniform(0,motion_noise)]])
+    Q = np.array([[np.random.uniform(0,sensor_noise), 0, 0],
+                  [0, np.random.uniform(0,sensor_noise), 0],
+                  [0, 0, np.random.uniform(0,sensor_noise)]])
 
     B = np.array([[np.cos(prev_mean[2][0]), 0],
                   [np.sin(prev_mean[2][0]), 0],
@@ -30,14 +27,14 @@ def estimate(prev_mean, prev_covariance, action, sensor):
 
     # prediction
     mean_pred = motion_prediction(np.identity(3), prev_mean, B, action)
-    covariance_pred = np.add(prev_covariance, R)
+    covariance_pred = np.add(np.eye(3,3) * prev_covariance * np.eye(3,3).T, R)
 
     # correction
     K = kalman_gain(covariance_pred, Q)
     mean = mean_estimation(mean_pred, K, sensor)
     covariance = covariance_estimation(K, covariance_pred)
 
-    return mean, covariance
+    return mean, covariance, mean_pred
 
 
 def motion_prediction(A, prev_mean, B, action):

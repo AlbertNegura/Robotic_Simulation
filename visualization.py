@@ -58,9 +58,11 @@ def draw_ghost(pygame, screen, position, orientation, radius):
     """
     position = [int(position[0]), int(position[1])]
     facing_position = utils.rotate_line(position, radius, orientation)
-    pygame.gfxdraw.circle(screen, position[0], position[1], int(radius - 0.6), (200,200,200,100))
-    pygame.gfxdraw.circle(screen, position[0], position[1], int(radius - 0.1), (0,0,0,100))
-    pygame.gfxdraw.line(screen, position[0], position[1], int(facing_position[0]), int(facing_position[1]), (0,0,0,100))
+    pygame.draw.circle(screen, (255,150,150), [position[0], position[1]], int(radius - 0.1), 5)
+    pygame.draw.line(screen, (0,0,0), [position[0], position[1]], [int(facing_position[0]), int(facing_position[1])], 2)
+    # pygame.gfxdraw.circle(screen, position[0], position[1], int(radius - 0.6), (150,150,150,100))
+    # pygame.gfxdraw.circle(screen, position[0], position[1], int(radius - 0.1), (0,0,0,100))
+    # pygame.gfxdraw.line(screen, position[0], position[1], int(facing_position[0]), int(facing_position[1]), (0,0,0,100))
 
 def draw_sensor_circle(pygame, screen, position, radius):
     """
@@ -100,7 +102,7 @@ def draw_trail(pygame, screen, robot, disappearing):
                 new_pos = robot.position_history[i+1]
             pygame.draw.line(screen, (0,100,0), old_pos, new_pos, 2)
 
-def draw_trail_kalman(pygame, screen, trail, disappearing):
+def draw_trail_kalman(pygame, screen, trail, disappearing, color):
     """
 
     :param pygame:
@@ -108,13 +110,14 @@ def draw_trail_kalman(pygame, screen, trail, disappearing):
     :param robot:
     :return:
     """
-    for i in range(len(trail)):
-        old_pos = trail[i]
+    for i in range(1,len(trail)):
+        old_pos = [int(trail[i][0]),int(trail[i][1])]
         if i+1 >= len(trail):
-            new_pos = trail[i]
+            new_pos = [int(trail[i][0]),int(trail[i][1])]
         else:
-            new_pos = trail[i+1]
-        pygame.draw.line(screen, (25,150,25), old_pos, new_pos, 2)
+            new_pos = [int(trail[i+1][0]),int(trail[i+1][1])]
+
+        pygame.draw.line(screen, color, old_pos, new_pos, 2)
 
 def draw_sensors(pygame, screen, robot, width=5, antialiasing = False):
     """
@@ -199,17 +202,45 @@ def draw_initial_grid(pygame, screen, grid):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
-def draw_kalman_estimates(pygame, screen, estimates, variances, width, height):
+def draw_kalman_estimates(pygame, screen, estimates, variances, pos_ests, pos_ests2, robot, width, height):
     values_to_plot = len(estimates) if len(estimates) < 10 else 10
     for i in range(values_to_plot):
         estimate = estimates[-i]
         estimate[0] = np.clip(estimate[0],0, width - int(height/3))
         estimate[1] = np.clip(estimate[1],0, width - int(height/3))
         variance = variances[-i][:2,:2]
+        if np.any(np.isnan(variance)) or len(variance) < 2 or len(variance[0]) < 2:
+            return
         var_x = np.sqrt(variance[0,0])
         var_y = np.sqrt(variance[1,1])
         if not np.isnan(var_x) and not np.isnan(var_y):
             pygame.gfxdraw.ellipse(screen, int(estimate[0]), int(estimate[1]), int(var_x), int(var_y), (17, 30, 108, 100))
+    for i in range(5, len(pos_ests)):
+        if i%3 == 0:
+            estimate1 = pos_ests[i-3]
+            estimate2 = pos_ests[i]
+            lowerx = robot.position[0]-50 if i >= len(pos_ests) - 5 else 0
+            lowery = robot.position[1]-50 if i >= len(pos_ests) - 5 else 0
+            upperx = robot.position[0]+50 if i >= len(pos_ests) - 5 else width - (height/3)
+            uppery = robot.position[1]+50 if i >= len(pos_ests) - 5 else height - (height/3)
+            estimate1[0] = np.clip(estimate1[0],lowerx, upperx)
+            estimate1[1] = np.clip(estimate1[1],lowery, uppery)
+            estimate2[0] = np.clip(estimate2[0],lowerx, upperx)
+            estimate2[1] = np.clip(estimate2[1],lowery, uppery)
+            pygame.draw.line(screen, (200, 50, 200, 100), (int(estimate1[0]), int(estimate1[1])),(int(estimate2[0]), int(estimate2[1])),2)
+            estimate1 = pos_ests2[i-3]
+            estimate2 = pos_ests2[i]
+            lowerx = robot.position[0]-50 if i >= len(pos_ests2) - 5 else 0
+            lowery = robot.position[1]-50 if i >= len(pos_ests2) - 5 else 0
+            upperx = robot.position[0]+50 if i >= len(pos_ests2) - 5 else width - (height/3)
+            uppery = robot.position[1]+50 if i >= len(pos_ests2) - 5 else height - (height/3)
+            estimate1[0] = np.clip(estimate1[0],lowerx, upperx)
+            estimate1[1] = np.clip(estimate1[1],lowery, uppery)
+            estimate2[0] = np.clip(estimate2[0],lowerx, upperx)
+            estimate2[1] = np.clip(estimate2[1],lowery, uppery)
+            pygame.draw.line(screen, (100, 100, 50, 100), (int(estimate1[0]), int(estimate1[1])),(int(estimate2[0]), int(estimate2[1])),2)
+
+
 
 def draw_grid(pygame, screen, grid, cleaning_mode = False, draw_grid = False, screen2 = None):
     """

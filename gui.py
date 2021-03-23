@@ -515,6 +515,7 @@ def execute():
     # Init KALMAN
     kalman_variances = []
     kalman_estimates = []
+    kalman_pred_estimates = []
     sensor_historic = []
     dead_reckoning = [[robot.position[0], robot.position[1]]]
     dead_reckoning_orientation = [robot.orientation]
@@ -599,7 +600,6 @@ def execute():
                 robot.orientation = ORIENTATION_HISTORY[0]
                 ORIENTATION_HISTORY = np.delete(ORIENTATION_HISTORY, (0), axis=0)
 
-        visualization.draw_robot(pygame, screen, robot, antialiasing=ANTIALIASING)
         if current_frame > 2 and (DRAW_TRAIL or DISAPPEARING_TRAIL):
             visualization.draw_trail(pygame, screen, robot, DISAPPEARING_TRAIL)
         robot.adjust_sensors(WALLS)
@@ -696,13 +696,18 @@ def execute():
             sensor_historic.append(sensor_kalman.estimate(real_pose, features))
 
             # Estimate with Kalman
-            _mean, _covariance = kalman.estimate(np.round(_mean, decimals=7), np.round(_covariance, decimals=7), action, sensor_historic[-1])
+            _mean, _covariance, pred_mean = kalman.estimate(np.round(_mean, decimals=7), np.round(_covariance, decimals=7), action, sensor_historic[-1])
 
             if not np.any(np.isnan(_mean)) and current_frame % 1 == 0:
                 kalman_estimates.append(_mean)
             elif np.any(np.isnan(_mean)):
                 _mean = kalman_estimates[-1]
                 kalman_estimates.append(_mean)
+            if not np.any(np.isnan(pred_mean)) and current_frame % 1 == 0:
+                kalman_pred_estimates.append(pred_mean)
+            elif np.any(np.isnan(pred_mean)):
+                pred_mean = kalman_estimates[-1]
+                kalman_estimates.append(pred_mean)
             if not np.any(np.isnan(_covariance)) and current_frame % 1 == 0:
                 kalman_variances.append(_covariance)
             elif np.any(np.isnan(_covariance)):
@@ -739,11 +744,11 @@ def execute():
                 # todo: pass a surface list with all the ellipses already drawn
                 # todo: rotate surface in function (use drawing_estimates[2][2] for angle in degrees)
                 # todo: return new surfaces to append to list
-                visualization.draw_kalman_estimates(pygame, screen, drawing_estimates, drawing_variances, WIDTH, HEIGHT)
+                visualization.draw_kalman_estimates(pygame, screen, drawing_estimates, drawing_variances, kalman_estimates, kalman_pred_estimates, robot, WIDTH, HEIGHT)
 
 
             if DEAD_RECKONING_PATH:
-                visualization.draw_trail_kalman(pygame, screen, dead_reckoning, False)
+                visualization.draw_trail_kalman(pygame, screen, dead_reckoning, False, (50,50,200))
 
 
             if DEAD_RECKONING_GHOST:
@@ -797,6 +802,13 @@ def execute():
 
         # Blit text to screen
         visualization.write_text_list(pygame, screen, text, (WIDTH-int(0.175*WIDTH),HEIGHT-int(0.9*HEIGHT)), font=pygame_font)
+
+
+
+
+        visualization.draw_robot(pygame, screen, robot, antialiasing=ANTIALIASING)
+
+
 
         pygame.display.update()
         clock.tick(TICK_RATE)
