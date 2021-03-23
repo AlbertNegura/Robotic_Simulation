@@ -518,6 +518,7 @@ def execute():
     sensor_historic = []
     dead_reckoning = [[robot.position[0], robot.position[1]]]
     dead_reckoning_orientation = [robot.orientation]
+    random_vector = dead_reckoning_orientation
     _mean = np.array([[robot.position[0]], [robot.position[1]], [robot.orientation]])
     _covariance = np.array([[0,0,0], [0,0,0], [0,0,0]])
 
@@ -647,11 +648,12 @@ def execute():
                 beacon_dists.append(x_dist**2+y_dist**2)
             beacon_cells = [beacon_cells[i] for i in np.argsort(beacon_dists)]
 
+            #region deprecated
             # Init KALMAN_POSE
             # if KALMAN_POSE is None:
             #     KALMAN_POSE = [robot.grid_pos[0] * GRID_SIZE, robot.grid_pos[1] * GRID_SIZE, math.radians(robot.orientation)]
 
-            #region Unilateration
+            # Unilateration
             # for beacon in beacon_cells:
             #     pose = [robot.grid_pos[0], robot.grid_pos[1], math.radians(robot.orientation)]
             #     distance, bearing, signature, _, _ = sensor_kalman.feature(pose, beacon)
@@ -672,9 +674,8 @@ def execute():
                 #print("robot x,y : ", robot.position)
                 #print("estimations : ", estimate_x, estimate_y)
                 # sensor_historic.append(np.array([estimate_x, estimate_y, estimate_bearing]))
-            #endregion
 
-            #region Bi Trilateration
+            # Bi Trilateration
             if len(beacon_cells) >= 2:
                 if len(beacon_cells) > 3:
                     beacon_cells = beacon_cells[:3]
@@ -684,7 +685,6 @@ def execute():
 
             # Action vector
             velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
-            #ToDo: Aproper angular velocity calculation
             angular_velocity = (robot.velocity_right - robot.velocity_left)/robot.radius*3
             action = np.array([[velocity], [angular_velocity]])
 
@@ -693,19 +693,11 @@ def execute():
             features = []
             for b in beacon_cells:
                 features.append((b[0]*GRID_SIZE, b[1]*GRID_SIZE))
-
-            print("beacons: ", features)
-            print("real pose: ", robot.position, robot.orientation)
             sensor_historic.append(sensor_kalman.estimate(real_pose, features))
-            print("z_t: ", sensor_historic[-1])
-            # print("action: ", action)
 
             # Estimate with Kalman
             _mean, _covariance = kalman.estimate(np.round(_mean, decimals=7), np.round(_covariance, decimals=7), action, sensor_historic[-1])
-            """print("Previous mean: ", _mean)
-            print("Previous covariance: ", _covariance)"""
-            print("Estimated mean: ", _mean)
-            print("Estimated covariance: ", _covariance)
+
             if not np.any(np.isnan(_mean)) and current_frame % 1 == 0:
                 kalman_estimates.append(_mean)
             elif np.any(np.isnan(_mean)):
@@ -715,9 +707,8 @@ def execute():
                 kalman_variances.append(_covariance)
             elif np.any(np.isnan(_covariance)):
                 _covariance = kalman_estimates[-1]
-                kalman_estimates.append(_covariance)
-
-
+                # Sergi: I changed from kalman_estimates.append(_covariance) to kalman_variances.append(_covariance) (I guess it was a mistake)
+                kalman_variances.append(_covariance)
 
             """estimates = np.mean(sensor_historic, axis=0)
             variances = np.var(sensor_historic, axis=0) * GRID_SIZE * 10
@@ -733,6 +724,7 @@ def execute():
                 new_theta = theta + np.deg2rad(angular_velocity) # should be rad/s
                 dead_reckoning.append(new_pos)
                 dead_reckoning_orientation.append(new_theta)
+                random_vector.append(new_theta)  # only for visualization purposes
 
 
             if ELLIPSES: # TODO: optimize
@@ -755,12 +747,12 @@ def execute():
 
 
             if DEAD_RECKONING_GHOST:
-                visualization.draw_ghost(pygame, screen, dead_reckoning[-1], np.rad2deg(dead_reckoning_orientation[-1]), robot.radius)
-                j = len(dead_reckoning_orientation[:])
-                for i in range(int(j/180)): # todo: fix orientation of "sticky" ghosts
+                visualization.draw_ghost(pygame, screen, dead_reckoning[-1], np.rad2deg(random_vector[-1]), robot.radius)
+                j = len(random_vector[:])
+                for i in range(int(j/180)):
                     k = i * 180 - 1
-                    if k < len(dead_reckoning) and k < len(dead_reckoning_orientation):
-                        visualization.draw_ghost(pygame, screen, dead_reckoning[k], np.rad2deg(dead_reckoning_orientation[k]), robot.radius)
+                    if k < len(dead_reckoning) and k < len(random_vector):
+                        visualization.draw_ghost(pygame, screen, dead_reckoning[k], np.rad2deg(random_vector[k]), robot.radius)
 
             # KALMAN_POSE = None
 
