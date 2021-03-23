@@ -202,19 +202,20 @@ def draw_initial_grid(pygame, screen, grid):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
-def draw_kalman_estimates(pygame, screen, estimates, variances, pos_ests, pos_ests2, robot, width, height, lines_to_draw):
-    values_to_plot = len(estimates) if len(estimates) < 10 else 10
-    for i in range(values_to_plot):
-        estimate = estimates[-i]
-        estimate[0] = np.clip(estimate[0],0, width - int(height/3))
-        estimate[1] = np.clip(estimate[1],0, width - int(height/3))
-        variance = variances[-i][:2,:2]
-        if np.any(np.isnan(variance)) or len(variance) < 2 or len(variance[0]) < 2:
-            return
-        var_x = np.sqrt(variance[0,0])
-        var_y = np.sqrt(variance[1,1])
-        if not np.isnan(var_x) and not np.isnan(var_y):
-            pygame.gfxdraw.ellipse(screen, int(estimate[0]), int(estimate[1]), int(var_x), int(var_y), (17, 30, 108, 100))
+def draw_kalman_estimates(pygame, screen, estimates, variances, pos_ests, pos_ests2, robot, width, height, lines_to_draw, draw_ellipses):
+    if draw_ellipses:
+        values_to_plot = len(estimates) if len(estimates) < 10 else 10
+        for i in range(values_to_plot):
+            estimate = estimates[-i]
+            estimate[0] = np.clip(estimate[0],0, width - int(height/3))
+            estimate[1] = np.clip(estimate[1],0, width - int(height/3))
+            variance = variances[-i][:2,:2]
+            if np.any(np.isnan(variance)) or len(variance) < 2 or len(variance[0]) < 2:
+                return
+            var_x = np.sqrt(variance[0,0])
+            var_y = np.sqrt(variance[1,1])
+            if not np.isnan(var_x) and not np.isnan(var_y):
+                pygame.gfxdraw.ellipse(screen, int(estimate[0]), int(estimate[1]), int(var_x), int(var_y), (17, 30, 108, 100))
     if lines_to_draw == 0:
         return
     for i in range(5, len(pos_ests)):

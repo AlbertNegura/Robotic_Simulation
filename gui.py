@@ -740,7 +740,7 @@ def execute():
                 random_vector.append(new_theta)  # only for visualization purposes
 
 
-            if ELLIPSES: # TODO: optimize
+            if ELLIPSES or MEAN_PATH > 0: # TODO: optimize
                 indices_est = [i for i in range(len(kalman_estimates)) if i%120 == 0]
                 indices_var = [i for i in range(len(kalman_variances)) if i%120 == 0]
                 drawing_estimates = []
@@ -752,7 +752,7 @@ def execute():
                 # todo: pass a surface list with all the ellipses already drawn
                 # todo: rotate surface in function (use drawing_estimates[2][2] for angle in degrees)
                 # todo: return new surfaces to append to list
-                visualization.draw_kalman_estimates(pygame, screen, drawing_estimates, drawing_variances, kalman_estimates, kalman_pred_estimates, robot, WIDTH, HEIGHT, MEAN_PATH)
+                visualization.draw_kalman_estimates(pygame, screen, drawing_estimates, drawing_variances, kalman_estimates, kalman_pred_estimates, robot, WIDTH, HEIGHT, MEAN_PATH, ELLIPSES)
 
 
             if DEAD_RECKONING_PATH:
