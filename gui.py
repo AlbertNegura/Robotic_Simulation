@@ -534,6 +534,7 @@ def execute():
     global fitnesses
     global KALMAN_POSE
     global kalman_variances, kalman_estimates, kalman_pred_estimates, sensor_historic, dead_reckoning, dead_reckoning_orientation, _mean, _covariance, random_vector, SENSOR_NOISE, MOTION_NOISE
+    global pygame_font
 
     DRAWING = False
     origin = None
@@ -876,13 +877,13 @@ def map_settings():
     Map loader pygame screen.
     :return:
     """
-    global WALLS, MAP_MENU, REPLAY_MODE, POSITION_HISTORY, ORIENTATION_HISTORY, current_frame, grid_1
+    global WALLS, MAP_MENU, REPLAY_MODE, POSITION_HISTORY, ORIENTATION_HISTORY, current_frame, grid_1, pygame_font
     click = False
     t = time.localtime()
     while MAP_MENU is not None:
         screen.fill((255,255,255))
 
-        visualization.write_text(pygame, screen, 'MAP CONFIG', (750,100))
+        visualization.write_text(pygame, screen, 'MAP CONFIG', (750,100), font=pygame_font)
         root = tk.Tk()
         root.withdraw()
         mx, my = pygame.mouse.get_pos()
