@@ -685,7 +685,7 @@ def execute():
 
             # Action vector
             velocity = math.sqrt(robot.velocity_left**2 + robot.velocity_right**2)
-            angular_velocity = (robot.velocity_right - robot.velocity_left)/robot.radius*3
+            angular_velocity = (robot.velocity_right - robot.velocity_left)/robot.radius*math.pi
             action = np.array([[velocity], [angular_velocity]])
 
             # Calculate z_t
