@@ -368,14 +368,3 @@ def draw_beacon_circle(pygame, screen, position2, grid, beacon_cells):
         pygame.draw.circle(screen, (0, 211, 255, 100), position, int(radius), 4)
 
 
-
-        '''[]
-
-If we attach an automatic controller to the robot, such as the one we have evolved for the previous assignment, we can see that despite the movements being quite accurately predicted, the dead reckoning path is completely displaced due to the collisions. Furthermore, possibly due to the velocity of the robot, the kalman estimated and predicted paths are slightly displaced from the actual positions of the robot, but are not too far behind in cases where either bilateration or triangulation can be applied. Furthermore, due to the high velocity, the separation between the estimated and predicted poses is significantly more distinguishable.
-
-
-
-[] 
-
-We hope you enjoyed our video presentation on self-localization using a regular Kalman filter. We intend to continue working on this project and add additional features and visualization methods while optimizing existing ones. Thank you for listening!'''
-        
