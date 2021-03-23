@@ -74,6 +74,7 @@ def draw_sensor_circle(pygame, screen, position, radius):
     position = [int(position[0]), int(position[1])]
     pygame.draw.circle(screen, (255,211,0,100), position, int(radius), 4)
 
+
 def draw_trail(pygame, screen, robot, disappearing):
     """
 
@@ -338,3 +339,18 @@ def draw_lines_to_sensors(pygame, screen, position, grid, beacon_cells):
         square = grid[y][x]
         end_pos = (square.position[0],square.position[1])
         pygame.draw.line(screen, (150,0,0), position, end_pos, 1)
+
+
+def draw_beacon_circle(pygame, screen, position2, grid, beacon_cells):
+    """
+    :param pygame:
+    :param screen:
+    :param robot:
+    :return:
+    """
+
+    for x,y in beacon_cells:
+        square = grid[y][x]
+        position = (square.position[0],square.position[1])
+        radius = np.abs(np.linalg.norm(np.subtract(position,position2)))
+        pygame.draw.circle(screen, (0, 211, 255, 100), position, int(radius), 4)

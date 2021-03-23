@@ -463,6 +463,13 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.P, unused_key_info)
 
+    global DRAW_BEACON_CIRCLES
+    if pgkey[pygame.K_u]:
+        DRAW_BEACON_CIRCLES = not DRAW_BEACON_CIRCLES
+        keyboard.update_key(keyboard_layout, kl.Key.U, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.U, unused_key_info)
+
     if pgkey[pygame.K_BACKSPACE]:
         AUTONOMOUS_MODE = not AUTONOMOUS_MODE
         nn.update_weights(best_individuals[100])
@@ -702,6 +709,12 @@ def execute():
             if len(beacon_cells) >= 2:
                 if len(beacon_cells) > 3:
                     beacon_cells = beacon_cells[:3]
+
+                if len(beacon_cells) == 3:
+                    if abs(beacon_cells[0][0] - beacon_cells[1][0]) <= 1 and abs(beacon_cells[1][0] - beacon_cells[2][0]) <= 1:
+                        beacon_cells = beacon_cells[:2]
+                    elif abs(beacon_cells[0][1] - beacon_cells[1][1]) <= 1 and abs(beacon_cells[1][1] - beacon_cells[2][1]) <= 1:
+                        beacon_cells = beacon_cells[:2]
                 # Kalman
                 # bi_tri_estimate = sensor_kalman.estimate([robot.grid_pos[0], robot.grid_pos[0], math.radians(robot.orientation)], beacon_cells)
             #endregion
@@ -786,6 +799,9 @@ def execute():
 
             if BEACON_SENSORS:
                 visualization.draw_lines_to_sensors(pygame, screen, robot.position, grid_1, beacon_cells)
+
+            if DRAW_BEACON_CIRCLES:
+                visualization.draw_beacon_circle(pygame, screen, robot.position, grid_1, beacon_cells)
 
         if SHOW_SENSOR_CIRCLE:
             visualization.draw_sensor_circle(pygame, screen, robot.position, SENSOR_LENGTH)

@@ -77,6 +77,7 @@ MOTION_NOISE = None
 BEACON_SENSORS = None
 ELLIPSES = None
 MEAN_PATH = None
+DRAW_BEACON_CIRCLES = None
 
 def load_config(config):
     """
@@ -132,7 +133,7 @@ def load_config(config):
     SENSOR_VALUE = int(terrain_settings['SENSOR_VALUE'])
     SENSOR_EXPONENTIAL = True if str(terrain_settings['SENSOR_EXPONENTIAL']) == "True" else False
 
-    global KALMAN_MODE, OBSTACLE_GRID, TURN_LEFT, TURN_RIGHT, NO_TURN, MEAN_PATH, DEAD_RECKONING_PATH, DEAD_RECKONING_GHOST, SENSOR_NOISE, MOTION_NOISE, ELLIPSES, BEACON_SENSORS
+    global KALMAN_MODE, OBSTACLE_GRID, TURN_LEFT, TURN_RIGHT, NO_TURN, MEAN_PATH, DEAD_RECKONING_PATH, DEAD_RECKONING_GHOST, SENSOR_NOISE, MOTION_NOISE, ELLIPSES, DRAW_BEACON_CIRCLES, BEACON_SENSORS
     KALMAN_MODE = True if str(kalman_settings['KALMAN_MODE']) == "True" else False
     OBSTACLE_GRID = True if str(kalman_settings['OBSTACLE_GRID']) == "True" else False
     TURN_LEFT = int(kalman_settings['TURN_LEFT'])
@@ -141,6 +142,7 @@ def load_config(config):
     MEAN_PATH = int(kalman_settings['MEAN_PATH'])
     ELLIPSES = True if str(kalman_settings['ELLIPSES']) == "True" else False
     BEACON_SENSORS = True if str(kalman_settings['BEACON_SENSORS']) == "True" else False
+    DRAW_BEACON_CIRCLES = True if str(kalman_settings['DRAW_BEACON_CIRCLES']) == "True" else False
     DEAD_RECKONING_PATH = True if str(kalman_settings['DEAD_RECKONING_PATH']) == "True" else False
     DEAD_RECKONING_GHOST = True if str(kalman_settings['DEAD_RECKONING_GHOST']) == "True" else False
     SENSOR_NOISE = float(kalman_settings['SENSOR_NOISE'])
@@ -203,6 +205,6 @@ key_size = KEY_SIZE
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
                  kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.DIGIT_7,
                  kl.Key.DIGIT_8, kl.Key.DIGIT_9, kl.Key.DIGIT_0, kl.Key.MINUS, kl.Key.EQUALS, kl.Key.BACKSPACE, kl.Key.P,
-                 kl.Key.I,
+                 kl.Key.I, kl.Key.U,
                  kl.Key.C, kl.Key.A, kl.Key.Q, kl.Key.D, kl.Key.K, kl.Key.Z, kl.Key.LEFTBRACKET,kl.Key.RIGHTBRACKET, kl.Key.B]
 
