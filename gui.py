@@ -393,7 +393,7 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.Z, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.Z, unused_key_info)
-    if pgkey[pygame.K_LEFTBRACKET]:
+    if pgkey[pygame.K_LEFTBRACKET] or pgkey[pygame.K_h]:
         if CURRENT_WALL_CONFIG == 0:
             CURRENT_WALL_CONFIG = len(ALLWALLS)-1
         else:
@@ -413,7 +413,7 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.LEFTBRACKET, unused_key_info)
 
-    if pgkey[pygame.K_RIGHTBRACKET]:
+    if pgkey[pygame.K_RIGHTBRACKET] or pgkey[pygame.K_j]:
         if CURRENT_WALL_CONFIG == len(ALLWALLS)-1:
             CURRENT_WALL_CONFIG = 0
         else:
