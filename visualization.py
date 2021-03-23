@@ -202,7 +202,7 @@ def draw_initial_grid(pygame, screen, grid):
                                      pygame.Rect(square.position[0], square.position[1], square.size, square.size),
                                      (0, 200, 200, 50))
 
-def draw_kalman_estimates(pygame, screen, estimates, variances, pos_ests, pos_ests2, robot, width, height):
+def draw_kalman_estimates(pygame, screen, estimates, variances, pos_ests, pos_ests2, robot, width, height, lines_to_draw):
     values_to_plot = len(estimates) if len(estimates) < 10 else 10
     for i in range(values_to_plot):
         estimate = estimates[-i]
@@ -215,30 +215,34 @@ def draw_kalman_estimates(pygame, screen, estimates, variances, pos_ests, pos_es
         var_y = np.sqrt(variance[1,1])
         if not np.isnan(var_x) and not np.isnan(var_y):
             pygame.gfxdraw.ellipse(screen, int(estimate[0]), int(estimate[1]), int(var_x), int(var_y), (17, 30, 108, 100))
+    if lines_to_draw == 0:
+        return
     for i in range(5, len(pos_ests)):
         if i%3 == 0:
-            estimate1 = pos_ests[i-3]
-            estimate2 = pos_ests[i]
-            lowerx = robot.position[0]-50 if i >= len(pos_ests) - 5 else 0
-            lowery = robot.position[1]-50 if i >= len(pos_ests) - 5 else 0
-            upperx = robot.position[0]+50 if i >= len(pos_ests) - 5 else width - (height/3)
-            uppery = robot.position[1]+50 if i >= len(pos_ests) - 5 else height - (height/3)
-            estimate1[0] = np.clip(estimate1[0],lowerx, upperx)
-            estimate1[1] = np.clip(estimate1[1],lowery, uppery)
-            estimate2[0] = np.clip(estimate2[0],lowerx, upperx)
-            estimate2[1] = np.clip(estimate2[1],lowery, uppery)
-            pygame.draw.line(screen, (200, 50, 200, 100), (int(estimate1[0]), int(estimate1[1])),(int(estimate2[0]), int(estimate2[1])),2)
-            estimate1 = pos_ests2[i-3]
-            estimate2 = pos_ests2[i]
-            lowerx = robot.position[0]-50 if i >= len(pos_ests2) - 5 else 0
-            lowery = robot.position[1]-50 if i >= len(pos_ests2) - 5 else 0
-            upperx = robot.position[0]+50 if i >= len(pos_ests2) - 5 else width - (height/3)
-            uppery = robot.position[1]+50 if i >= len(pos_ests2) - 5 else height - (height/3)
-            estimate1[0] = np.clip(estimate1[0],lowerx, upperx)
-            estimate1[1] = np.clip(estimate1[1],lowery, uppery)
-            estimate2[0] = np.clip(estimate2[0],lowerx, upperx)
-            estimate2[1] = np.clip(estimate2[1],lowery, uppery)
-            pygame.draw.line(screen, (100, 100, 50, 100), (int(estimate1[0]), int(estimate1[1])),(int(estimate2[0]), int(estimate2[1])),2)
+            if lines_to_draw == 1 or lines_to_draw == 3:
+                estimate1 = pos_ests[i-3]
+                estimate2 = pos_ests[i]
+                lowerx = robot.position[0]-50 if i >= len(pos_ests) - 5 else 0
+                lowery = robot.position[1]-50 if i >= len(pos_ests) - 5 else 0
+                upperx = robot.position[0]+50 if i >= len(pos_ests) - 5 else width - (height/3)
+                uppery = robot.position[1]+50 if i >= len(pos_ests) - 5 else height - (height/3)
+                estimate1[0] = np.clip(estimate1[0],lowerx, upperx)
+                estimate1[1] = np.clip(estimate1[1],lowery, uppery)
+                estimate2[0] = np.clip(estimate2[0],lowerx, upperx)
+                estimate2[1] = np.clip(estimate2[1],lowery, uppery)
+                pygame.draw.line(screen, (200, 50, 200, 100), (int(estimate1[0]), int(estimate1[1])),(int(estimate2[0]), int(estimate2[1])),2)
+            if lines_to_draw == 2 or lines_to_draw == 3:
+                estimate1 = pos_ests2[i-3]
+                estimate2 = pos_ests2[i]
+                lowerx = robot.position[0]-50 if i >= len(pos_ests2) - 5 else 0
+                lowery = robot.position[1]-50 if i >= len(pos_ests2) - 5 else 0
+                upperx = robot.position[0]+50 if i >= len(pos_ests2) - 5 else width - (height/3)
+                uppery = robot.position[1]+50 if i >= len(pos_ests2) - 5 else height - (height/3)
+                estimate1[0] = np.clip(estimate1[0],lowerx, upperx)
+                estimate1[1] = np.clip(estimate1[1],lowery, uppery)
+                estimate2[0] = np.clip(estimate2[0],lowerx, upperx)
+                estimate2[1] = np.clip(estimate2[1],lowery, uppery)
+                pygame.draw.line(screen, (100, 100, 50, 100), (int(estimate1[0]), int(estimate1[1])),(int(estimate2[0]), int(estimate2[1])),2)
 
 
 

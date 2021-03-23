@@ -179,6 +179,7 @@ def user_input(pgkey):
     global EDIT_MODE, REPLAY_MODE, SHOW_VELOCITY_PER_WHEEL, SHOW_SENSORS, SHOW_SENSOR_INFO, DRAW_GRID, DRAW_TRAIL
     global DISAPPEARING_TRAIL, MAP_MENU, CLEANING_MODE, WALLS, DRAW_GHOSTS, AUTONOMOUS_MODE, EVOLVE, KALMAN_MODE
     global CURRENT_WALL_CONFIG, OBSTACLE_GRID, BEACON_SENSORS, ELLIPSES, DEAD_RECKONING_PATH, DEAD_RECKONING_GHOST, SHOW_SENSOR_CIRCLE
+    global MEAN_PATH
     global accel, wheel, direction, clean_cells, grid_1, current_generation, best_individuals, fitnesses, areas, turn
     if pgkey[pygame.K_w]:
         accel = True
@@ -440,6 +441,13 @@ def user_input(pgkey):
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, used_key_info)
     else:
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)
+
+
+    if pgkey[pygame.K_p]:
+        MEAN_PATH += 1 if MEAN_PATH < 3 else -3
+        keyboard.update_key(keyboard_layout, kl.Key.P, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.P, unused_key_info)
 
     if pgkey[pygame.K_BACKSPACE]:
         AUTONOMOUS_MODE = not AUTONOMOUS_MODE
@@ -744,7 +752,7 @@ def execute():
                 # todo: pass a surface list with all the ellipses already drawn
                 # todo: rotate surface in function (use drawing_estimates[2][2] for angle in degrees)
                 # todo: return new surfaces to append to list
-                visualization.draw_kalman_estimates(pygame, screen, drawing_estimates, drawing_variances, kalman_estimates, kalman_pred_estimates, robot, WIDTH, HEIGHT)
+                visualization.draw_kalman_estimates(pygame, screen, drawing_estimates, drawing_variances, kalman_estimates, kalman_pred_estimates, robot, WIDTH, HEIGHT, MEAN_PATH)
 
 
             if DEAD_RECKONING_PATH:
