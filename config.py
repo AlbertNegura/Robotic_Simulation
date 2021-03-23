@@ -203,5 +203,6 @@ key_size = KEY_SIZE
 valid_keys_kl = [kl.Key.W, kl.Key.S, kl.Key.E, kl.Key.T, kl.Key.G, kl.Key.O, kl.Key.L, kl.Key.V, kl.Key.X, kl.Key.N, kl.Key.M,
                  kl.Key.DIGIT_1, kl.Key.DIGIT_2, kl.Key.DIGIT_3, kl.Key.DIGIT_4, kl.Key.DIGIT_5, kl.Key.DIGIT_6, kl.Key.DIGIT_7,
                  kl.Key.DIGIT_8, kl.Key.DIGIT_9, kl.Key.DIGIT_0, kl.Key.MINUS, kl.Key.EQUALS, kl.Key.BACKSPACE, kl.Key.P,
+                 kl.Key.I,
                  kl.Key.C, kl.Key.A, kl.Key.Q, kl.Key.D, kl.Key.K, kl.Key.Z, kl.Key.LEFTBRACKET,kl.Key.RIGHTBRACKET, kl.Key.B]
 

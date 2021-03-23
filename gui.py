@@ -442,6 +442,20 @@ def user_input(pgkey):
     else:
         keyboard.update_key(keyboard_layout, kl.Key.RIGHTBRACKET, unused_key_info)
 
+    global kalman_variances, kalman_estimates, kalman_pred_estimates, sensor_historic, dead_reckoning, dead_reckoning_orientation, _mean, _covariance, random_vector
+    if pgkey[pygame.K_i]:
+        kalman_variances = []
+        kalman_estimates = []
+        kalman_pred_estimates = []
+        sensor_historic = []
+        dead_reckoning = [[robot.position[0], robot.position[1]]]
+        dead_reckoning_orientation = [robot.orientation]
+        random_vector = dead_reckoning_orientation
+        _mean = np.array([[robot.position[0]], [robot.position[1]], [robot.orientation]])
+        _covariance = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+        keyboard.update_key(keyboard_layout, kl.Key.I, used_key_info)
+    else:
+        keyboard.update_key(keyboard_layout, kl.Key.I, unused_key_info)
 
     if pgkey[pygame.K_p]:
         MEAN_PATH += 1 if MEAN_PATH < 3 else -3
@@ -497,6 +511,7 @@ def execute():
     global ORIENTATION_HISTORY
     global fitnesses
     global KALMAN_POSE
+    global kalman_variances, kalman_estimates, kalman_pred_estimates, sensor_historic, dead_reckoning, dead_reckoning_orientation, _mean, _covariance, random_vector
 
     DRAWING = False
     origin = None
